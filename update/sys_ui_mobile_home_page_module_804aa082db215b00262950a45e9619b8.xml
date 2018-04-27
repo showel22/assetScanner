@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_mobile_home_page_module">
+    <sys_ui_mobile_home_page_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <background_color>#00B5E2</background_color>
+        <content_style>light_content</content_style>
+        <icon>mobile</icon>
+        <image/>
+        <module display_value="Asset Scanner">e6181511db695700d087d8965e9619d3</module>
+        <roles/>
+        <subtitle/>
+        <sys_class_name>sys_ui_mobile_home_page_module</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-04-19 20:12:18</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>804aa082db215b00262950a45e9619b8</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Asset Scanner</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ui_mobile_home_page_module_804aa082db215b00262950a45e9619b8</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-04-19 20:27:22</sys_updated_on>
+        <title>Asset Scanner</title>
+    </sys_ui_mobile_home_page_module>
+</record_update>

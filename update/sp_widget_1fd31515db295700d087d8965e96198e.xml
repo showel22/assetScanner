@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function(cabrillo, $http, $location, $scope) {
+	/* widget controller */
+	var c = this;
+	c.currentUser = $scope.user.first_name;
+	c.isNative = cabrillo.isNative();
+	c.serialNumber = "";
+	c.showForm = false;
+	c.showHomeButtons = true;
+	c.itemDetails = '';
+	c.asset = '';
+	c.error = false;
+	c.errorMessage = "";
+	
+	// Client side access to camera scan
+	c.scan = function(){
+		cabrillo.camera.getBarcode().then(function(barcode) {
+			if (barcode){
+				window.location.href = 'asset_scan?id=scanned_information&serial_no=' + barcode;
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		});
+	};
+	
+	c.manualSubmit = function(serialNumber){
+		window.location.href = '/asset_scan?id=scanned_information&serial_no=' + serialNumber;
+	};
+	
+	c.showManualInput = function(){
+		//Show the input field and label
+		c.showForm = true;
+		//Hide Get Started Header and the Scanning button 
+		c.showHomeButtons = false;
+		//Add hash to URL
+		var manualHash = $location.hash("manual-hash");
+		//Hide error message if already loaded
+		c.error = false;
+	};
+	
+	c.goHome = function() {
+		c.showForm = false;
+		c.showHomeButtons = true;
+		var homeHash = $location.hash('');
+	};
+	
+	function getAsset(serial){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/GetAssetInfo/' + serial,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.asset = response.result;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find this serial number. Try entering manually.";
+		});
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.home-div {
+  background: linear-gradient(#00B2EE 150px, 150px, #A9A9A9);
+  height: 100vh;
+}
+
+.home-label {
+  color: #ffffff;
+}
+
+.error-message {
+  z-index: 999;
+  margin-top: 10px;
+  position: absolute;
+}
+
+#serial-number-form {
+  font-size: 15px;
+  height: 100vh;
+  background: #ffffff;
+}
+
+.home-title {
+	padding-bottom: 20px; 
+}
+
+.home-screen-row {
+  margin: 0 auto;
+  padding: 10px;
+}
+//Start Scanning Button
+
+.start-scanning-button {
+  height: 150px;
+}
+
+//Inventory Check Button
+.inventory-check-button-row {
+  display: none;
+}
+
+//Manual Button
+.manual-button {
+  height: 90px;
+}
+
+//Manual Entry
+.manual-submit-cancel-row {
+	padding: 0;
+  	margin-top: 30%;
+}
+.manual-submit-cancel {
+	width: 100%;
+  	height: 80px;
+  
+}
+
+//General Buttons Styling
+
+button {
+  font-size: 20px;
+  border: none;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-button {
+  background-color: #ffffff;
+}
+
+#barcode-icon {
+  height: 75px;
+}
+
+#pencil-icon {
+  width: 40px;
+}
+
+.navy-button {
+	background-color: #003366;
+ 	color: #eeeeee;
+}
+.cancel-button {
+   background-color: #ffffff;
+   color: #007bff;
+   border: 1px solid #eeeeee 
+}
+
+.submit-button {
+   background-color: #005EB8;
+   color: #ffffff;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>asset-scanner</id>
+        <internal>false</internal>
+        <link/>
+        <name>Asset Scanner</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-04-17 15:17:59</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
+        <sys_mod_count>205</sys_mod_count>
+        <sys_name>Asset Scanner</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-19 20:02:44</sys_updated_on>
+        <template><![CDATA[<div id="home-screen">
+  <div class="container-fluid">
+    <div class="row">
+      
+      <div class="alert alert-danger col-xs-8 col-xs-offset-2 error-message" ng-show="c.error">
+        {{c.errorMessage}}
+      </div>
+      
+      <div class="form-group" id="serial-number-form" ng-show="c.showForm">
+        <div class="col-xs-10 col-xs-offset-1">
+        	<h4 class="text-center">Manually Enter Barcode</h4>
+          <label class="control-label">Barcode information</label>
+          <input type="text" id="serialInput" placeholder="Enter Serial Number" ng-model="c.serialNumber" class="form-control" autofocus />
+        </div>
+        <div>
+          <div class="pull-left col-xs-6 manual-submit-cancel-row">
+            <button class="manual-submit-cancel cancel-button" ng-click="c.goHome()">
+              CANCEL
+            </button>
+          </div>
+          <div class="pull-right col-xs-6 manual-submit-cancel-row">
+            <button class="manual-submit-cancel submit-button" ng-click="c.manualSubmit(c.serialNumber)">
+              SUBMIT
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="home-div" ng-show="c.showHomeButtons">
+        <div class="col-xs-12 home-title">
+          <h3 class="text-center home-label" id="get-started-label">Welcome {{c.currentUser}},</h3>
+          <h4 class="text-center home-label" id="get-started-label">How do you want to get started today?</h4>
+        </div>
+        <div class="home-buttons">
+          <div class="row home-screen-row" id="scan-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 start-scanning-button white-button" ng-click="c.scan()">
+              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan
+            </button>
+          </div>
+          <div class="row home-screen-row inventory-check-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 inventory-check-button white-button" ng-click="c.scan()">Inventory Check
+            </button>
+          </div>
+          <div class="row home-screen-row manual-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 manual-button white-button" ng-click="c.showManualInput()">
+              <img class="button-icon" id="pencil-icon" src="pencil-icon.png"/>Manually Enter
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<div ng-hide="c.isNative">
+  <p>You must be in the ServiceNow mobile app.</p>
+</div>]]></template>
+    </sp_widget>
+</record_update>

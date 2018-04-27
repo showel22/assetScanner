@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>cms</category>
+        <format/>
+        <height>512</height>
+        <image/>
+        <name>pencil-icon.png</name>
+        <size_bytes>1344</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 15:05:00</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>5104af31dba5d700262950a45e9619de</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>pencil-icon.png</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_5104af31dba5d700262950a45e9619de</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-19 19:35:53</sys_updated_on>
+        <thumbnail/>
+        <width>512</width>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>1344</size_bytes>
+        <size_compressed>621</size_compressed>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 19:35:53</sys_created_on>
+        <sys_id>9412280adbad1b00262950a45e9619d2</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-19 19:35:53</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>5104af31dba5d700262950a45e9619de</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="9412280adbad1b00262950a45e9619d2">9412280adbad1b00262950a45e9619d2</sys_attachment>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 19:35:53</sys_created_on>
+        <sys_id>d412280adbad1b00262950a45e9619d2</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>rZTdbhMxEIVfZbXcgGTPejz+LUmlwm14gd6gVZu2kTZp1KyaIsS7c2wXUVqohECRJhvvyfjMN2MvDvfX3eZy2X8c9+Nn7rvLcR71btyu21KHpYfttDss+5t53p8Mw/F4pKPQ7d31YI0xAxL03f1mffxw+7DsTWc6sYkkdmIihdifLi7XV4fTxWH+Mq1P6WI6aP56tZmmkzchR5/c+2+Lob1cDE06b2b82q93i6E9LvbjfNNdTOMBPmoGGF32nyQmSk5ZtuSDEpPJs2KJZMdAPqsaDD6sSJLOJHayWAzaOnIyOk8hqBabLGAdCSnkiUPNFim7KvSqxSrURdLUK0mJOMCFnOEvSdXQ0v1i8HyrvSf2OuaySTAkSFFzWqaorRnFkvOqRdNyUGaNjdOkqyHdDL0QVo0u6vO+m+/G3eHq9m677OvjNM7rt5oNk/Gdzoza3/XDH7FaYykJzKO8DJ5CcJgzsQArXtTwiNWBagADsI9OsY0UuaicqqGpIPHkpoAGiIqeJDxPpMk12aqwcqlunvLZ80y/WCtAHXpXgBbuhkwFKrwqAgPXZQazEoY1ZzED/w6HfVSS0EdRzJkMrDr3ohwurQoU7IoFrrOg10VkVQ2tGIbKl0myr6IB/li0Nk/aOXQYoGIAmlgmPP6Y8J/GwMXiO2sXybsVY0wFxyPKZDF5Hr6c9kJW+4hd/gOS0hRMYw6Ub8zvWFQU5URZbGop+1dYwC8KAYr0gtgTFCs2FZnkOiRB1fCY64mf8y2Ous0FHLcbAPdEGTZBcQm+Ii4DrlEwSn8Bo9x8p98BAv0hFEAFAAA=</data>
+        <length>816</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="9412280adbad1b00262950a45e9619d2">9412280adbad1b00262950a45e9619d2</sys_attachment>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 19:35:53</sys_created_on>
+        <sys_id>5812280adbad1b00262950a45e9619d2</sys_id>
+    </sys_attachment_doc>
+</record_update>

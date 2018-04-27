@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_portal">
+    <sp_portal action="INSERT_OR_UPDATE">
+        <css_variables/>
+        <default>false</default>
+        <homepage display_value="asset_scanning">9d43d991db295700d087d8965e96191c</homepage>
+        <icon/>
+        <kb_knowledge_base/>
+        <kb_knowledge_page/>
+        <login_page/>
+        <logo/>
+        <notfound_page/>
+        <quick_start_config/>
+        <sc_catalog/>
+        <sc_catalog_page/>
+        <sc_category_page/>
+        <sp_chat_queue/>
+        <sp_rectangle_menu/>
+        <sqanda_knowledge_base/>
+        <sys_class_name>sp_portal</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-04-17 15:13:07</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>a7429551db295700d087d8965e96196e</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Asset Scanning</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_portal_a7429551db295700d087d8965e96196e</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-04-19 16:26:31</sys_updated_on>
+        <theme display_value="Asset Scanner">d7b57f79dbe5d700262950a45e961983</theme>
+        <title>Asset Scanning</title>
+        <url_suffix>asset_scan</url_suffix>
+    </sp_portal>
+    <sys_translated_text action="delete_multiple" query="documentkey=a7429551db295700d087d8965e96196e"/>
+</record_update>

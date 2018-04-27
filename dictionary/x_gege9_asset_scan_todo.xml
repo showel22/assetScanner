@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="40" type="collection">
+        <element label="Asset" mandatory="true" max_length="32" name="asset" reference="alm_asset" type="reference"/>
+        <element choice="1" label="Type" mandatory="true" max_length="40" name="type" type="choice">
+            <choice>
+                <element label="Data Wipe" value="400"/>
+                <element label="Freeform" value="100"/>
+                <element label="Legal Hold" value="300"/>
+                <element label="Receiving" value="500"/>
+                <element label="Reclamation" value="200"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="asset"/>
+        </index>
+    </element>
+</database>

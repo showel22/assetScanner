@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">924dda61dbe11b00d087d8965e96190e</sp_column>
+        <sp_widget display_value="Scanned Information">e4b1ee29dbe11b00d087d8965e96193e</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>212613005</sys_created_by>
+        <sys_created_on>2018-04-18 16:33:36</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>38ce2aa9db251b00d087d8965e9619d2</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_instance_38ce2aa9db251b00d087d8965e9619d2</sys_update_name>
+        <sys_updated_by>212613005</sys_updated_by>
+        <sys_updated_on>2018-04-18 16:33:36</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=38ce2aa9db251b00d087d8965e9619d2"/>
+</record_update>

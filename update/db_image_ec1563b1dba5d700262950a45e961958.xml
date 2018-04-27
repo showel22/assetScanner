@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>cms</category>
+        <format/>
+        <height>512</height>
+        <image/>
+        <name>barcode-icon.png</name>
+        <size_bytes>6096</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 15:09:34</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ec1563b1dba5d700262950a45e961958</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>barcode-icon.png</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_ec1563b1dba5d700262950a45e961958</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-19 18:18:12</sys_updated_on>
+        <thumbnail/>
+        <width>512</width>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>6096</size_bytes>
+        <size_compressed>892</size_compressed>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 18:18:12</sys_created_on>
+        <sys_id>5240188edbe9d700262950a45e9619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-19 18:18:12</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>ec1563b1dba5d700262950a45e961958</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="5240188edbe9d700262950a45e9619d7">5240188edbe9d700262950a45e9619d7</sys_attachment>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 18:18:12</sys_created_on>
+        <sys_id>9240188edbe9d700262950a45e9619d7</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>7VhNb5tAEP0riFxSCZbd2WUXXGypObVSK/WUa0RtYqMSiAyxE0X9710+jImBNcbOzYoMZHZ237yZN+MPL90stXAx1X/6b8H6gejaws98M/afgsqmSdvrUxSnU32VZc8Ty9put2hLUbJeWoAxtuQRlcvkNQrjv12OxHVdq1jVtU0YbO+S16mONazZQmNCn3mL4DGdeWn2FgUzNI9SkxjFDcobfX8Mo2gSJ3Hw9V+58D6Pwmdz/RIFk2ATxMliUa2Uvl0rrNzz7Gerycs6ur2p//1Sedi9HibsfPh7mCaRn4VJPCmfdjGJ/t10t9vp92E7H7dke4MdB//xKyPB/Tv5bich/U5O7QT9TgTXXlThVSeDsCpWO+C+qGNV5JHUNAlXeO0pKbJK9pwUeYU9J1fhVXMCRaahjh4UqYY6elDkGvLoPasUvZfbf0tz0Y61k65laz9OH5P101QvHnO93UoELc+R7Jx1MM+0eeSnab5NcpTNONWpvL1NdZC3bbjIVlNdtpm2CsLlKpOrHLmubs08a4fah2/C2AhMsEURg9QUgzoMzvA+DkIoHxYG/aREiGHw7Dh87teEl5TlEb+ogxxqAPlOAdniG0G2bRQXXPxRYoBcYBuOiPDlgjCKS7WKCDXwPTCEnRVDhQMzigs2SO5iUrk0jAMfzUFwxKjBHCRs/4CAKR95EdGGIU5lprqiNPIoVxwBbyVAOIYtj+f3Nkbgdh0v8gsbxtE5k6Osk8BVJbooSHYFz95K5bVsc6zOHsaB4DPFZjPkQlGJfVKbwZplsIXk2oLMZWrYZbXO0hsZPTpoOThA1D1L9y0L9kD4AT3bDc+oAp4MnJtkQLt1w9v4EvADOqEH/hLJhwEa7obncAH2MFp63LkE+3Olx5wueDoQ/VzlnYc+WnhV5YehW+UXhizM5GenO389TxbBw495EntWafOWTQSmHxjsQwM/NIhDg9PlcUjFrYMnLmJN5aJKPcvy9eEkOfKHnV0MR8Qrjcr343Fw5FS4MSAwEORUKoevj6i0q9ItwbFScQV4g15TcApmLfEoMAgoQMDtB2kJUgXijgRpiVwBAmPT1WocBUj1cf10Ju4pIGIcE2i16fHCN95JmiiE9qO0uvN45UegtNrzeFVOR7nO3evcvc7d69y9zt1Pn7v57/Cz/2XZQiDQFwAA</data>
+        <length>1176</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="5240188edbe9d700262950a45e9619d7">5240188edbe9d700262950a45e9619d7</sys_attachment>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-19 18:18:12</sys_created_on>
+        <sys_id>1640188edbe9d700262950a45e9619d7</sys_id>
+    </sys_attachment_doc>
+</record_update>

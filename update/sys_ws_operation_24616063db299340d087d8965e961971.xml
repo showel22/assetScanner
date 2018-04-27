@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>updateStockroom</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var error;
+	
+	var stockroomGR = new GlideRecord('alm_stockroom');
+	stockroomGR.addQuery('sys_id', request.pathParams.NewStockroom);
+	stockroomGR.query();
+	if(stockroomGR.hasNext()){
+		stockroomGR.next();
+		var assetGR = new GlideRecord('alm_asset');
+		assetGR.addQuery('sys_id', request.pathParams.Asset);
+		assetGR.query();
+		if(assetGR.hasNext()){
+			assetGR.next();
+			// Put the asset in stock.
+			assetGR.install_status = 6;
+			assetGR.stockroom = stockroomGR.sys_id;
+			if (assetGR.update() != null){
+				response.setBody({ 
+					name: stockroomGR.name, 
+					details: "Item has moved to new stockroom."
+				});
+				response.setStatus(200);
+				return response;
+			}else{
+				error = new sn_ws_err.ServiceError();
+				error.setStatus(404);
+				error.setMessage('Nah Brah');
+				return error;
+			}
+		}else{
+			error = new sn_ws_err.ServiceError();
+			error.setStatus(404);
+			error.setMessage('This asset is not valid.');
+			return error;
+		}
+	}else{
+		error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('This stockroom is not valid.');
+		return error;
+	}
+		
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/updateStockroom/{Asset}/{NewStockroom}</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/updateStockroom/{Asset}/{NewStockroom}</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-04-24 11:26:21</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>24616063db299340d087d8965e961971</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>updateStockroom</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ws_operation_24616063db299340d087d8965e961971</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-24 15:34:11</sys_updated_on>
+        <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

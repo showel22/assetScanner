@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>standard</category>
+        <client_script><![CDATA[//function ($scope, $sce) {
+	//var c = this;
+	//c.html = $sce.trustAsHtml(c.options.html);
+	//$scope.$watch('c.options.html',function(){
+		//c.html = $sce.trustAsHtml(c.options.html);
+	//})
+//}
+
+function(cabrillo, $http, $location, $scope) {
+	/* widget controller */
+	var c = this;
+	c.currentUser = $scope.user.first_name;
+	c.isNative = cabrillo.isNative();
+	c.stockroom = '';
+	c.showForm = false;
+	c.showBinButtons = true;
+	c.showBinResults = false;
+	c.itemDetails = '';
+	c.asset = '';
+	c.error = false;
+	c.errorMessage = "";
+	
+	 c.getParameterByName = function(param) {
+	   return $location.search()[param];
+  };
+	
+	// Client side access to camera scan
+	c.scanStockroom = function(){
+		cabrillo.camera.getBarcode().then(function(barcode) {
+			if (barcode){
+				c.showBinResults = true;
+				c.showBinButtons = false;
+				c.updateStockroom(c.serial_no_sys_id, barcode);
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		});
+	};
+	
+	c.manualSubmit = function(serialNumberSysId, stockroomNumber){
+		c.updateStockroom(c.serial_no_sys_id, c.stockroom);
+		c.showBinResults = true;
+		c.showForm = false;
+		c.showBinButtons = false;
+	};
+	
+	
+	c.showManualBinInput = function(){
+		//Show the input field and label
+		c.showForm = true;
+		//Hide Get Started Header and the Scanning button 
+		c.showHomeButtons = false;
+		//Add hash to URL
+		var binHash = $location.hash("bin-hash");
+		//Hide error message if already loaded
+		c.error = false;
+	};
+	
+	c.updateStockroom = function(assetSysId, stockroom){
+	    c.loaded = false;
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/updateStockroom/' + assetSysId + '/' + stockroom,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.stockroomData = response.data.result;
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this serial number. Try entering manually.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	c.goBack = function() {
+		c.showForm = false;
+		c.showBinButtons = true;
+		//var homeHash = $location.hash('');
+	};
+	
+	c.startOver = function() {
+		window.location.href = "/asset_scan";
+	};
+	
+	c.serial_no_sys_id = c.getParameterByName('sys_id');
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.bin-div {
+  margin-top: 30%;
+}
+
+.error-message {
+  z-index: 999;
+  margin-top: 10px;
+  position: absolute;
+}
+
+#bin-number-form {
+  font-size: 15px;
+  height: 100vh;
+  background: #ffffff;
+}
+
+.bin-screen-row {
+  margin: 0 auto;
+  padding: 10px;
+}
+//Start Scanning Button
+
+button.bin-scan-button {
+  height: 150px;
+  background-color: #00B2EE;
+  color: #ffffff;
+}
+
+//Manual Button
+button.bin-manual-button {
+  height: 90px;
+  background-color: #A9A9A9;
+  color: #ffffff;
+}
+
+//Manual Entry
+.manual-submit-cancel-row {
+	padding: 0;
+  margin-top: 30%;
+}
+.manual-submit-cancel {
+	width: 100%;
+  height: 80px;
+}
+
+//General Buttons Styling
+
+button {
+  font-size: 20px;
+  border: none;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-button {
+  background-color: #ffffff;
+}
+
+#barcode-icon {
+  height: 75px;
+}
+
+#pencil-icon {
+  width: 40px;
+}
+
+.navy-button {
+	background-color: #003366;
+ 	color: #eeeeee;
+}
+.cancel-button {
+   background-color: #ffffff;
+   color: #007bff;
+   border: 1px solid #eeeeee 
+}
+
+.submit-button {
+   background-color: #005EB8;
+   color: #ffffff;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data>{"options": &#13;
+	{&#13;
+		"html": "&lt;i&gt;Hi&lt;/i&gt;",&#13;
+		"title": "HTML"&#13;
+	}&#13;
+}</demo_data>
+        <description/>
+        <docs/>
+        <field_list>title</field_list>
+        <has_preview>false</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link/>
+        <name>Bin Scan</name>
+        <option_schema>[{"name":"html","default_value":" &lt;b&gt;Bin Scan Modal&lt;/b&gt;","section":"Data","label":"HTML","type":"translated_html"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-04-23 15:35:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>8581dc13dbe15340d087d8965e9619bf</sys_id>
+        <sys_mod_count>119</sys_mod_count>
+        <sys_name>Bin Scan</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_8581dc13dbe15340d087d8965e9619bf</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-04-25 17:18:59</sys_updated_on>
+        <template><![CDATA[<div>
+  <!-- <div ng-if="!c.options.html" class="panel panel-default">
+    <div class="panel-body">
+      <b>${HTML Widget}</b><br>
+      ${Ctrl + Click > Options to set HTML content}
+    </div>
+  </div>
+  <div ng-if="c.options.html" ng-bind-html="c.html"></div> -->
+  
+<div id="bin-screen">
+  <div class="container-fluid">
+    <div class="row">
+      
+       <div class="bin-results-div" ng-show="c.showBinResults">
+        <h3 class="text-center" ng-hide="c.error">Success! Item moved to stockroom: {{c.stockroomData.name}}.</h3>
+         <button class="btn bin-scan-button col-xs-10 col-xs-offset-1" ng-click="c.startOver()">Scan Another Item</button>
+      </div>
+      <div class="alert alert-danger col-xs-8 col-xs-offset-2 error-message" ng-show="c.error">
+        {{c.errorMessage}}
+      </div>
+      
+      <div class="form-group" id="bin-number-form" ng-show="c.showForm">
+        <div class="col-xs-10 col-xs-offset-1">
+        	<h4 class="text-center">Manually Enter Stockroom</h4>
+          <label class="control-label">Stockroom Number</label>
+          <input type="text" id="binInput" placeholder="Enter Bin Number" ng-model="c.stockroom" class="form-control" autofocus />
+        </div>
+        <div>
+          <div class="pull-left col-xs-6 manual-submit-cancel-row">
+            <button class="manual-submit-cancel cancel-button" ng-click="c.goBack()">
+              CANCEL
+            </button>
+          </div>
+          <div class="pull-right col-xs-6 manual-submit-cancel-row">
+            <button class="manual-submit-cancel submit-button" ng-click="c.manualSubmit(c.serial_no_sys_id, c.stockroom)">
+              SUBMIT
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bin-div" ng-show="c.showBinButtons">
+        <div class="home-buttons">
+          <div class="row bin-screen-row" id="scan-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 bin-scan-button white-button" ng-click="c.scanStockroom(c.serial_no_sys_id, c.stockroom)">
+              Scan Stockroom
+            </button>
+          </div>
+          <div class="row bin-screen-row manual-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 bin-manual-button white-button" ng-click="c.showManualBinInput()">
+              Manually Enter
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+</div>]]></template>
+    </sp_widget>
+</record_update>
