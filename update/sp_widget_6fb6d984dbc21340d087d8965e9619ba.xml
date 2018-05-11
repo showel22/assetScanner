@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location, $http) {
+	/* widget controller */
+	var c = this;
+	c.loaded = false;
+
+	c.getParameterByName = function(param) {
+		return $location.search()[param];
+	};
+
+	c.getStockroomAssets = function(stockroomSysId){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomAssets/' + stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.stockroomAssets = (response.data.result);
+				c.error = false;
+				c.loaded = true;
+				c.noOfPages = Math.floor(c.stockroomAssets.length/c.pageSize);
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this stockroom's assets.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+
+	c.stockroomSysId = c.getParameterByName('stockroom');
+  c.getStockroomAssets(c.stockroomSysId);
+	
+	c.stockroomName = c.getParameterByName('stockroomName');
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>//Asset List
+.search {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  height: 40px;
+}
+
+.spinner {
+  text-align: center;
+}
+
+.asset-list-container {
+ padding: 0px; 
+}
+.list-group {
+	margin-bottom: -1px; 
+  width: 100%;
+}
+.list-group-item {
+	padding: 15px;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>inventory_information</id>
+        <internal>false</internal>
+        <link/>
+        <name>Inventory Information</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-05-08 14:49:33</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6fb6d984dbc21340d087d8965e9619ba</sys_id>
+        <sys_mod_count>60</sys_mod_count>
+        <sys_name>Inventory Information</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_6fb6d984dbc21340d087d8965e9619ba</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-05-08 18:44:55</sys_updated_on>
+        <template><![CDATA[<div class="row">
+  <div>
+
+    <!-- Error Alert -->
+    <div class="alert alert-danger error-message" ng-show="c.error">
+      {{c.errorMessage}}
+    </div>
+    
+    
+    <div class="col-xs-10 col-xs-offset-1">
+      <h3>
+        {{c.stockroomName}} Bin Contents
+      </h3>
+      <input class="search" type="text" ng-model="c.searchText" placeholder="Search for asset here" />
+      <div class="spinner" ng-hide="c.loaded">
+        <i class="fa fa-spinner fa-4x fa-pulse"></i>
+      </div>
+    </div>
+    <div class="col-xs-12 asset-list-container">
+      <div class="list-group" ng-repeat="asset in c.stockroomAssets | filter: c.searchText">
+        <div class="list-group-item">
+          <div class="col-xs-offset-1">
+            <div>
+              <b>Serial Number: </b> {{asset.serialNumber}}
+            </div>
+            <div>
+              <b>Name: </b> {{asset.name}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

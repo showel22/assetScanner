@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>getStockroomById</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    var stockroomGR, responseObj,
+		sysId = request.pathParams.SysId;
+	
+	
+	stockroomGR = new GlideRecord('alm_stockroom');
+	stockroomGR.addEncodedQuery('sys_id=' + sysId);
+	stockroomGR.query();
+	if(stockroomGR.hasNext()){
+		stockroomGR.next();
+		responseObj = {
+			sysId: stockroomGR.sys_id,
+			name: stockroomGR.name.getDisplayValue(),
+		};
+		response.setBody(responseObj);
+		response.setStatus(200);
+		return response;
+	}else{
+		var error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('No asset for this Serial Number.');
+		return error;
+	}
+	
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getStockroomInfo/{SysId}</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/getStockroomInfo/{SysId}</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-05-08 18:05:58</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>7fa206c0db0a1340d087d8965e9619cf</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>getStockroomById</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ws_operation_7fa206c0db0a1340d087d8965e9619cf</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-05-08 18:10:24</sys_updated_on>
+        <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

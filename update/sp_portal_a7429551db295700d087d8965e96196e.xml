@@ -7,7 +7,7 @@
         <icon/>
         <kb_knowledge_base/>
         <kb_knowledge_page/>
-        <login_page/>
+        <login_page display_value="landing">36c61807cb31120000f8d856634c9ca9</login_page>
         <logo/>
         <notfound_page/>
         <quick_start_config/>
@@ -22,7 +22,7 @@
         <sys_created_on>2018-04-17 15:13:07</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>a7429551db295700d087d8965e96196e</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>Asset Scanning</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -30,7 +30,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_portal_a7429551db295700d087d8965e96196e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-04-19 16:26:31</sys_updated_on>
+        <sys_updated_on>2018-05-04 11:14:08</sys_updated_on>
         <theme display_value="Asset Scanner">d7b57f79dbe5d700262950a45e961983</theme>
         <title>Asset Scanning</title>
         <url_suffix>asset_scan</url_suffix>

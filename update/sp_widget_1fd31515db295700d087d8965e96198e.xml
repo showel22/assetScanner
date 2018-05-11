@@ -113,8 +113,17 @@
 }
 
 //Inventory Check Button
-.inventory-check-button-row {
-  display: none;
+a.button-link:link,  a.button-link:visited{
+	 text-decoration: inherit;
+   color: inherit;
+   cursor: auto;
+}
+a.button-link:hover {
+  color: black;
+}
+
+.inventory-check-button {
+	height: 90px;  
 }
 
 //Manual Button
@@ -125,12 +134,11 @@
 //Manual Entry
 .manual-submit-cancel-row {
 	padding: 0;
-  	margin-top: 30%;
+  margin-top: 15%;
 }
 .manual-submit-cancel {
 	width: 100%;
-  	height: 80px;
-  
+  height: 70px;
 }
 
 //General Buttons Styling
@@ -149,12 +157,20 @@ button {
   background-color: #ffffff;
 }
 
+a .white-button{
+  color: inherit;;
+}
+
 #barcode-icon {
   height: 75px;
 }
 
 #pencil-icon {
   width: 40px;
+}
+
+.small-button-text {
+  font-size: 15px;
 }
 
 .navy-button {
@@ -170,6 +186,29 @@ button {
 .submit-button {
    background-color: #005EB8;
    color: #ffffff;
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 70px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
 }
 </css>
         <data_table>sp_instance</data_table>
@@ -192,7 +231,7 @@ button {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>205</sys_mod_count>
+        <sys_mod_count>243</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -200,7 +239,7 @@ button {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-04-19 20:02:44</sys_updated_on>
+        <sys_updated_on>2018-05-11 16:33:14</sys_updated_on>
         <template><![CDATA[<div id="home-screen">
   <div class="container-fluid">
     <div class="row">
@@ -216,13 +255,13 @@ button {
           <input type="text" id="serialInput" placeholder="Enter Serial Number" ng-model="c.serialNumber" class="form-control" autofocus />
         </div>
         <div>
-          <div class="pull-left col-xs-6 manual-submit-cancel-row">
-            <button class="manual-submit-cancel cancel-button" ng-click="c.goHome()">
+          <div class="col-xs-4 col-xs-offset-1 manual-submit-cancel-row">
+            <button class="btn manual-submit-cancel cancel-button" ng-click="c.goHome()">
               CANCEL
             </button>
           </div>
-          <div class="pull-right col-xs-6 manual-submit-cancel-row">
-            <button class="manual-submit-cancel submit-button" ng-click="c.manualSubmit(c.serialNumber)">
+          <div class="col-xs-4 col-xs-offset-2 manual-submit-cancel-row">
+            <button class="btn manual-submit-cancel submit-button" ng-click="c.manualSubmit(c.serialNumber)">
               SUBMIT
             </button>
           </div>
@@ -240,20 +279,34 @@ button {
               <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan
             </button>
           </div>
-          <div class="row home-screen-row inventory-check-button-row">
-            <button class="btn col-xs-8 col-xs-offset-2 inventory-check-button white-button" ng-click="c.scan()">Inventory Check
+          <div class="col-xs-6 home-screen-row manual-button-row">
+            <button class="btn col-xs-8 col-xs-offset-4 manual-button white-button" ng-click="c.showManualInput()">
+              <img class="button-icon" id="pencil-icon" src="pencil-icon.png"/><span class="small-button-text">Manually Enter</span>
             </button>
           </div>
-          <div class="row home-screen-row manual-button-row">
-            <button class="btn col-xs-8 col-xs-offset-2 manual-button white-button" ng-click="c.showManualInput()">
-              <img class="button-icon" id="pencil-icon" src="pencil-icon.png"/>Manually Enter
-            </button>
+          <div class="col-xs-6 home-screen-row inventory-check-button-row">
+            <a href="/asset_scan?id=inventory" class="button-link"><button class="btn col-xs-8 inventory-check-button white-button"><img class="button-icon" id="pencil-icon" src="inventory.svg"/><span class="small-button-text">Inventory</span>
+              </button></a>
           </div>
         </div>
       </div>
       
     </div>
   </div>
+</div>
+<div class="navbar navbar-fixed-bottom bottom-nav" ng-show="c.showForm">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav col-xs-12">
+      <li class="text-center center-block col-xs-12">
+        <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+          <p>
+            Home
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
 </div>
 <div ng-hide="c.isNative">
   <p>You must be in the ServiceNow mobile app.</p>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_container">
+    <sp_container action="INSERT_OR_UPDATE">
+        <background_color/>
+        <background_image/>
+        <background_style>default</background_style>
+        <bootstrap_alt>false</bootstrap_alt>
+        <class_name/>
+        <container_class_name/>
+        <name>asset - Container 1</name>
+        <order>1</order>
+        <sp_page display_value="asset">a7cd7c3fdbbd9f00d087d8965e9619f0</sp_page>
+        <subheader>false</subheader>
+        <sys_class_name>sp_container</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-05-07 18:22:50</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>46fdb0ffdbbd9f00d087d8965e9619e5</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>asset - Container 1</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_container_46fdb0ffdbbd9f00d087d8965e9619e5</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-05-07 18:23:02</sys_updated_on>
+        <title/>
+        <width>container-fluid</width>
+    </sp_container>
+</record_update>

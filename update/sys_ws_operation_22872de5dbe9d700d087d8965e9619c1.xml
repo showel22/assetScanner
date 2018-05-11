@@ -15,29 +15,15 @@
 	
 	
 	assetGR = new GlideRecord('alm_hardware');
-	var orQuery = assetGR.addEncodedQuery('ci.u_alias=' + identifier + '^ORserial_number=' + identifier);
+	assetGR.addQuery('install_status', '!=', '7');
+	assetGR.addEncodedQuery('asset_tag=' + identifier + '^ORserial_number=' + identifier);
 	assetGR.query();
 	if(assetGR.hasNext()){
 		assetGR.next();
-		var itemArray = [];
-		var configItem = assetGR.ci.sys_id; 
-		var ritmGR = new GlideRecord('sc_req_item');
-		ritmGR.addEncodedQuery('active=true^cat_item.name=PC Return^ORcat_item.name=PC Deployment^variables.6016c545db0f0f00262950a45e961914=' +
-						configItem + '^ORvariables.1b1315c5db4f0f00262950a45e961956=' + configItem);
-		ritmGR.query();
-		if(ritmGR.hasNext()){
-			while(ritmGR.next()){
-				itemArray.push({
-					itemNumber: ritmGR.number,
-					item: ritmGR.cat_item.getDisplayValue(),
-					stage: ritmGR.stage.getDisplayValue(),
-					dataReclamation: ritmGR.variables.v_data_reclamation ? ritmGR.variables.v_data_reclamation : 'Not specified',
-					url: "/sc_req_item.do?sys_id=" + ritmGR.sys_id
-				});
-			}
-		}
 		responseObj = {
 			sysId: assetGR.sys_id,
+			state: assetGR.install_status.getDisplayValue(),
+			stockroom: assetGR.stockroom.getDisplayValue(),
 			modelImage: assetGR.model.picture.getDisplayValue(),
 			modelCategory: assetGR.model_category.getDisplayValue(),
 			model: assetGR.model.getDisplayValue(),
@@ -46,8 +32,7 @@
 			assetType: assetGR.acquisition_method,
 			assignedTo: assetGR.assigned_to.user_name,
 			assignedToIsVIP: assetGR.assigned_to.vip,
-			url: "/" + assetGR.getTableName() + ".do?sys_id=" + assetGR.sys_id.toString(),
-			items: itemArray
+			url: "/" + assetGR.getTableName() + ".do?sys_id=" + assetGR.sys_id.toString()
 		};
 		response.setBody(responseObj);
 		response.setStatus(200);
@@ -74,7 +59,7 @@
         <sys_created_on>2018-04-18 11:52:04</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>22872de5dbe9d700d087d8965e9619c1</sys_id>
-        <sys_mod_count>22</sys_mod_count>
+        <sys_mod_count>32</sys_mod_count>
         <sys_name>getByIdentifier</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -82,7 +67,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_22872de5dbe9d700d087d8965e9619c1</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-04-25 16:49:10</sys_updated_on>
+        <sys_updated_on>2018-05-01 19:54:28</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

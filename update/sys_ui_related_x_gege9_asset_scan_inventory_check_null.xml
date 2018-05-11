@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_related sys_domain="global" table="x_gege9_asset_scan_inventory_check" version="2" view="">
+        <sys_ui_related_list_entry action="INSERT_OR_UPDATE">
+            <filter/>
+            <list_id display_value="Inventory Check - Default view" name="x_gege9_asset_scan_inventory_check" related_list="NULL" sys_domain="global" view="Default view">cf19c3d8dbc29340d087d8965e961923</list_id>
+            <order_by/>
+            <position>0</position>
+            <related_list>x_gege9_asset_scan_inventory_check_asset.inventory_check</related_list>
+            <sys_class_name>sys_ui_related_list_entry</sys_class_name>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-05-09 17:47:44</sys_created_on>
+            <sys_id>8f19c3d8dbc29340d087d8965e961924</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-05-09 17:47:44</sys_updated_on>
+        </sys_ui_related_list_entry>
+        <sys_ui_related_list action="INSERT_OR_UPDATE">
+            <calculated_name>Inventory Check - Default view</calculated_name>
+            <filter/>
+            <name>x_gege9_asset_scan_inventory_check</name>
+            <order_by/>
+            <position/>
+            <related_list/>
+            <sys_class_name>sys_ui_related_list</sys_class_name>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-05-09 17:47:44</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>cf19c3d8dbc29340d087d8965e961923</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Inventory Check - Default view</sys_name>
+            <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+            <sys_update_name>sys_ui_related_x_gege9_asset_scan_inventory_check_null</sys_update_name>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-05-09 17:47:44</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_related_list>
+    </sys_ui_related>
+</record_update>

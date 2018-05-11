@@ -2,13 +2,19 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($location, $http, cabrillo) {
+        <client_script><![CDATA[function($location, $http, cabrillo, spModal) {
   /* widget controller */
   var c = this;
   c.loaded = false;
+	c.requestsLoaded = false;
 	c.showDetails = true;
 	c.freeformClicked = false;
+	c.freeformOrderClicked = false;
 	c.maxLength = 160;
+	c.noItems = false;
+	c.freeformText = '';
+	c.freeformScan = false;
+	c.assetSysId = '';
 	
   c.ASSET_KEY_MAP = {
     'modelCategory': 'Model Category',
@@ -17,7 +23,9 @@
     'assetType': 'Asset Type',
     'retirementDate': 'Retirement Date',
 		'assignedTo': 'Assigned To',
-		'assignedToIsVIP': 'Assigned to VIP'
+		'assignedToIsVIP': 'Assigned to VIP',
+		'state': 'State',
+		'stockroom': 'Bin'
   };
 
 	c.ITEM_KEY_MAP = {
@@ -26,6 +34,33 @@
 		'stage': 'Stage',
 		'dataReclamation': 'Data Reclamation'
 	};
+	
+	c.viewAsset = function(sys_id){
+		spModal.open({
+			title: "Asset",
+			widget: "fd120accdbc61340d087d8965e961969",
+			widgetInput:{
+				table: "alm_asset",
+				sys_id: sys_id,
+				view: 'Default'
+			},
+			size: "lg"
+		});
+	}
+	
+	c.closeBox = function(event){
+		var target = event.target || event.srcElement;
+		if (target.id == "freeformAdd" ||
+				target.id == "freeformPlusContainer" ||
+				target.id == "freeformPlusIcon") {
+			c.freeformClicked = true;
+		} else if (target.id != "freeformTextarea" &&
+							 target.id != "freeformButton" &&
+							 target.id != "freeformCheckbox" &&
+							 target.id != "freeformLabel") {
+			c.freeformClicked = false;
+		}
+	}
 
   c.getParameterByName = function(param) {
 	   return $location.search()[param];
@@ -75,14 +110,6 @@
   c.transformData = function(data) {
 	  c.image = data.modelImage;
 		c.sysId = data.sysId;
-	  c.requests = data.items.map(function(item) {
-		  var request = {};
-		  request.url = item.url;
-			//request.sysId = item.sysId;
-		  request.details = c.mapProperties(item, c.ITEM_KEY_MAP);
-		  console.log(request);
-		  return request;
-	  });
 	  c.url = data.url;
 	  c.details = c.mapProperties(data, c.ASSET_KEY_MAP);
   };
@@ -97,6 +124,15 @@
       });
     return obj;
   };
+	
+	//Click the number to change the order of the freeform todos
+	c.orderFreeformTodos = function(todo){
+		if (todo.state == '7') { 
+			console.log('clicked');
+			c.freeformOrderClicked = true;
+		}
+
+	};
 	
 	//Click the todo list item and bring up the camera to scan the stockroom
 	c.scanTodo = function(todo){
@@ -129,17 +165,55 @@
 	};
 	
 	c.freeformSubmit = function(shortDescription) {
-		if (shortDescription.length <= 160) {
-			createTodo(shortDescription);
-			c.freeformText = '';
-			c.freeformClicked = false;
-		} else {
+		if (shortDescription.length > 160) {
+			c.error = true;
+			c.shortDescriptionError = true;
 			c.errorMessage = "Your description is too long.";
-		}
+			return;
+		} 
+		
+		if (shortDescription.trim().length === 0) {
+			c.error = true;
+			c.shortDescriptionError = true;
+			c.errorMessage = "Please enter a description.";
+			return;
+		} 
+		
+		c.freeformText = '';
+		c.freeformClicked = false;
+		c.shortDescriptionError = false;
+		c.error = false;
+		createTodo(shortDescription);
 	};
 	
+	c.getRequestedItems = function(){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getAssetRequestedItems/' + c.assetSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			console.log(response);
+			if(response.statusText === 'OK'){
+				var data = response.data.result;
+				c.requests = data.map(function(item) {
+					var request = {};
+					request.url = item.url;
+					request.sysId = item.sysId;
+					request.details = c.mapProperties(item, c.ITEM_KEY_MAP);
+					c.requestsLoaded = true;
+					return request;
+				});
+			}
+		},
+		function(data){
+			c.noItems = true;
+			console.log(data);
+		})
+	}
+	
 	function getTodoList(sysId){
-	    c.loaded = false;
 		$http({
 			method: 'get',
 			url: '/api/x_gege9_asset_scan/asset_scanner/getToDoList/' + sysId,
@@ -148,20 +222,36 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				c.todos = response.data.result;
+				c.openTodos = response.data.result.filter(function(todo){
+					return todo.state == '1';
+				});
+				c.completedTodos = response.data.result.filter(function(todo){
+					return todo.state != '1';
+				});
 				c.error = false;
-				c.loaded = true;
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this todo list. Try entering manually.";
 			c.error = true;
-			c.loaded = true;
+		});
+	}
+	
+	c.createNoRequestTodos = function(){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				getTodoList(c.assetSysId);
+			}
 		});
 	}
 	
@@ -179,7 +269,7 @@
 				c.stockroomSysId = response.data.result.sysId;
 				c.error = false;
 				c.loaded = true;
-				completeTodo(todoSysId);
+				c.completeTodo(todoSysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
@@ -194,8 +284,7 @@
 		});
 	}
 	
-	function completeTodo(todoSysId){
-	  c.loaded = false;
+	c.completeTodo = function(todoSysId){
 		$http({
 			method: 'post',
 			url: '/api/x_gege9_asset_scan/asset_scanner/completeToDo/' + todoSysId,
@@ -205,24 +294,44 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
-				c.loaded = true;
 				getTodoList(c.assetSysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this todo item.";
 			c.error = true;
-			c.loaded = true;
+		});
+	}
+	
+	c.markLegalHold = function(todoSysId){
+		var legalHold = 'true';
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId + '/' + legalHold,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.completeTodo(todoSysId);
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.errorMessage = "Unable to update Legal Hold.";
+			c.error = true;
 		});
 	}
 	
 	function skipTodo(todoSysId){
-	  c.loaded = false;
 		$http({
 			method: 'post',
 			url: '/api/x_gege9_asset_scan/asset_scanner/skipToDo/' + todoSysId,
@@ -232,48 +341,44 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
-				c.loaded = true;
 				getTodoList(c.assetSysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this todo item.";
 			c.error = true;
-			c.loaded = true;
 		});
 	}
 	
 	//Create freeform todo
 	function createTodo(shortDescription){
-	    c.loaded = false;
+		console.log(c.freeformScan);
 		$http({
 			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' + c.assetSysId + '/' + shortDescription,
+			url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
+				c.assetSysId + '/' + shortDescription + '/' + c.freeformScan,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
-				c.loaded = true;
 				c.freeformDescription = '';
+				c.freeformScan = false;
 				getTodoList(c.assetSysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this todo list. Try entering manually.";
 			c.error = true;
-			c.loaded = true;
 		});
 	}
 	
@@ -284,17 +389,24 @@
   
   c.serial_no = c.getParameterByName('serial_no');
   c.getAsset(c.serial_no);
-
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css>#content {
+        <css>
+#content {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 720px;
+  height: 100%;
+  //max-width: 720px;
   margin: 0 auto;
-  padding: 0px 5px;
+  padding: 0px 5px 70px 5px;
+}
+
+.error-message {
+  z-index: 999;
+  margin-top: 10px;
+  position: absolute;
 }
 
 #results {
@@ -315,7 +427,7 @@
 }
 
 .more-details-button {
- margin-top: 5px; 
+ margin: 10px 0; 
 }
 
 #confirm {
@@ -356,16 +468,12 @@ hr {
 }
 
 #todo {
- padding: 5px 20px 5px 5px; 
+ padding: 5px; 
 }
 
 .barcode-row {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-	flex-direction: row;
-  flex: 1;
 }
 
 .barcode {
@@ -392,12 +500,13 @@ hr {
 
 .details-toggle {
   display: flex;
-  text-align: right;
-  align-items: baseline;
-  align-self: flex-end;
-  vertical-align: center;
+  //text-align: right;
+  //align-items: baseline;
+  //vertical-align: center;
+  //float: right;
   font-size: 24px;
-  float: right;
+  align-self: flex-end;
+  margin-bottom: 3px;
 }
 
 .spinner {
@@ -422,6 +531,10 @@ hr {
 .asset-attr {
   display: flex;
   margin: 5px 10px;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 
 .attr {
@@ -459,10 +572,7 @@ button #confirm {
 
 .disabled-text, .disabled-text:hover {
   color: #A9A9A9;
-}
-
-.disabled-text-red, .disabled-text-red:hover {
-  color: red;
+  background-color: #ffffff;
 }
 
 .todo-list-container {
@@ -485,7 +595,7 @@ button #confirm {
 }
 
 .todo-list {
-  padding: 20px 0;
+  background-color: #ffffff;
 }
 
 .todo-number {
@@ -495,7 +605,7 @@ button #confirm {
 .todo-freeform-btn {
 	padding: 0;
   height: 50px;
-  margin: 20px 0;
+  margin: 25px 0;
 }
 
 .todo-freeform-btn-text {
@@ -512,30 +622,49 @@ button #confirm {
   color: #fff;
 }
 
+.checkbox {
+	margin: 0 0 0 15px;
+}
+
 .todo-type {
 	font-weight: bold;
+}
+
+.wordbreak {
+	word-break: break-word; 
+  hyphen: auto;
 }
 
 .freeform-container {
   display: flex;
   float: left;
   width: 100%;
+  margin: 20px 0;
 }
 textarea {
  border: 1px solid #ccc; 
  border-radius: 5px 0px 0px 5px;
  height: 50px;
- margin-bottom: 5px;
+ //margin-bottom: 5px;
  resize: none;
  vertical-align: top;
-  width: 83%
+ width: 79.75%;
+ margin: 0 0 0 15px;
+}
+
+.has-error {
+	border: 1px solid red !important; 
 }
 
 .freeform-submit {
  height: 50px;
  vertical-align: top;
- width: 17%;
+ width: 16%;
  border-radius: 0px 5px 5px 0px; 
+ padding: 0;
+ background-color: #1ed760;
+ color: #ffffff;
+ margin: 0 0 0 0;
 }
 
 //Completed Tab
@@ -543,12 +672,22 @@ textarea {
   padding-top: 5px;
 }
 
-.completed-icon {
-  padding-left: 10px;
-  font-size: 15px;
+.icon-key {
+  background-color: #eeeeee; 
+  max-width: 100%;
+  padding: 3px 0;
+  margin: 0 auto;
+}
+
+.icon-key img {
+ 	max-width: 50px; 
 }
 
 //Requests Tab
+.no-requests {
+	padding: 10px;  
+}
+
 .request-block {
 	padding: 15px 20px;
 }
@@ -566,6 +705,29 @@ textarea {
 .requests-details {
   display: flex;
   align-items: center;
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 60px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
 }
 </css>
         <data_table>sp_instance</data_table>
@@ -607,16 +769,16 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>698</sys_mod_count>
+        <sys_mod_count>1094</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-04-27 20:08:35</sys_updated_on>
-        <template><![CDATA[<div id="content">
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-05-11 16:19:02</sys_updated_on>
+        <template><![CDATA[<div id="content" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row">
     <div class="barcode">
@@ -624,7 +786,7 @@ textarea {
       <span class="barcode-number">{{c.serial_no.toUpperCase()}}</span>
     </div>
     <img class="img img-responsive asset-image" width="65" height="65"
-         ng-src="{{c.image}}" ng-show="c.loaded && !c.error" />
+         ng-src="{{c.image}}" />
     <a href="#asset-details" ng-click="c.toggleDetails()" class="details-toggle">
       <i class="glyphicon glyphicon-chevron-up" ng-show="c.showDetails"></i>
       <i class="glyphicon glyphicon-chevron-down" ng-hide="c.showDetails"></i>
@@ -633,23 +795,58 @@ textarea {
   <hr />
   
   <!-- Error Alert -->
-  <div class="alert alert-danger" ng-show="c.error">
+  <div class="alert alert-danger error-message" ng-show="c.error">
     {{c.errorMessage}}
   </div>
-  
+
+  <div class="col-xs-6 more-details-button">
+    <a ng-href="alm_hardware.do?sys_id={{c.assetSysId}}" class="btn btn-primary btn-sm center-block">
+      VIEW ASSET RECORD
+    </a>
+  </div>
+
   <!-- The row with all the information about the asset -->
   <div id="asset-details" class="asset-details collapse in" ng-show="c.showDetails">
-    <div id="results" ng-show="c.loaded && !c.error">
+    <div id="results" ng-show="c.loaded">
       <div id="asset-details">
-        <div class="asset-attr" ng-repeat="(key, value) in c.details">
-          <div class="attr pull-left"><b>{{key}}</b></div> 
-          <div class="attr pull-right">{{value}}</div>
+        <div class="asset-attr"> 
+          <div class="attr pull-left"><b>State</b></div> 
+          <div class="attr pull-right">{{c.details["State"]}}</div>
         </div>
-        <!---<a ng-href="{{c.url}}" target="_blank">View More</a> -->
-        <div class="col-xs-8 col-xs-offset-2 more-details-button">
-          <a href="{{c.url}}" class="btn btn-default center-block">
-            VIEW MORE DETAILS
-          </a>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Bin</b></div> 
+          <div class="attr pull-right" ng-hide="c.details['Bin'] == ''">{{c.details["Bin"]}}</div>
+          <div class="attr pull-right" ng-show="c.details['Bin'] == ''">This asset is not assigned to a bin.</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Model Category</b></div> 
+          <div class="attr pull-right">{{c.details["Model Category"]}}</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Model</b></div> 
+          <div class="attr pull-right">{{c.details["Model"]}}</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Acquisition Country</b></div> 
+          <div class="attr pull-right" ng-hide="c.details['Acquisition Country'] == ''">{{c.details["Acquisition Country"]}}</div>
+          <div class="attr pull-right" ng-show="c.details['Acquisition Country'] == ''">This asset is not assigned to a country.</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Asset Type</b></div> 
+          <div class="attr pull-right capitalize">{{c.details["Asset Type"]}}</div>
+        </div>
+       	<div class="asset-attr">    
+          <div class="attr pull-left"><b>Retirement Date</b></div> 
+          <div class="attr pull-right">{{c.details["Retirement Date"]}}</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Assigned to</b></div> 
+          <div class="attr pull-right" ng-hide="c.details['Assigned To'] == ''">{{c.details["Assigned To"]}}</div>
+          <div class="attr pull-right" ng-show="c.details['Assigned To'] == ''">This asset is not assigned.</div>
+        </div>
+        <div class="asset-attr">    
+          <div class="attr pull-left"><b>Assigned to VIP</b></div> 
+          <div class="attr pull-right capitalize">{{c.details["Assigned to VIP"]}}</div>
         </div>
       </div>
     </div>
@@ -664,77 +861,130 @@ textarea {
         <a data-toggle="tab" href="#todo">To Do Items</a>
       </li>
       <li class="col-xs-4 todo-tab">
-        <a data-toggle="tab" href="#completedTodo">Completed Tasks</a>
+        <a data-toggle="tab" href="#completedTodo">To Do History</a>
       </li>
       <li class="col-xs-4 todo-tab">
-        <a data-toggle="tab" href="#openRequest">Open Requests</a>
+        <a data-toggle="tab" href="#openRequest" ng-click="c.getRequestedItems()">Open Requests</a>
       </li>
     </ul>
     <div class="tab-content">
 
       <!-- This is the todo tab content -->
       <div id="todo" class="tab-pane fade in active">
-        <h6>
-          Click Scan to complete the task.  Click Skip to move to the next task.
-        </h6>
-        <a href="#" class="todo-list" ng-repeat="todo in c.todos | filter:{state:'1'} | orderBy: todo.order" 
-           ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
-          <div class="row todo-list-container">
-            <div class="col-xs-1 todo-list-icon-container todo-number" ng-click="c.scanTodo(todo)">
-              <span>{{$index + 1}}.</span>
-            </div>
-            <div class="col-xs-7 todo-container" ng-click="c.scanTodo(todo)">
-              <div class="row">
-                <div class="col-xs-12 todo-type">
-                  {{todo.type}}
+        
+        <div ng-show="c.openTodos.length === 0">
+          <h6>
+            There are no to do items for this Asset. This is probably because it was sent without
+            opening a request or the request was created before this app. Click the button below 
+            to generate a list of to do items to receive it in to the depot.
+          </h6>
+          <button class="btn btn-primary center-block" ng-click="c.createNoRequestTodos()">
+            Generate To Do List
+          </button>
+        </div>
+        
+        <div ng-show="c.openTodos.length > 0">
+          <h6>
+            Click Scan/Done to complete the task.  Click Skip to move to the next task.
+          </h6>
+          <div class="todo-list" ng-repeat="todo in c.openTodos | orderBy: todo.order"
+             ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
+            <div class="row todo-list-container">
+              <div class="col-xs-1 todo-list-icon-container todo-number" ng-dblclick="c.orderFreeformTodos(todo)">
+                <span ng-hide="c.freeformOrderClicked" >{{$index + 1}}.</span>
+                <input ng-show="c.freeformOrderClicked" width="15" />
+              </div>
+              <div class="col-xs-7 todo-container">
+                <div class="row">
+                  <div class="col-xs-12 todo-type">
+                    {{todo.type}}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 wordbreak">
+                    {{todo.shortDescription}}
+                  </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-xs-12">
-                  {{todo.shortDescription}}
-                </div>
+              <div class="col-xs-2 todo-list-icon-container to-do-items">
+                <button class="btn btn-primary" ng-click="c.scanTodo(todo)" 
+                        ng-if="todo.type != 'Freeform' && todo.type != 'Investigate' && todo.type != 'Check Legal Hold'">
+                  SCAN
+                </button>
+                <button class="btn btn-primary" ng-click="c.completeTodo(todo.sysId)" 
+                        ng-if="todo.type == 'Freeform' || todo.type == 'Investigate'">
+                  DONE
+                </button>
+               	<button class="btn btn-primary" ng-click="c.markLegalHold(todo.sysId)" 
+                        ng-if="todo.type == 'Check Legal Hold'">
+                  HOLD
+                </button>
               </div>
-            </div>
-            <div class="col-xs-2 todo-list-icon-container to-do-items">
-              <button class="btn btn-primary" ng-click="c.scanTodo()" ng-if="todo.type != 'Freeform'">
-                SCAN
-              </button>
-              <button class="btn btn-primary" ng-click="c.markSkipped(todo.sysId)" ng-if="todo.type == 'Freeform'">
-                DONE
-              </button>
-            </div>
-            <div class="col-xs-1 todo-list-icon-container to-do-items">
-              <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)">
-                SKIP
-              </button>
-            </div>
-          </div> 
-        </a>
-        <button class="btn btn-default col-xs-12 todo-freeform-btn" ng-click="c.showFreeformForm()" ng-hide="c.freeformClicked">
-          <div class="col-xs-10 todo-freeform-btn-text">
+              <div class="col-xs-1 todo-list-icon-container to-do-items">
+                <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)">
+                  SKIP
+                </button>
+              </div>
+            </div> 
+          </div>
+          <button class="btn btn-default col-xs-12 todo-freeform-btn" ng-click="c.showFreeformForm()" ng-hide="c.freeformClicked">
+          <div id="freeformAdd" class="col-xs-10 todo-freeform-btn-text">
             Add Custom Task
           </div>
-          <div class="col-xs-2 todo-green-plus">
-            <i class="glyphicon glyphicon-plus"></i>
+          <div id="freeformPlusContainer" class="col-xs-2 todo-green-plus">
+            <i  id="freeformPlusIcon" class="glyphicon glyphicon-plus"></i>
           </div>
         </button>
-        <div ng-show="c.freeformClicked" class="form-group freeform-container">
-          		<textarea class="form-control" ng-model="c.freeformText" placeholder="Enter your custom task description here..." maxlength="160" rows="3" autofocus></textarea>
-            	<button class="btn btn-primary freeform-submit" type="submit" ng-click="c.freeformSubmit(c.freeformText)">SUBMIT</button>
+        <div class="col-xs-12 todo-freeform-btn" ng-show="c.freeformClicked">
+          <div class="row">
+          	<textarea id="freeformTextarea" class="form-control col-xs-10" ng-class="{'has-error' : c.shortDescriptionError == true }" 
+                      ng-model="c.freeformText" placeholder="Enter your custom task description here..." maxlength="160" rows="3" autofocus></textarea>
+          	<button id="freeformButton" class="btn freeform-submit col-xs-2" type="submit" ng-click="c.freeformSubmit(c.freeformText)">SUBMIT</button>
+          </div>
+          <div class="row">
+            <div class="checkbox">
+              <label id="freeformLabel">
+                <input id="freeformCheckbox" type="checkbox" ng-model="c.freeformScan"
+                       ng-true-value="true" ng-false-value="false"/>Task requires a scan to new bin.</label>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
         
       <!-- This is the completed todo tab content-->
       <div id="completedTodo" class="list-group tab-pane fade">
-        <a href="#" class="list-group-item todo-list" ng-repeat="todo in c.todos | filter:{state:'!1'} | orderBy: todo.order" 
-           ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
+        <div ng-hide="c.completedTodos.length > 0">
+          There is no task history.
+        </div>
+        <div ng-show="c.completedTodos.length > 0" class="row icon-key">
+          <div class="text-center col-xs-3">
+            Icon Key: 
+          </div>
+          <div class="text-center col-xs-2">
+            <img src="skip.svg" /> 
+          </div>
+          <span class="text-center col-xs-2">Skipped Task</span>
+          <div class="text-center col-xs-2">
+            <img src="completed.svg" />
+          </div>
+          <span class="text-center col-xs-2">Completed Task</span>
+        </div>
+
+        <div class="list-group-item todo-list" ng-repeat="todo in c.completedTodos | filter:{state:'!1'} | orderBy : '-lastUpdate'"
+           ng-class="{'disabled disabled-text': todo.state == '3' || todo.state == '7'}" >
           <div class="row todo-list-container">
-            <div class="col-xs-1 todo-list-icon-container" ng-click="c.scanTodo(todo)">
-              <i ng-class="{'glyphicon glyphicon-check completed-icon': todo.state == '7'}"></i>
-            </div> 
-            <div class="col-xs-9" ng-click="c.scanTodo(todo)">
+            <div class="col-xs-2">
+              <div ng-if="todo.state== '3'">
+                <img src="completed.svg" />
+              </div>
+              <div ng-if="todo.state== '7'">
+                <img src="skip.svg" />
+              </div>
+            </div>
+            <div class="col-xs-9">
               <div class="row">
-                <div class="col-xs-12 ">
+                <div class="col-xs-12">
                   {{todo.type}}
                 </div>
               </div>
@@ -744,15 +994,23 @@ textarea {
                 </div>
               </div>
             </div>
-            <div class="col-xs-1 todo-list-icon-container" ng-click="c.markSkipped(todo.sysId)">
+            <div class="col-xs-1 todo-list-icon-container">
               <i ng-class="{'glyphicon glyphicon-remove text-danger': todo.state !== '3' && todo.state !== '7'}"></i>
             </div>
           </div> 
-        </a>
+        </div>
       </div>
 
       <!-- Open request tab content -->
       <div id="openRequest" class="tab-pane fade">
+        <div class="spinner" ng-hide="c.noItems || c.requestsLoaded">
+          <i class="fa fa-spinner fa-4x fa-pulse"></i>
+        </div>
+        <div class="no-requests" ng-show="c.noItems">
+          <p>
+            There are no open requests.
+          </p>
+        </div>
         <div class="request-block col-xs-12" ng-repeat="request in c.requests">
           <div class="row">
             <div class="col-xs-12 request-number">
@@ -794,12 +1052,24 @@ textarea {
           </div>
         </div>
       </div>
-
     </div>
   </div>
+  <div class="navbar navbar-fixed-bottom bottom-nav">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav col-xs-12">
+        <li class="text-center center-block col-xs-12">
+          <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+            <p>
+          		Home
+            </p>
+          </a>
+        </li>
+      </ul>
+    </div>
+     <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
+  </div>
 </div>
-<!---   <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.navigate('asset_scan')">Back to Scan
-<button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Scan Bin</button>
+<!-- <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Scan Bin</button>
 <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Manually Enter Bin</button></button> -->
 ]]></template>
     </sp_widget>

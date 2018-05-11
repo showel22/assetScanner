@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>verifyAssetStockroom</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	var identifier = '', error;
+	var responseArr = [];
+	
+	if (request.pathParams.identifier){
+		identifier = request.pathParams.identifier;
+	}
+    var inventoryAssetGR = new GlideRecord('x_gege9_asset_scan_inventory_check_asset');
+ 	inventoryAssetGR.addEncodedQuery('sys_id=' + identifier);
+	inventoryAssetGR.query();
+	if(inventoryAssetGR.hasNext()){
+		inventoryAssetGR.next();
+		if (inventoryAssetGR.asset.stockroom == inventoryAssetGR.inventory_check.stockroom) {
+			response.setBody({match: true, sysId: inventoryAssetGR.sys_id.toString()});
+			return response;
+		} else {
+			response.setBody({match: false, sysId: inventoryAssetGR.sys_id.toString()});
+			return response;
+		}
+	}else{
+		error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('I got nothin...');
+		return error;
+	}
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/verifyAssetStockroom/{identifier}</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/verifyAssetStockroom/{identifier}</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-05-10 19:10:37</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>7405d0b8dbc21740d087d8965e961966</sys_id>
+        <sys_mod_count>10</sys_mod_count>
+        <sys_name>verifyAssetStockroom</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ws_operation_7405d0b8dbc21740d087d8965e961966</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-05-11 15:09:30</sys_updated_on>
+        <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

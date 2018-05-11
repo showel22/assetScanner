@@ -24,16 +24,20 @@ AssetToDo.prototype = {
 		return toDoGR.insert();
 	},
 	
-	createFreeForm: function(asset, shortDescription){
+	createFreeForm: function(asset, shortDescription, scan){
+		var type = 100;
+		if(scan === 'true'){
+			type = 600;
+		}
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.addQuery('asset', asset);
 		toDoGR.orderByDesc('order');
 		toDoGR.query();
 		if(toDoGR.hasNext()){
 			toDoGR.next();
-			return this.create(asset, 100, shortDescription, toDoGR.order + 1);
+			return this.create(asset, type, shortDescription, toDoGR.order + 1);
 		}else{
-			return this.create(asset, 100, shortDescription, 0);
+			return this.create(asset, type, shortDescription, 0);
 		}
 	},
 	
@@ -59,6 +63,19 @@ AssetToDo.prototype = {
 					"Tap here to scan the asset into the Data Wipe bin.", order);
 	},
 	
+	createCheckLegalHold: function(asset, order){
+		return this.create(asset, 700,
+						  "This device has no open requests, you have to " +
+						  "manually verify in Atlas that this device is not on legal hold.",
+						  order);
+	},
+	
+	createInvestigate: function(asset, order){
+		return this.create(asset, 800,
+						  "This device has no open requests, you may need " + 
+						   "to find out why this is here from the owner.", order);
+	},
+	
 	createToDoList: function(asset, dataReclamation, legalHold){
 		var order = 0;
 		this.createReceived(asset, order++);
@@ -73,6 +90,13 @@ AssetToDo.prototype = {
 		}
 	},
 	
+	createToDoListNoRequests: function(asset){
+		var order = 0;
+		this.createCheckLegalHold(asset, order++);
+		this.createInvestigate(asset, order++);
+		return true;
+	},
+	
 	getToDoList: function(asset){
 		var toDoList = [];
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
@@ -80,11 +104,13 @@ AssetToDo.prototype = {
 		toDoGR.orderBy('order');
 		toDoGR.query();
 		while(toDoGR.next()){
+			var gdt = new GlideDateTime(toDoGR.sys_updated_on.getDisplayValue());
 			toDoList.push({
 				type: toDoGR.type.getDisplayValue(),
 				state: toDoGR.state.toString(),
 				shortDescription: toDoGR.short_description.toString(),
 				order: toDoGR.order.toString(),
+				lastUpdate: gdt.getNumericValue(), 
 				sysId: toDoGR.sys_id.toString()
 			});
 		}
@@ -124,7 +150,7 @@ AssetToDo.prototype = {
         <sys_created_on>2018-04-24 13:51:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>31f241ebdbe99340d087d8965e96198e</sys_id>
-        <sys_mod_count>23</sys_mod_count>
+        <sys_mod_count>46</sys_mod_count>
         <sys_name>AssetToDo</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
@@ -132,6 +158,6 @@ AssetToDo.prototype = {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_31f241ebdbe99340d087d8965e96198e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-04-25 20:20:22</sys_updated_on>
+        <sys_updated_on>2018-05-04 18:31:08</sys_updated_on>
     </sys_script_include>
 </record_update>

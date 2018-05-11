@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function(cabrillo, $http, $location, $scope) {
+	/* widget controller */
+	var c = this;
+	c.currentUser = $scope.user.first_name;
+	c.isNative = cabrillo.isNative();
+	c.serialNumber = "";
+	c.showForm = false;
+	c.showHomeButtons = true;
+	c.itemDetails = '';
+	c.stockroom = '';
+	c.error = false;
+	c.errorMessage = "";
+	c.emptySearch = false;
+	c.stockroomSelected = false;
+	c.showInventoryOptions = false;
+	
+	//Click the todo list item and bring up the camera to scan the stockroom
+	c.scanBin = function(todo){
+		cabrillo.camera.getBarcode().then(function(barcode) {
+			if (barcode){
+				var binScannedHash = $location.hash("bin-scanned");
+				c.showBinResults = true;
+				c.showBinButtons = false;
+				c.showHomeButtons = false;
+				c.showInventoryOptions = true;
+				getStockroomById(barcode);
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		})
+	};
+	
+	//Show the Manual Bin Input and button form when click on "Choose a Bin" button
+	c.showBinInput = function(){
+		//Show the input field and label
+		c.showForm = true;
+		//Hide error message if already loaded
+		c.error = false;
+	};
+	
+	//Search the stockrooms by the entry in the input field for the Manual Bin Search
+	c.searchStockrooms = function(stockroomName){
+		if (stockroomName.length === 0){
+			c.emptySearch = true;
+			c.stockroomSelected = false;
+		} else if (stockroomName.length >= 1) {
+			c.emptySearch = false;
+			getStockrooms(stockroomName);
+		} 
+	}
+	
+	//Submit manually selected bin through the input field
+	c.submitBin = function(){
+		c.showHomeButtons = false;
+		c.showInventoryOptions = true;
+		var binSubmittedHash = $location.hash("bin-scanned");
+	};
+	
+	//Runs when the stockroom is chosen from the manual bin dropdown
+	c.selectStockroom = function(stockroom){
+		c.stockroomName = stockroom.name;
+		c.stockroomSysId = stockroom.sysId;
+		c.stockroomSelected = true;
+	}
+	
+	c.viewBinItems = function(stockroomSysId, stockroomName){
+		window.location.href = '/asset_scan?id=inventory_information&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
+
+	}
+	
+	c.startInventoryCheck = function(stockroomSysId, stockroomName){
+		window.location.href = '/asset_scan?id=inventory_check&&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
+	}
+	
+	//Go back to the Choose Bin form
+	c.chooseAnotherBin = function(){
+		c.showInventoryOptions = false;
+		c.stockroomSelected = false;
+		c.stockroomName = '';
+		c.stockrooms = [];
+		c.showHomeButtons = true;
+	}
+	
+	//Get all the stockrooms
+	function getStockrooms(stockroomName) {
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.stockrooms = response.data.result;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that stockroom.";
+		});
+	}
+	
+	function getStockroomById(stockroomSysId) {
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomInfo/' + stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.stockroomInfo = response.data.result;
+				c.stockroomName = response.data.result.name;
+				c.stockroomSysId = response.data.result.sysId;
+			}else{
+				c.error = true;
+
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that stockroom.";
+		});
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.error-message {
+  z-index: 999;
+  margin-top: 10px;
+  position: absolute;
+}
+
+#serial-number-form {
+  font-size: 15px;
+  height: 100vh;
+  background: #ffffff;
+}
+
+.home-title {
+	padding-bottom: 20px; 
+}
+
+.home-screen-row {
+  margin: 0 auto;
+  padding: 10px;
+}
+//Start Scanning Button
+
+.start-scanning-button {
+  height: 150px;
+}
+
+//Inventory Check Button
+.inventory-check-button-row {
+  display: none;
+}
+
+//Manual Button
+.manual-button {
+  height: 90px;
+}
+
+//Manual Entry
+.manual-submit-cancel-row {
+	padding: 0;
+  margin-top: 15%;
+}
+.manual-submit-cancel {
+	width: 100%;
+  height: 70px;
+}
+
+.choose-bin {
+	padding: 0;
+  border: 1px solid #717171;
+  border-radius: 5px;
+}
+
+#binAdd {
+	padding-top: 30px;
+}
+
+.bin-freeform-btn {
+	padding: 0;
+  height: 90px;
+}
+
+.bin-freeform-btn:hover {
+  background-color: #ffffff;
+}
+
+.bin-freeform-btn-text {
+  font-size: 18px;
+  color: #717171;
+}
+
+.bin-freeform-btn-text:hover {
+  color: black;
+}
+
+.bin-green-arrow {
+  font-size: 18px;
+	background-color: #1ed760;
+  height: 90px;
+  overflow: hidden;
+  color: #fff;
+  padding-top: 30px;
+}
+
+.bin-search {
+  padding: 0;
+}
+
+#binSubmitContainer {
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+}
+
+//Inventory Search
+.stockroom-search {
+  height: 90px;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-item-container {
+  height: 250px;
+  overflow-y: scroll;
+  padding: 0px;
+  margin-bottom: 50px;
+}
+
+.search-item {
+  padding: 5px 10px !important;
+  height: 50px;
+}
+
+.search-item:hover {
+  background-color: #00B2EE;
+  color: #ffffff;
+}
+
+//General Buttons Styling
+
+button {
+  font-size: 20px;
+  border: none;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+}
+
+#barcode-icon {
+  height: 75px;
+}
+
+#pencil-icon {
+  width: 40px;
+}
+
+.navy-button {
+	background-color: #003366;
+ 	color: #eeeeee;
+}
+.cancel-button {
+   background-color: #ffffff;
+   color: #007bff;
+   border: 1px solid #eeeeee 
+}
+
+.submit-button {
+   background-color: #005EB8;
+   color: #ffffff;
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 60px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+//Inventory Options
+
+.hide {
+  display: none;
+}
+
+.inventory-option-buttons-row {
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.intentory-options-button {
+  height: 90px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>inventory</id>
+        <internal>false</internal>
+        <link/>
+        <name>Inventory</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-05-02 19:33:06</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
+        <sys_mod_count>193</sys_mod_count>
+        <sys_name>Inventory</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-05-11 16:14:18</sys_updated_on>
+        <template><![CDATA[<div id="home-screen">
+  <div class="container-fluid">
+    <div class="row">
+      
+      <div class="alert alert-danger col-xs-8 col-xs-offset-2 error-message" ng-show="c.error">
+        {{c.errorMessage}}
+      </div>
+      
+      <div ng-show="c.showHomeButtons">
+        <div class="col-xs-11 col-xs-offset-2 home-title">
+          <h3 id="get-started-label">Inventory</h3>
+        </div>
+        <div class="home-buttons">
+          <div class="row home-screen-row" id="scan-button-row">
+            <button class="btn col-xs-8 col-xs-offset-2 start-scanning-button white-button" ng-click="c.scanBin()">
+              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Bin
+            </button>
+          </div>
+          <div class="row home-screen-row manual-button-row">
+            <div class="col-xs-8 col-xs-offset-2 choose-bin" ng-click="c.showBinInput()" ng-hide="c.showForm">
+              <button class="btn btn-default col-xs-12 bin-freeform-btn">
+                <div id="binAdd" class="col-xs-10 bin-freeform-btn-text">
+                  Choose a Bin
+                </div>
+                <div id="binArrowContainer" class="col-xs-2 bin-green-arrow">
+                  <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+              </button>
+            </div>
+            <div class="col-xs-8 col-xs-offset-2 bin-search" ng-show="c.showForm">
+              <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
+                     placeholder="Type in bin name" ng-change="c.searchStockrooms(c.stockroomName)" 
+                     ng-model="c.stockroomName" />
+              <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.stockroomSelected && c.submitBin()">
+                <i id="binArrowIcon" class="glyphicon glyphicon-chevron-down" ng-hide="c.stockroomSelected"></i>
+                <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right" ng-show="c.stockroomSelected"></i>
+              </div>
+            </div>
+            <div id="stockrooms" class="col-xs-8 col-xs-offset-2 search-item-container" ng-hide="c.stockroomSelected">
+              <li class="list-group-item search-item" ng-repeat="stockroom in c.stockrooms | limitTo: 20 | orderBy: 'name'" 
+                  ng-hide="c.emptySearch" ng-click="c.selectStockroom(stockroom)">{{stockroom.name}}</li>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div ng-show="c.showInventoryOptions">
+        <div class="inventory-option-buttons-row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <h4>
+              {{c.stockroomName}} Inventory
+            </h4>
+          </div>
+          <div class="row inventory-option-buttons-row hide" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
+            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
+              Start Inventory Check
+            </button>
+          </div>
+          <div class="row inventory-option-buttons-row" ng-click="c.viewBinItems(c.stockroomSysId, c.stockroomName)">
+            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
+              View Bin Items
+            </button>
+          </div>
+          <div class="row inventory-option-buttons-row">
+            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button" ng-click="c.chooseAnotherBin()">
+              Select a Different Bin
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="navbar navbar-fixed-bottom bottom-nav">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav col-xs-12">
+      <li class="text-center center-block col-xs-12">
+        <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+          <p>
+            Home
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
+</div>
+<div ng-hide="c.isNative">
+  <p>You must be in the ServiceNow mobile app.</p>
+</div>]]></template>
+    </sp_widget>
+</record_update>
