@@ -12,7 +12,7 @@ AssetToDo.prototype = {
     initialize: function(){
     },
 	
-	create: function(asset, type, shortDescription, order){
+	create: function(asset, type, shortDescription, order, parent){
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.initialize();
 		toDoGR.asset = asset;
@@ -21,6 +21,7 @@ AssetToDo.prototype = {
 		toDoGR.type = type;
 		toDoGR.short_description = shortDescription;
 		toDoGR.order = order;
+		toDoGR.parent = parent;
 		return toDoGR.insert();
 	},
 	
@@ -41,33 +42,33 @@ AssetToDo.prototype = {
 		}
 	},
 	
-	createReclamation: function(asset, order){
+	createReclamation: function(asset, order, parent){
 		return this.create(asset, 200, 
 					"The previous owner has requested Data Reclamation." + 
-						   " Tap here to scan the asset into the Data Reclamation bin.", order);
+						   " Tap here to scan the asset into the Data Reclamation bin.", order, parent);
 	},
 	
-	createLegalHold: function(asset, order){
+	createLegalHold: function(asset, order, parent){
 		return this.create(asset, 300, 
 					"This device is on Legal Hold. Tap here to scan the asset" +
-						   " into the Legal Hold bin.", order);
+						   " into the Legal Hold bin.", order, parent);
 	},
 	
-	createReceived: function(asset, order){
+	createReceived: function(asset, order, parent){
 		return this.create(asset, 500, 
-					"Tap here to scan the asset into the depot.", order);
+					"Tap here to scan the asset into the depot.", order, parent);
 	},
 	
-	createWipe: function(asset, order){
+	createWipe: function(asset, order, parent){
 		return this.create(asset, 400, 
-					"Tap here to scan the asset into the Data Wipe bin.", order);
+					"Tap here to scan the asset into the Data Wipe bin.", order, parent);
 	},
 	
-	createCheckLegalHold: function(asset, order){
+	createCheckLegalHold: function(asset, order, parent){
 		return this.create(asset, 700,
 						  "This device has no open requests, you have to " +
 						  "manually verify in Atlas that this device is not on legal hold.",
-						  order);
+						  order, parent);
 	},
 	
 	createInvestigate: function(asset, order){
@@ -76,17 +77,17 @@ AssetToDo.prototype = {
 						   "to find out why this is here from the owner.", order);
 	},
 	
-	createToDoList: function(asset, dataReclamation, legalHold){
+	createToDoList: function(asset, dataReclamation, legalHold, parent){
 		var order = 0;
-		this.createReceived(asset, order++);
+		this.createReceived(asset, order++, parent);
 		if(dataReclamation){
-			this.createReclamation(asset, order++);
+			this.createReclamation(asset, order++, parent);
 		}
 		if(legalHold){
-			this.createLegalHold(asset, order++);
+			this.createLegalHold(asset, order++, parent);
 		}
 		if(!legalHold){
-			this.createWipe(asset, order++);
+			this.createWipe(asset, order++, parent);
 		}
 	},
 	
@@ -150,7 +151,7 @@ AssetToDo.prototype = {
         <sys_created_on>2018-04-24 13:51:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>31f241ebdbe99340d087d8965e96198e</sys_id>
-        <sys_mod_count>46</sys_mod_count>
+        <sys_mod_count>48</sys_mod_count>
         <sys_name>AssetToDo</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
@@ -158,6 +159,6 @@ AssetToDo.prototype = {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_31f241ebdbe99340d087d8965e96198e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-04 18:31:08</sys_updated_on>
+        <sys_updated_on>2018-05-15 11:44:15</sys_updated_on>
     </sys_script_include>
 </record_update>

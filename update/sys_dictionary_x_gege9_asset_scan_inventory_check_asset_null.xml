@@ -55,16 +55,16 @@
         <sys_created_by>212606938</sys_created_by>
         <sys_created_on>2018-05-08 19:06:16</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>33719608db4a1340d087d8965e9619b5</sys_id>
+        <sys_id>39fd99c9db8e1bc42aead54b5e9619c3</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>x_gege9_asset_scan_inventory_check_asset</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_dictionary_x_gege9_asset_scan_inventory_check_asset_null</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-05-08 19:06:16</sys_updated_on>
+        <sys_update_name>sys_dictionary_x_gege9_asset_scan_inventory_check_asset_NULL</sys_update_name>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2018-05-11 17:55:05</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>
