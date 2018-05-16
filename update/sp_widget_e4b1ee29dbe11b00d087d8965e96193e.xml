@@ -310,7 +310,8 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
-				getTodoList(c.assetSysId);
+				c.getAsset(c.serial_no)
+				//getTodoList(c.assetSysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
@@ -747,6 +748,10 @@ textarea {
 .navbar-nav {
   margin: 0 !important;
 }
+
+.checkbox {
+	font-size: 16px;
+}
 </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -787,7 +792,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1113</sys_mod_count>
+        <sys_mod_count>1119</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -795,7 +800,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-16 10:47:53</sys_updated_on>
+        <sys_updated_on>2018-05-16 13:15:06</sys_updated_on>
         <template><![CDATA[<div id="content" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row">
@@ -811,11 +816,6 @@ textarea {
     </a>
   </div>
   <hr />
-  
-  <!-- Error Alert -->
-  <div class="alert alert-danger error-message" ng-show="c.error">
-    {{c.errorMessage}}
-  </div>
 
   <div class="col-xs-6 more-details-button">
     <!--<a ng-href="alm_hardware.do?sys_id={{c.assetSysId}}" class="btn btn-primary btn-sm center-block">
@@ -824,6 +824,11 @@ textarea {
     <button ng-click="c.viewAsset()" class="btn btn-default btn-sm center-block">
       VIEW ASSET RECORD
     </button>
+  </div>
+  
+  <!-- Error Alert -->
+  <div class="alert alert-danger error-message" ng-show="c.error">
+    {{c.errorMessage}}
   </div>
 
   <!-- The row with all the information about the asset -->
@@ -959,19 +964,19 @@ textarea {
           <div id="freeformPlusContainer" class="col-xs-2 todo-green-plus">
             <i  id="freeformPlusIcon" class="glyphicon glyphicon-plus"></i>
           </div>
-        </button>
-        <div class="col-xs-12 todo-freeform-btn" ng-show="c.freeformClicked">
-          <div class="row">
+          </button>
+          <div class="col-xs-12 todo-freeform-btn" ng-show="c.freeformClicked">
+            <div class="row">
+              <div class="checkbox center-block">
+                <label id="freeformLabel">
+                  <input id="freeformCheckbox" type="checkbox" ng-model="c.freeformScan"
+                         ng-true-value="true" ng-false-value="false" checked/>Task requires a scan to new bin.</label>
+              </div>
+            </div>
+            <div class="row">
           	<textarea id="freeformTextarea" class="form-control col-xs-9" ng-class="{'has-error' : c.shortDescriptionError == true }" 
                       ng-model="c.freeformText" placeholder="Enter your custom task description here..." maxlength="160" rows="3" autofocus></textarea>
           	<button id="freeformButton" class="btn freeform-submit col-xs-2" type="submit" ng-click="c.freeformSubmit(c.freeformText)">SUBMIT</button>
-          </div>
-          <div class="row">
-            <div class="checkbox">
-              <label id="freeformLabel">
-                <input id="freeformCheckbox" type="checkbox" ng-model="c.freeformScan"
-                       ng-true-value="true" ng-false-value="false"/>Task requires a scan to new bin.</label>
-            </div>
           </div>
         </div>
         </div>
