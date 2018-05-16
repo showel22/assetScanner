@@ -40,7 +40,8 @@
 		'assignedTo': 'Assigned To',
 		'assignedToIsVIP': 'Assigned to VIP',
 		'state': 'State',
-		'stockroom': 'Bin'
+		'stockroom': 'Bin',
+		'legalHold': 'Legal Hold'
   };
 
 	c.ITEM_KEY_MAP = {
@@ -622,6 +623,7 @@ button #confirm {
 	padding: 0;
   height: 50px;
   margin: 25px 0;
+  //max-width: 80%;
 }
 
 .todo-freeform-btn-text {
@@ -675,7 +677,7 @@ textarea {
 .freeform-submit {
  height: 50px;
  vertical-align: top;
- width: 16%;
+ width: 13%;
  border-radius: 0px 5px 5px 0px; 
  padding: 0;
  background-color: #1ed760;
@@ -785,7 +787,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1106</sys_mod_count>
+        <sys_mod_count>1113</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -793,7 +795,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-16 09:29:03</sys_updated_on>
+        <sys_updated_on>2018-05-16 10:47:53</sys_updated_on>
         <template><![CDATA[<div id="content" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row">
@@ -828,6 +830,10 @@ textarea {
   <div id="asset-details" class="asset-details collapse in" ng-show="c.showDetails">
     <div id="results" ng-show="c.loaded">
       <div id="asset-details">
+        <div class="asset-attr"> 
+          <div class="attr pull-left"><b>Legal Hold</b></div> 
+          <div class="attr pull-right">{{c.details["Legal Hold"]}}</div>
+        </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 
           <div class="attr pull-right">{{c.details["State"]}}</div>
@@ -956,7 +962,7 @@ textarea {
         </button>
         <div class="col-xs-12 todo-freeform-btn" ng-show="c.freeformClicked">
           <div class="row">
-          	<textarea id="freeformTextarea" class="form-control col-xs-10" ng-class="{'has-error' : c.shortDescriptionError == true }" 
+          	<textarea id="freeformTextarea" class="form-control col-xs-9" ng-class="{'has-error' : c.shortDescriptionError == true }" 
                       ng-model="c.freeformText" placeholder="Enter your custom task description here..." maxlength="160" rows="3" autofocus></textarea>
           	<button id="freeformButton" class="btn freeform-submit col-xs-2" type="submit" ng-click="c.freeformSubmit(c.freeformText)">SUBMIT</button>
           </div>
