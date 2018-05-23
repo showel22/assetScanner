@@ -20,8 +20,8 @@
 		var itemArray = [];
 		var configItem = assetGR.ci.sys_id;
 		var ritmGR = new GlideRecord('sc_req_item');
-		ritmGR.addEncodedQuery('active=true^cat_item.name=PC Return^ORcat_item.name=PC Deployment^variables.6016c545db0f0f00262950a45e961914=' +
-		configItem + '^ORvariables.1b1315c5db4f0f00262950a45e961956=' + configItem);
+		ritmGR.addEncodedQuery('cat_item.name=PC Return^ORcat_item.name=PC Deployment^variables.6016c545db0f0f00262950a45e961914=' +
+		configItem + '^ORvariables.1b1315c5db4f0f00262950a45e961956=' + configItem + '^sys_updated_on>javascript:gs.beginningOfLast3Months()');
 		ritmGR.query();
 		if(ritmGR.hasNext()){
 			while(ritmGR.next()){
@@ -62,7 +62,7 @@
         <sys_created_on>2018-04-30 16:22:56</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>fb3f5425dbbd5300d087d8965e9619c0</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>getAssetRequestedItems</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -70,7 +70,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_fb3f5425dbbd5300d087d8965e9619c0</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-01 11:48:48</sys_updated_on>
+        <sys_updated_on>2018-05-23 09:35:43</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

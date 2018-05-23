@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_widget_dependency">
+    <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
+        <sp_dependency display_value="pdfKit">415c5e26db46d300262950a45e96195b</sp_dependency>
+        <sp_widget display_value="Scanned Information">e4b1ee29dbe11b00d087d8965e96193e</sp_widget>
+        <sys_class_name>m2m_sp_widget_dependency</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-05-16 15:01:45</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c0462aaadb86d300262950a45e96194a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>pdfMake.Scanned Information</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>m2m_sp_widget_dependency_c0462aaadb86d300262950a45e96194a</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-05-16 15:01:45</sys_updated_on>
+    </m2m_sp_widget_dependency>
+</record_update>

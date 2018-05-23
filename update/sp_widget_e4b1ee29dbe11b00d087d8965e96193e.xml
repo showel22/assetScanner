@@ -15,21 +15,84 @@
 	c.freeformText = '';
 	c.freeformScan = false;
 	c.assetSysId = '';
+	c.showBarcode = false;
 	
-	c.createPDF = function(){
-		html2canvas(document.getElementById('barcodePrintPreview'), {
-			onrendered: function (canvas) {
-				var data = canvas.toDataURL();
-				var docDefinition = {
-					content: [{
-						image: data,
-						width: 500
-					}]
-				};
-				pdfMake.createPdf(docDefinition).download("barcodePreview.pdf");
-			}
-		});
-	};
+	c.createPDF = function(assetDetails){
+		
+		var PIXEL_RATIO = (function () {
+			var ctx = document.createElement("canvas").getContext("2d"),
+					dpr = window.devicePixelRatio || 1,
+					bsr = ctx.webkitBackingStorePixelRatio ||
+					ctx.mozBackingStorePixelRatio ||
+					ctx.msBackingStorePixelRatio ||
+					ctx.oBackingStorePixelRatio ||
+					ctx.backingStorePixelRatio || 1;
+
+			return dpr / bsr;
+		})();
+		
+		createHiDPICanvas = function(w, h, ratio) {
+			if (!ratio) { ratio = PIXEL_RATIO; }
+			var can = document.createElement("canvas");
+			can.width = w * ratio;
+			can.height = h * ratio;
+			can.style.width = w + "in";
+			can.style.height = h + "in";
+			can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+			return can;
+		}
+		
+		var barcodeCanvas = createHiDPICanvas(3.5, 1.1);
+		barcodeCanvas.id = "barcodeCanvas";
+		var barcodeContext = barcodeCanvas.getContext("2d");
+		document.getElementById('barcode_container').appendChild(barcodeCanvas);
+		barcodeContext.font = "14px Arial";
+		barcodeContext.fillText(assetDetails["Acquisition Country"], 10, 16);
+		barcodeContext.fillText(assetDetails["Asset Type"], 10, 30);
+		barcodeContext.fillText(assetDetails["Retirement Date"], 10, 44);
+		barcodeContext.fillText(assetDetails["Serial Number"], 10, 58);
+		c.showBarcode = true;
+		
+		var downloadLink = document.createElement("A");
+		downloadLink.classList += 'btn btn-primary btn-sm';
+		downloadLink.download ='barcode';
+		downloadLink.addEventListener('click', function(){
+			var canvas = document.getElementById("barcodeCanvas");
+			var fullQuality = canvas.toDataURL("image/png", 1.0);
+			
+			canvas.toBlob(function(blob) {
+				$http({
+					method: 'post',
+					url: 'api/now/attachment/file?table_name=alm_asset&table_sys_id=' +
+					c.assetSysId + '&file_name=barcode.png',
+					headers: {
+						'Content-Type': 'image/png'
+					},
+					data: blob
+				}).then(function(response){
+					var attachment = {
+						sys_id: response.data.result.sys_id,
+						table_sys_id: response.data.result.table_sys_id,
+						content_type: response.data.result.content_type,
+						path: response.data.result.file_name + '.iix'
+					};
+					cabrillo.attachments.viewFile(attachment,null,null);
+				});
+			});
+		}, false);
+		downloadLink.innerHTML = "Download";
+		document.getElementById('barcode_container').appendChild(downloadLink);
+		
+		
+		function downloadURI(uri, name) {
+			var link = document.createElement("a");
+			link.download = name;
+			link.href = uri;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	}
 	
   c.ASSET_KEY_MAP = {
     'modelCategory': 'Model Category',
@@ -40,8 +103,10 @@
 		'assignedTo': 'Assigned To',
 		'assignedToIsVIP': 'Assigned to VIP',
 		'state': 'State',
+		'substate': 'Sub State',
 		'stockroom': 'Bin',
-		'legalHold': 'Legal Hold'
+		'legalHold': 'Legal Hold',
+		'serialNumber': 'Serial Number'
   };
 
 	c.ITEM_KEY_MAP = {
@@ -518,10 +583,6 @@ hr {
 
 .details-toggle {
   display: flex;
-  //text-align: right;
-  //align-items: baseline;
-  //vertical-align: center;
-  //float: right;
   font-size: 24px;
   align-self: flex-end;
   margin-bottom: 3px;
@@ -538,6 +599,12 @@ hr {
 	flex-direction: column;
   flex: 1;
   justify-content: space-around;
+}
+
+.important-asset-detail {
+    font-weight: bold;
+    color: red;
+    
 }
 
 .asset-lists {
@@ -792,7 +859,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1119</sys_mod_count>
+        <sys_mod_count>1241</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -800,7 +867,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-16 13:15:06</sys_updated_on>
+        <sys_updated_on>2018-05-23 10:58:49</sys_updated_on>
         <template><![CDATA[<div id="content" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row">
@@ -824,7 +891,24 @@ textarea {
     <button ng-click="c.viewAsset()" class="btn btn-default btn-sm center-block">
       VIEW ASSET RECORD
     </button>
+    <!--
+    <button ng-click="c.createPDF(c.details)" class="btn btn-default btn-sm center-block">
+      CREATE BARCODE
+    </button>
+-->
   </div>
+  
+  <div id="barcode_container" ng-show="c.showBarcode">
+    
+  </div>
+  
+  <!--
+  <object id ="barcode_pdf" type="application/pdf" width="500" height="300">
+    <iframe id="barcode_pdf_iframe" src="" width="100%" height="100%" style="border: none;">
+      Your browers doesnt support pdf.
+    </iframe>
+  </object>
+-->
   
   <!-- Error Alert -->
   <div class="alert alert-danger error-message" ng-show="c.error">
@@ -837,11 +921,15 @@ textarea {
       <div id="asset-details">
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>Legal Hold</b></div> 
-          <div class="attr pull-right">{{c.details["Legal Hold"]}}</div>
+          <div class="attr pull-right" ng-class="{'important-asset-detail': c.details['Legal Hold'] == 'true'}">{{c.details["Legal Hold"]}}</div>
         </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 
           <div class="attr pull-right">{{c.details["State"]}}</div>
+        </div>
+        <div class="asset-attr"> 
+          <div class="attr pull-left"><b>Sub State</b></div> 
+          <div class="attr pull-right" ng-class="{'important-asset-detail': c.details['Sub State'] == 'Pending repair'}">{{c.details["Sub State"]}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Bin</b></div> 
@@ -1012,7 +1100,7 @@ textarea {
                 <img src="skip.svg" />
               </div>
             </div>
-            <div class="col-xs-9">
+            <div class="col-xs-10">
               <div class="row">
                 <div class="col-xs-12">
                   {{todo.type}}
@@ -1021,6 +1109,11 @@ textarea {
               <div class="row">
                 <div class="col-xs-12">
                   {{todo.shortDescription}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  {{todo.stockroom}}
                 </div>
               </div>
             </div>

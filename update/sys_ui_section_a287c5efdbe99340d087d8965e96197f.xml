@@ -99,6 +99,20 @@
             <sys_user/>
             <type/>
         </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>stockroom</element>
+            <position>7</position>
+            <sys_created_by>212607632</sys_created_by>
+            <sys_created_on>2018-05-23 08:53:45</sys_created_on>
+            <sys_id>712515f0db969780d087d8965e9619f9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
+            <sys_updated_by>212607632</sys_updated_by>
+            <sys_updated_on>2018-05-23 08:53:45</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
         <sys_ui_section action="INSERT_OR_UPDATE">
             <caption/>
             <header>false</header>
