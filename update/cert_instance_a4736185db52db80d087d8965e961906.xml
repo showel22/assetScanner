@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="cert_instance">
+    <cert_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <assign_to>owned_by.manager</assign_to>
+        <assign_to_empty>Create Unassigned Task</assign_to_empty>
+        <assign_to_group/>
+        <assignment_type>User Field</assignment_type>
+        <audit_type>data_cert</audit_type>
+        <cert_audit_instance/>
+        <cert_condition/>
+        <cert_schedule display_value="CMDB Owned By Reassignment">f672b11edb0e1300d087d8965e96194b</cert_schedule>
+        <complete_by>2018-05-26 04:34:41</complete_by>
+        <completed/>
+        <condition/>
+        <conditional>false</conditional>
+        <create_tasks>false</create_tasks>
+        <display_fields>u_config_item_id,name</display_fields>
+        <fields>owned_by</fields>
+        <filter display_value="Certification Filter 01 - CI Reassignment Filter -">264e409cdbd6d340d087d8965e961977</filter>
+        <group/>
+        <health_window>7</health_window>
+        <health_window_unit>days</health_window_unit>
+        <instructions/>
+        <is_building>false</is_building>
+        <last_run_date>2018-05-24 04:23:45</last_run_date>
+        <name>CMDB Owned By Reassignment</name>
+        <next_scheduled_run/>
+        <number>CRTINST0010014</number>
+        <percent_complete>100</percent_complete>
+        <prev_last_run_date/>
+        <run_as display_value="Canepi, Wendy (212612803) ">13892802db03f2005e305f2e5e96193d</run_as>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_period/>
+        <run_start>2018-05-24 04:34:41</run_start>
+        <run_time>1970-01-01 00:00:00</run_time>
+        <run_type>daily</run_type>
+        <script><![CDATA[ ]]></script>
+        <short_description/>
+        <stability_count>1</stability_count>
+        <state>3</state>
+        <sys_class_name>cert_instance</sys_class_name>
+        <sys_created_by>212612803</sys_created_by>
+        <sys_created_on>2018-05-24 04:34:41</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>a4736185db52db80d087d8965e961906</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>CMDB Owned By Reassignment</sys_name>
+        <sys_package display_value="Global" source="global">global</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>cert_instance_a4736185db52db80d087d8965e961906</sys_update_name>
+        <sys_updated_by>212612803</sys_updated_by>
+        <sys_updated_on>2018-05-24 04:34:42</sys_updated_on>
+        <table>cmdb_ci</table>
+        <task_description>Remedy the discrepancies listed in the Audit Results below</task_description>
+        <template/>
+        <threshold_count>5</threshold_count>
+        <upgrade_safe>false</upgrade_safe>
+        <user/>
+    </cert_instance>
+</record_update>
