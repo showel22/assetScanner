@@ -5,14 +5,18 @@
         <client_script><![CDATA[function($location, $http, cabrillo) {
   /* widget controller */
   var c = this;
-	c.loaded = false;
+	c.loaded = true;
 	c.error = false;
 	c.stockroomName = '';
 	c.inventoryCheck = '';
 	c.scanAnother = false;
+	c.scanStarted = false;
+	c.manualEntryClicked = false;
 	c.assetCorrect = false;
-	c.showStartForm = false;
+	//c.showStartForm = false;
+	c.hideManualInput = true;
 	c.hideEntireStartForm = false;
+	c.inventoryCheckComplete = false;
 	
 	
 	c.getParameterByName = function(param) {
@@ -33,6 +37,8 @@
 				cabrillo.camera.getBarcode().then(function(barcode) {
 					if (barcode){
 						c.loaded = true;
+						c.scanAnother = true;
+						c.hideManualInput = true;
 						c.getAsset(barcode);
 					}else{
 						c.error = true;
@@ -47,7 +53,8 @@
 	}
 	
 	c.openManualInventoryForm = function(){
-		c.showStartForm = true;
+		c.manualEntryClicked = true;
+		c.hideManualInput = false;
 	}
 	
 	c.startManualInventorySearch = function(assetIdentifier){
@@ -61,6 +68,7 @@
 			if(response.statusText === 'OK'){
 				c.loaded = false;
 				c.inventoryCheck = response.data.result.sys_id;
+				c.scanAnother = true;
 				c.hideEntireStartForm = true;
 				c.getAsset(assetIdentifier);
 			}
@@ -99,8 +107,17 @@
 	c.scanAnotherAsset = function(){
 		cabrillo.camera.getBarcode().then(function(barcode) {
 			if (barcode){
-				c.loaded = true;
-				c.getAsset(barcode);
+				var assetBarcode = barcode;
+				searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
+					return asset.serialNumber.toString().toUpperCase().trim() === assetBarcode.toString().toUpperCase().trim();
+				});
+				if (searchInventoryAssetsForDuplicate) {
+					c.error = true;
+					c.errorMessage = "You already scanned this asset";
+				} else {
+					c.getAsset(barcode);
+					c.loaded = true;
+				}
 			}else{
 				c.error = true;
 				c.errorMessage = "Try Again";
@@ -112,8 +129,16 @@
 	}
 	
 	c.manuallyEnterAnotherAsset = function(assetIdentifier){
+			searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
+					return asset.serialNumber.toString().toUpperCase().trim() === assetIdentifier.toString().toUpperCase().trim();
+				});
+				if (searchInventoryAssetsForDuplicate) {
+					c.error = true;
+					c.errorMessage = "You already scanned this asset";
+				} else {
+					c.getAsset(assetIdentifier);
+				}
 			c.scanAnother = true;
-			c.getAsset(assetIdentifier);
 	}
 	
 	c.getInventoryAssets = function(inventoryCheck){
@@ -126,10 +151,13 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				//c.inventoryAssets = response.data.result;
 				c.inventoryAssets = response.data.result.map(function(obj){
+					c.loaded = true;
 					var rObj = obj;
 					rObj.inventoryCheck = 'noCheck';
+					if (rObj.stockroom == '') {
+						rObj.stockroom = 'Not assigned';
+					}
 					return rObj;
 				});
 	
@@ -140,7 +168,7 @@
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
+				c.loaded = false;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this inventory's assets.";
@@ -154,7 +182,6 @@
 			var obj = JSON.stringify(c.inventoryAssets[i]);
 			console.log('leslie ' + obj);
 			c.inventoryAssets[i].inventoryCheck = 'loading';
-			c.thisAsset = c.inventoryAssets[i].inventoryCheck;
 			$http({
 				method: 'get',
 				url: '/api/x_gege9_asset_scan/asset_scanner/verifyAssetStockroom/' + c.inventoryAssets[i].sysId,
@@ -166,15 +193,19 @@
 				if(response.statusText === 'OK'){
 					var checkMatch = response.data.result;
 					if (checkMatch.match == true){
-						var inventoryAssetMatch = c.inventoryAssets.find(function(asset){
+						c.inventoryAssets.find(function(asset){
 							if(asset.sysId == checkMatch.sysId){
 								asset.inventoryCheck = 'success';
-								return true;
+								return;
 							}
 						});
-						console.log(inventoryAssetMatch);
 					} else {
-						c.thisAsset = 'fail';
+						c.inventoryAssets.find(function(asset){
+							if(asset.sysId == checkMatch.sysId){
+								asset.inventoryCheck = 'fail';
+								return;
+							}
+						});
 					}
 					c.error = false;
 					c.loaded = true;
@@ -202,6 +233,33 @@
 			c.emptySearch = false;
 			getAllAssets(assetIdentifier);
 		} 
+	}
+	
+	c.completeInventory = function(inventoryCheckSysId){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/markInventoryComplete/' + inventoryCheckSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.scanAnother = false;
+				c.inventoryCheckComplete = true;
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to close this check.";
+			c.error = true;
+			c.loaded = true;
+		});
 	}
 		
 	function createInventoryAsset(inventoryCheck, assetSysId){
@@ -259,12 +317,19 @@
 	
 	c.stockroomSysId = c.getParameterByName('stockroom');
 	c.stockroomName = c.getParameterByName('stockroomName');
+	c.inventoryCheckSysId = c.getParameterByName('inventoryCheck');
+	
+	if (c.inventoryCheckSysId) {
+		c.inventoryCheck = c.inventoryCheckSysId; 
+		c.getInventoryAssets(c.inventoryCheckSysId);
+		c.scanAnother = true;
+	}
 }]]></client_script>
         <controller_as>c</controller_as>
         <css>.search {
   width: 100%;
   border-radius: 5px;
-  margin-bottom: 10px;
+  margin: 10px 0;
   padding-left: 10px;
   height: 40px;
 }
@@ -296,10 +361,11 @@
 .bin-green-arrow {
   font-size: 18px;
 	background-color: #1ed760;
-  height: 90px;
+  height: 50px;
   overflow: hidden;
   color: #fff;
-  padding-top: 30px;
+  padding-top: 15px;
+  width: 16.6%;
 }
 
 #binSubmitContainer {
@@ -308,12 +374,53 @@
 }
 
 .stockroom-search {
-  height: 90px;
+  height: 50px;
   border-radius: 5px 0 0 5px;
 }
 
 .asset-list-container {
 	padding: 0;
+  margin-bottom: 60px;
+}
+
+.list-group-item {
+	height: 100%;
+}
+
+.serial-number {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.glyphicon-chevron-down {
+	padding-top: 10px; 
+}
+
+.check-assets-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.success {
+  background-image: url('completed.svg');
+  background-repeat: no-repeat;
+  background-position: 50% center;
+  height: 60px;
+}
+
+.fail {
+  background-image: url('red-x.svg');
+  background-repeat: no-repeat;
+  background-position: 50% center;
+  height: 60px;
+  
+}
+
+.loading {
+  background-image: url('it4it-datacard-loading.gif');
+  background-repeat: no-repeat;
+  background-position: 50% center;
+  height: 60px;
 }
 
 .search-item-container {
@@ -331,7 +438,54 @@
 .search-item:hover {
   background-color: #00B2EE;
   color: #ffffff;
-}</css>
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 60px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.home-link {
+  padding-top: 10px !important;
+}
+
+.next-asset-div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.next-asset-button {
+	height: 50px;
+  margin-bottom: 10px;
+}
+
+.check-assets-button {
+	width: 100%; 
+  height: 40px;
+  background-color: #00B2EE;
+  color: #ffffff;
+ 	border-radius: 5px;
+  margin-top: 10px;
+}
+
+.home-p {
+	margin: 0; 
+}
+</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -352,7 +506,7 @@
         <sys_created_on>2018-05-08 18:34:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b94a02ccdb0a1340d087d8965e96191b</sys_id>
-        <sys_mod_count>211</sys_mod_count>
+        <sys_mod_count>459</sys_mod_count>
         <sys_name>Inventory Check</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -360,7 +514,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_b94a02ccdb0a1340d087d8965e96191b</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-05-11 15:30:38</sys_updated_on>
+        <sys_updated_on>2018-06-08 12:33:19</sys_updated_on>
         <template><![CDATA[<div class="row">
   <div>
 
@@ -370,19 +524,26 @@
     </div>
     
     
-    <div class="col-xs-10 col-xs-offset-1">
+    <div class="col-xs-12">
       <h3>
-        {{c.stockroomName}} Bin Contents
+        Check {{c.stockroomName}} Inventory
       </h3>
-      <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-hide="c.scanAnother" ng-click="c.startInventoryScan()">
+      <h4 ng-hide="c.inventoryCheckComplete">
+        Build your list, then click "Check Assets".
+      </h4>
+      <h3 ng-show="c.inventoryCheckComplete">
+        Inventory Check Completed
+      </h3>
+      
+      <button class="btn col-xs-12 start-scanning-button white-button" ng-hide="c.scanAnother || c.inventoryCheckComplete" ng-click="c.startInventoryScan()">
         Start Scanning
       </button>
       
       <div ng-hide="c.hideEntireStartForm" >
-        <button class="btn col-xs-10 col-xs-offset-1 start-manual-button white-button" ng-hide="c.showStartForm" ng-click="c.openManualInventoryForm()">
+        <button class="btn col-xs-12 start-manual-button white-button" ng-hide="c.scanAnother || c.manualEntryClicked" ng-click="c.openManualInventoryForm()">
           Start Manual Entry
         </button>
-        <div class="col-xs-10 col-xs-offset-1 asset-search" ng-show="c.showStartForm">
+        <div class="col-xs-12 asset-search" ng-show="c.manualEntryClicked" ng-hide="c.hideManualInput">
           <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
                  placeholder="Type in asset serial number" 
                  ng-model="c.assetIdentifier" />
@@ -391,48 +552,88 @@
           </div>
         </div>
       </div>
-    
-    <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-show="c.scanAnother" ng-click="c.scanAnotherAsset()">
-      Scan Another Asset
-    </button>
-      <div class="col-xs-10 col-xs-offset-1 asset-search" ng-show="c.scanAnother">
+
+      <button class="btn col-xs-12 next-asset-button white-button" ng-show="c.scanAnother" ng-click="c.scanAnotherAsset()">
+        SCAN NEXT ASSET
+      </button>      
+      <div ng-show="c.scanAnother">
         <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
                placeholder="Enter another asset serial number" 
                ng-model="c.assetIdentifier" />
         <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.manuallyEnterAnotherAsset(c.assetIdentifier)">
           <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
         </div>
+      </div>
+
+      <button class="check-assets-button btn" ng-click="c.checkAssets()" ng-show="c.scanAnother">CHECK ASSETS</button>
+      <button class="check-assets-button btn" ng-click="c.completeInventory(c.inventoryCheck)" ng-show="c.scanAnother">COMPLETE INVENTORY</button>
+			<a class="check-assets-button btn" ng-href="/x_gege9_asset_scan_inventory_check_asset.do?CSV&sysparm_query=inventory_check={{c.inventoryCheck}}" 
+         download>DOWNLOAD REPORT</a>
+
+      <div class="col-xs-12 asset-search" ng-show="c.scanAnother || c.inventoryCheckComplete">
+
         <input class="search" type="text" ng-model="c.searchText" placeholder="Search for asset here" />
       </div>
-      {{c.inventoryCheck}}
-      <div class="col-xs-10 col-xs-offset-1 asset-list-container">
+
+      <div class="col-xs-12 asset-list-container">
         <div class="list-group">
-          <div class="list-group-item" ng-repeat="asset in c.inventoryAssets">
-            <div class="col-xs-offset-1">
+          <div class="row list-group-item" ng-repeat="asset in c.inventoryAssets | filter: c.searchText ">
+            <div class="col-xs-1" ng-class="asset.inventoryCheck"></div>
+            <div class="col-xs-10">
+              <div class="serial-number">
+                Serial Number: {{asset.serialNumber}}
+              </div>
               <div>
+                <b>Asset Name: </b>{{asset.name}}
+              </div>
+              <div>
+                <b>Stockroom: </b>{{asset.stockroom}}
+              </div>
+              <div ng-class="{'hidden': ! showDetails}">
                 <div>
-                  <b>Serial Number: </b>{{asset.serialNumber}}
+                  <b>Retirement Date:</b> {{asset.retirementDate}}
                 </div>
                 <div>
-                  <b>Asset Name: </b>{{asset.name}}
+                  <b>Keyboard:</b> {{asset.keyboard}}
                 </div>
                 <div>
-                  <b>Asset Name: </b>{{asset.stockroom}}
+                  <b>Acquisition Method:</b> {{asset.acquisitionMethod}}
                 </div>
-                {{c.checkMatch}}
-                <img src="10off.png" ng-show="{{asset.inventoryCheck == 'noCheck'}}"/>
-                <img src="completed.svg" ng-show="{{asset.inventoryCheck == 'success'}}"/>
-                <img src="red-x.svg" ng-show="{{asset.inventoryCheck == 'fail'}}"/>
-                <i class="fa fa-spinner fa-4x fa-pulse" ng-show="{{asset.inventoryCheck == 'loading'}}"></i>
+                <div>
+                  <b>Acquisition Country:</b> {{asset.acquisitionCountry}}
+                </div>
               </div>
             </div>
+            <a href="#asset-details" ng-click="showDetails = !showDetails" class="details-toggle">
+              <i class="glyphicon glyphicon-chevron-up" ng-class="{'hidden': ! showDetails}"></i>
+              <i class="glyphicon glyphicon-chevron-down" ng-class="{'hidden': showDetails}"></i>
+            </a>
           </div>
         </div>
-        <button ng-click="c.checkAssets()" ng-show="c.scanAnother">Check Assets</button>
+        <div class="spinner" ng-show="!c.loaded">
+          <i class="fa fa-spinner fa-4x fa-pulse"></i>
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bottom-nav">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav col-xs-12">
+              <li class="text-center center-block col-xs-12">
+                <a class="home-link" href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+                  <p class="home-p">
+                    Home
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+
 
       </div>
     </div>
-    
+
 
   </div>
 </div>]]></template>

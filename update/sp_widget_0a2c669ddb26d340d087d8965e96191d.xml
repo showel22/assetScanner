@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location, $http) {
+  /* widget controller */
+  var c = this;
+	
+	//Set up function to get parameters from the URL
+	c.getParameterByName = function(param) {
+		return $location.search()[param];
+	};
+	
+	getInventoryAssets = function(inventoryCheck){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryAssets/' + inventoryCheck,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.inventoryAssets = response.data.result.map(function(obj){
+					c.loaded = true;
+					var rObj = obj;
+					rObj.inventoryCheck = 'noCheck';
+					if (rObj.stockroom == '') {
+						rObj.stockroom = 'Not assigned';
+					}
+					return rObj;
+				});
+	
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = false;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this inventory's assets.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	//Get paramaters from URL
+	c.stockroomName = c.getParameterByName('stockroomName');
+	c.checkId = c.getParameterByName('check');
+	c.checkNum = c.getParameterByName('checkNum');
+	
+	//Call function above to get all the assets in an Inventory Check by the syd_id of the Inventory Check
+	getInventoryAssets(c.checkId);
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.color-scheme {
+  color: #ffffff;
+  height: 100vh;
+}
+
+.spinner {
+  text-align: center;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+}
+
+//Asset Search
+.asset-search {
+  padding: 0;
+  margin-top: 15px;
+}
+
+.search {
+  width: 100%;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding-left: 10px;
+  height: 40px;
+  color: #5C6979;
+}
+
+.asset-list-container {
+	padding: 0;
+  margin-bottom: 60px;
+  color: #5C6979;
+}
+
+.list-group {
+  width: 98%;
+  margin: 0 auto;
+}
+
+.list-group-item {
+	height: 100%;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.list-group-item a {
+  color: #5C6979;
+}
+
+.serial-number {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.glyphicon-chevron-down {
+	padding-top: 10px; 
+}
+
+.glyphicon-chevron-down, .glyphicon-chevron-up {
+  font-size: 20px;
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 60px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.home-link {
+  padding: 10px !important;
+}
+
+.home-p {
+	margin: 0; 
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>past_inventory_check_information</id>
+        <internal>false</internal>
+        <link/>
+        <name>Past Inventory Check Information</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-06-06 14:46:32</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>0a2c669ddb26d340d087d8965e96191d</sys_id>
+        <sys_mod_count>43</sys_mod_count>
+        <sys_name>Past Inventory Check Information</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_0a2c669ddb26d340d087d8965e96191d</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-06-08 10:06:22</sys_updated_on>
+        <template><![CDATA[<div id="home-screen">
+  <div class="container-fluid">
+    <div class="row color-scheme">
+      <div>
+
+        <!-- Error Alert -->
+        <div class="alert alert-danger error-message" ng-show="c.error">
+          {{c.errorMessage}}
+        </div>
+
+
+        <div class="col-xs-10 col-xs-offset-1">
+          <h3>
+            Inventory Check - {{c.checkNum}}
+          </h3>
+          <h3>
+            {{c.stockroomName}} 
+          </h3>
+
+          <div class="col-xs-12 asset-search">
+            <input class="search" type="text" ng-model="c.searchText" placeholder="Search for asset here" />
+          </div>
+
+          <div class="col-xs-12 asset-list-container">
+            <div class="list-group">
+
+              <div class="row list-group-item" ng-repeat="asset in c.inventoryAssets | filter: c.searchText ">
+                <a ng-href="/asset_scan?id=scanned_information&serial_no={{asset.serialNumber}}">
+                  <div class="col-xs-11">
+                    <div class="serial-number">
+                      Serial Number: {{asset.serialNumber}}
+                    </div>
+                    <div>
+                      <b>Asset Name: </b>{{asset.name}}
+                    </div>
+                    <div>
+                      <b>Stockroom: </b>{{asset.stockroom}}
+                    </div>
+                    <div ng-class="{'hidden': ! showDetails}">
+                      <div>
+                        <b>Retirement Date:</b> {{asset.retirementDate}}
+                      </div>
+                      <div>
+                        <b>Keyboard:</b> {{asset.keyboard}}
+                      </div>
+                      <div>
+                        <b>Acquisition Method:</b> {{asset.acquisitionMethod}}
+                      </div>
+                      <div>
+                        <b>Acquisition Country:</b> {{asset.acquisitionCountry}}
+                      </div>
+                    </div>
+                  </div>
+                  <a ng-click="showDetails = !showDetails" class="details-toggle">
+                    <i class="glyphicon glyphicon-chevron-up" ng-class="{'hidden': ! showDetails}"></i>
+                    <i class="glyphicon glyphicon-chevron-down" ng-class="{'hidden': showDetails}"></i>
+                  </a>
+                </a>
+              </div>
+
+            </div>
+            <div class="spinner" ng-show="!c.loaded">
+              <i class="fa fa-spinner fa-4x fa-pulse"></i>
+            </div>
+
+            <div class="navbar navbar-fixed-bottom bottom-nav">
+              <div class="container-fluid">
+                <ul class="nav navbar-nav col-xs-12">
+                  <li class="text-center center-block col-xs-12">
+                    <a class="home-link" href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+                      <p class="home-p">
+                        Home
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

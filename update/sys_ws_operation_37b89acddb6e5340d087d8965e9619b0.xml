@@ -7,32 +7,33 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>GET</http_method>
-        <name>getAllInventoryAssets</name>
+        <name>getInventoryChecksByStockroom</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
-	var identifier = '', error;
+    var identifier = '', error;
 	var responseArr = [];
 	
 	if (request.pathParams.identifier){
 		identifier = request.pathParams.identifier;
 	}
-    var inventoryAssetGR = new GlideRecord('x_gege9_asset_scan_inventory_check_asset');
- 	inventoryAssetGR.addEncodedQuery('inventory_check=' + identifier);
-	inventoryAssetGR.query();
-	if(inventoryAssetGR.hasNext()){
-		while(inventoryAssetGR.next()){
+	
+	var inventoryCheckGR = new GlideRecord('x_gege9_asset_scan_inventory_check');
+	inventoryCheckGR.addEncodedQuery('stockroom=' + identifier);
+	inventoryCheckGR.query();
+	
+	if(inventoryCheckGR.hasNext()){
+		while(inventoryCheckGR.next()){
 			responseArr.push({
-				name: inventoryAssetGR.asset.getDisplayValue(),
-				sysId: inventoryAssetGR.sys_id.toString(),
-				inventoryCheckNumber: inventoryAssetGR.inventory_check.getDisplayValue(),
-				serialNumber: inventoryAssetGR.asset.serial_number.toString(),
-				stockroom: inventoryAssetGR.asset.stockroom.getDisplayValue(),
-				retirementDate: inventoryAssetGR.asset.retirement_date.toString(),
-				keyboard: inventoryAssetGR.asset.u_keyboard_layout.getDisplayValue(),
-				acquisitionMethod: inventoryAssetGR.asset.acquisition_method.getDisplayValue(),
-				acquisitionCountry: inventoryAssetGR.asset.u_acquisition_country.getDisplayValue()
+				sysId: inventoryCheckGR.sys_id.toString(),
+				number: inventoryCheckGR.number.toString(),
+				inventoryCreator: inventoryCheckGR.inventory_creator.getDisplayValue(),
+				updated: inventoryCheckGR.sys_updated_on.getDisplayValue(),
+				closed: inventoryCheckGR.closed.getDisplayValue()
 			});
 		}
+		response.setBody(responseArr);
+		return response;
+	}else if (!inventoryCheckGR.hasNext()){
 		response.setBody(responseArr);
 		return response;
 	}else{
@@ -43,28 +44,28 @@
 	}
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getInventoryAssets/{identifier}</operation_uri>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getInventoryChecks/{identifier}</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/getInventoryAssets/{identifier}</relative_path>
+        <relative_path>/getInventoryChecks/{identifier}</relative_path>
         <request_example/>
         <requires_acl_authorization>true</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
-        <sys_created_on>2018-05-09 20:05:47</sys_created_on>
+        <sys_created_on>2018-06-05 18:43:25</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>4647af18db469340d087d8965e9619c0</sys_id>
-        <sys_mod_count>17</sys_mod_count>
-        <sys_name>getAllInventoryAssets</sys_name>
+        <sys_id>37b89acddb6e5340d087d8965e9619b0</sys_id>
+        <sys_mod_count>15</sys_mod_count>
+        <sys_name>getInventoryChecksByStockroom</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_ws_operation_4647af18db469340d087d8965e9619c0</sys_update_name>
+        <sys_update_name>sys_ws_operation_37b89acddb6e5340d087d8965e9619b0</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-06 17:05:07</sys_updated_on>
+        <sys_updated_on>2018-06-07 20:29:41</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

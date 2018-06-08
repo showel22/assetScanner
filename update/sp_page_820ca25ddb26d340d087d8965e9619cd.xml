@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_page">
+    <sp_page action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <css/>
+        <draft>false</draft>
+        <dynamic_title_structure/>
+        <id>past_inventory_check_information</id>
+        <internal>false</internal>
+        <public>false</public>
+        <roles/>
+        <short_description/>
+        <sys_class_name>sp_page</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-06-06 14:45:59</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>820ca25ddb26d340d087d8965e9619cd</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>past_inventory_check_information</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_page_820ca25ddb26d340d087d8965e9619cd</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-06 14:45:59</sys_updated_on>
+        <title>Past Inventory Check Information</title>
+    </sp_page>
+    <sys_translated_text action="delete_multiple" query="documentkey=820ca25ddb26d340d087d8965e9619cd"/>
+</record_update>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location, $http) {
+  /* widget controller */
+  var c = this;
+	
+	//Set up function to get parameters from the URL
+	c.getParameterByName = function(param) {
+		return $location.search()[param];
+	};
+	
+	//Call the Scripted REST API to get all the inventory checks done on the current stockroom
+	getInventoryChecks = function(stockroom){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryChecks/' + stockroom,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.inventoryChecks = response.data.result;
+				c.loaded = true;
+				c.error = false;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = false;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find inventory checks for this stockroom.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	//Direct to the Past Inventory Check Information page and widget.  This sends the stockroom name, Inventory Check sys_id, and the Inventory Check number in the URL.
+	c.viewPastInventoryCheckInformation = function(stockroomName, checkId, checkNum){
+		window.location.href = '/asset_scan?id=past_inventory_check_information&stockroomName=' + stockroomName + '&check=' + checkId + '&checkNum=' + checkNum;
+	}
+	
+	c.stockroomSysId = c.getParameterByName('stockroom');
+	c.stockroomName = c.getParameterByName('stockroomName');
+	
+	getInventoryChecks(c.stockroomSysId);
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.color-scheme {
+  color: #ffffff;
+  height: 100vh;
+}
+
+//Search
+.asset-search {
+  padding: 0;
+  margin-top: 15px;
+}
+
+.search {
+  width: 100%;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding-left: 10px;
+  height: 40px;
+  color: #5C6979;
+}
+
+//Inventory List
+.asset-list-container {
+	padding: 0;
+  margin-bottom: 60px;
+  color: #5C6979;
+}
+
+.list-group {
+  width: 98%;
+  margin: 0 auto;
+}
+
+.list-group-item {
+	height: 100%;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.view-button {
+	width: 100%; 
+  height: 40px;
+  background-color: #00B2EE;
+  color: #ffffff;
+ 	border-radius: 5px;
+  margin-top: 10px;
+}
+
+.spinner {
+  text-align: center;
+}
+
+//Home Navigation
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 60px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.home-p {
+	margin: 0; 
+}
+
+.check-assets-button {
+	width: 100%; 
+  height: 40px;
+  background-color: #fff;
+  color: #5C6979;
+ 	border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>past_inventory_checks</id>
+        <internal>false</internal>
+        <link/>
+        <name>Past Inventory Checks</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-06-05 18:26:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c105d6c9db6e5340d087d8965e961962</sys_id>
+        <sys_mod_count>53</sys_mod_count>
+        <sys_name>Past Inventory Checks</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_c105d6c9db6e5340d087d8965e961962</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-06-08 10:10:47</sys_updated_on>
+        <template><![CDATA[<div class="row color-scheme">
+  <div>
+
+    <!-- Error Alert -->
+    <div class="alert alert-danger error-message" ng-show="c.error">
+      {{c.errorMessage}}
+    </div>
+
+    <!-- Title and Subtitle -->
+    <div class="col-xs-10 col-xs-offset-1">
+      <h3>
+        {{c.stockroomName}} - Past Inventory Checks
+      </h3>
+      <h4>
+        See inventory checks done previously on this bin
+      </h4>
+      
+      <div class="col-xs-12 asset-search">
+        <input class="search" type="text" ng-model="c.searchText" placeholder="Search for inventory check here" />
+      </div>
+      
+       <a class="check-assets-button btn" ng-href="/x_gege9_asset_scan_inventory_check_asset.do?CSV&sysparm_query=inventory_check={{c.inventoryCheck}}" 
+         download>DOWNLOAD REPORT</a>
+
+      <!-- List of inventory checks on this stockroom -->
+      <div class="col-xs-12 asset-list-container">
+        <div class="list-group">
+          <div class="row list-group-item" ng-repeat="check in c.inventoryChecks | filter: c.searchText | orderBy: '-updated'">
+            <div class="col-xs-8">
+              <div>
+                <b>Inventory Check: </b>{{check.number}}
+              </div>
+              <div>
+                <b>Creator: </b>{{check.inventoryCreator}}
+              </div>
+              <div>
+                <b>Updated: </b>{{check.updated}}
+              </div>
+
+            </div>
+            <!-- Button that takes you to the Past Inventory Check Information page for this inventory check to see the assets in the check -->
+            <div class="col-xs-4">
+              <button class="view-button btn" ng-click="c.viewPastInventoryCheckInformation(c.stockroomName, check.sysId, check.number)">
+                VIEW
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading spinner -->
+      <div class="spinner" ng-show="!c.loaded">
+        <i class="fa fa-spinner fa-4x fa-pulse"></i>
+      </div>
+
+      <!-- Home Button -->
+      <div class="navbar navbar-fixed-bottom bottom-nav">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav col-xs-12">
+            <li class="text-center center-block col-xs-12">
+              <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+                <p class="home-p">
+                  Home
+                </p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+
+
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

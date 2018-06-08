@@ -9,7 +9,7 @@
         <audit_type>data_cert</audit_type>
         <cert_audit_instance/>
         <cert_condition/>
-        <cert_schedule display_value="CMDB Owned By Reassignment">f672b11edb0e1300d087d8965e96194b</cert_schedule>
+        <cert_schedule display_value="">f672b11edb0e1300d087d8965e96194b</cert_schedule>
         <complete_by>2018-05-26 04:34:41</complete_by>
         <completed/>
         <condition/>
@@ -17,7 +17,7 @@
         <create_tasks>false</create_tasks>
         <display_fields>u_config_item_id,name</display_fields>
         <fields>owned_by</fields>
-        <filter display_value="Certification Filter 01 - CI Reassignment Filter -">264e409cdbd6d340d087d8965e961977</filter>
+        <filter display_value="">264e409cdbd6d340d087d8965e961977</filter>
         <group/>
         <health_window>7</health_window>
         <health_window_unit>days</health_window_unit>
@@ -50,7 +50,7 @@
         <sys_id>a4736185db52db80d087d8965e961906</sys_id>
         <sys_mod_count>2</sys_mod_count>
         <sys_name>CMDB Owned By Reassignment</sys_name>
-        <sys_package display_value="Global" source="global">global</sys_package>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
