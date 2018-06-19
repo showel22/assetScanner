@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>sendEmail</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+	var gr = new GlideRecord('x_gege9_asset_scan_inventory_check');
+	gr.addQuery('sys_id', request.pathParams.inventoryCheck);
+	gr.query();
+	gr.next();
+	
+	var csv = '"Asset Serial Number","Stockroom"\r\n';
+	
+	var inventoryCheckAssetGR = new GlideRecord('x_gege9_asset_scan_inventory_check_asset');
+	inventoryCheckAssetGR.addQuery('inventory_check', gr.sys_id);
+	inventoryCheckAssetGR.query();
+	while(inventoryCheckAssetGR.next()){
+		csv += inventoryCheckAssetGR.asset.serial_number + ',' +
+			inventoryCheckAssetGR.inventory_check.stockroom.getDisplayValue();
+	}
+	
+    var sa = new GlideSysAttachment();
+	sa.write(gr, 'test.csv', 'application/csv', csv);
+	
+    gs.eventQueue('x_gege9_asset_scan.send_inventory_check_', gr, request.pathParams.recipient);
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/sendEmail/{recipient}/{inventoryCheck}</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/sendEmail/{recipient}/{inventoryCheck}</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-06-18 18:55:31</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>40d55551db76df00262950a45e961976</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>sendEmail</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ws_operation_40d55551db76df00262950a45e961976</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-06-19 15:15:37</sys_updated_on>
+        <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

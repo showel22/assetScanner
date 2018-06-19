@@ -5,95 +5,26 @@
         <client_script><![CDATA[function($location, $http, cabrillo, spModal) {
   /* widget controller */
   var c = this;
+	
+	// State variables and constants
   c.loaded = false;
 	c.requestsLoaded = false;
 	c.showDetails = true;
 	c.freeformClicked = false;
+	c.createNewClicked = false;
 	c.freeformOrderClicked = false;
+	c.closeNewTask = true;
+	c.closeWholeForm = true;
 	c.maxLength = 160;
 	c.noItems = false;
 	c.freeformText = '';
 	c.freeformScan = true;
 	c.assetSysId = '';
 	c.showBarcode = false;
+	c.showTaskButtons = false;
 	
-	c.createPDF = function(assetDetails){
-		
-		var PIXEL_RATIO = (function () {
-			var ctx = document.createElement("canvas").getContext("2d"),
-					dpr = window.devicePixelRatio || 1,
-					bsr = ctx.webkitBackingStorePixelRatio ||
-					ctx.mozBackingStorePixelRatio ||
-					ctx.msBackingStorePixelRatio ||
-					ctx.oBackingStorePixelRatio ||
-					ctx.backingStorePixelRatio || 1;
-
-			return dpr / bsr;
-		})();
-		
-		createHiDPICanvas = function(w, h, ratio) {
-			if (!ratio) { ratio = PIXEL_RATIO; }
-			var can = document.createElement("canvas");
-			can.width = w * ratio;
-			can.height = h * ratio;
-			can.style.width = w + "in";
-			can.style.height = h + "in";
-			can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
-			return can;
-		}
-		
-		var barcodeCanvas = createHiDPICanvas(3.5, 1.1);
-		barcodeCanvas.id = "barcodeCanvas";
-		var barcodeContext = barcodeCanvas.getContext("2d");
-		document.getElementById('barcode_container').appendChild(barcodeCanvas);
-		barcodeContext.font = "14px Arial";
-		barcodeContext.fillText(assetDetails["Acquisition Country"], 10, 16);
-		barcodeContext.fillText(assetDetails["Asset Type"], 10, 30);
-		barcodeContext.fillText(assetDetails["Retirement Date"], 10, 44);
-		barcodeContext.fillText(assetDetails["Serial Number"], 10, 58);
-		c.showBarcode = true;
-		
-		var downloadLink = document.createElement("A");
-		downloadLink.classList += 'btn btn-primary btn-sm';
-		downloadLink.download ='barcode';
-		downloadLink.addEventListener('click', function(){
-			var canvas = document.getElementById("barcodeCanvas");
-			var fullQuality = canvas.toDataURL("image/png", 1.0);
-			
-			canvas.toBlob(function(blob) {
-				$http({
-					method: 'post',
-					url: 'api/now/attachment/file?table_name=alm_asset&table_sys_id=' +
-					c.assetSysId + '&file_name=barcode.png',
-					headers: {
-						'Content-Type': 'image/png'
-					},
-					data: blob
-				}).then(function(response){
-					var attachment = {
-						sys_id: response.data.result.sys_id,
-						table_sys_id: response.data.result.table_sys_id,
-						content_type: response.data.result.content_type,
-						path: response.data.result.file_name + '.iix'
-					};
-					cabrillo.attachments.viewFile(attachment,null,null);
-				});
-			});
-		}, false);
-		downloadLink.innerHTML = "Download";
-		document.getElementById('barcode_container').appendChild(downloadLink);
-		
-		
-		function downloadURI(uri, name) {
-			var link = document.createElement("a");
-			link.download = name;
-			link.href = uri;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
-	}
-	
+	// This map is used to reformat the asset object
+	// to a more readible format.
   c.ASSET_KEY_MAP = {
     'modelCategory': 'Model Category',
     'model': 'Model',
@@ -108,7 +39,9 @@
 		'legalHold': 'Legal Hold',
 		'serialNumber': 'Serial Number'
   };
-
+	
+	// This map is used reformat the ritm object
+	// to a more readible format.
 	c.ITEM_KEY_MAP = {
 		'itemNumber': 'RITM',
 		'item': 'Type',
@@ -116,6 +49,8 @@
 		'dataReclamation': 'Data Reclamation'
 	};
 	
+	// This function is used to open the servicenow
+	// form for the current asset.
 	c.viewAsset = function(){
 		spModal.open({
 			title: "Asset",
@@ -129,17 +64,16 @@
 		});
 	}
 	
+	
 	c.closeBox = function(event){
 		var target = event.target || event.srcElement;
 		if (target.id == "freeformAdd" ||
 				target.id == "freeformPlusContainer" ||
 				target.id == "freeformPlusIcon") {
-			c.freeformClicked = true;
 		} else if (target.id != "freeformTextarea" &&
 							 target.id != "freeformButton" &&
 							 target.id != "freeformCheckbox" &&
 							 target.id != "freeformLabel") {
-			c.freeformClicked = false;
 		}
 	}
 
@@ -241,8 +175,14 @@
 		c.showBinButtons = false;
 	};
 	
-	c.showFreeformForm = function() {
-		c.freeformClicked = true;
+	
+	c.toggleFreeformSlider = function() {
+		c.showTaskButtons = !c.showTaskButtons;
+	};
+	
+	c.toggleNewTaskForm = function() {
+		c.createNewClicked = !c.createNewClicked;
+		console.log('c.createNewClicked ' + c.createNewClicked);
 	};
 	
 	c.freeformSubmit = function(shortDescription) {
@@ -261,7 +201,6 @@
 		} 
 		
 		c.freeformText = '';
-		c.freeformClicked = false;
 		c.shortDescriptionError = false;
 		c.error = false;
 		createTodo(shortDescription);
@@ -303,7 +242,9 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
+				console.log(response.data.result);
 				c.openTodos = response.data.result.filter(function(todo){
+					todo.shortDescription.replace("ʼ", "'");
 					return todo.state == '1';
 				});
 				c.completedTodos = response.data.result.filter(function(todo){
@@ -436,13 +377,28 @@
 		});
 	}
 	
-	//Create freeform todo
-	function createTodo(shortDescription){
-		console.log(c.freeformScan);
+	// Client side access to camera scan
+	c.binScanPage = function(){
+			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
+	};
+	
+	function checkLegalHold(){
+		$http({
+			method: 'get',
+			url: 'https://legalhold.legal.ge.com/webservices/hold_lookup/status/212594278',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			console.log(response);
+		});
+	}
+	
+	c.addMoveTask = function(){
 		$http({
 			method: 'post',
 			url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
-				c.assetSysId + '/' + shortDescription + '/' + c.freeformScan,
+			c.assetSysId + '/Moving the asset/true',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -452,6 +408,7 @@
 				c.freeformDescription = '';
 				c.freeformScan = false;
 				getTodoList(c.assetSysId);
+				c.toggleFreeformSlider();
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
@@ -459,19 +416,47 @@
 				}
 			}
 		}, function(response){
-			c.errorMessage = "Unable to find this todo list. Try entering manually.";
 			c.error = true;
 		});
 	}
-	
-	// Client side access to camera scan
-	c.binScanPage = function(){
-			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
-	};
-  
+
+	c.openFreeformModal = function(){
+		spModal.open({
+			title: 'Freeform Task',
+			buttons: [{label: 'Submit', primary: true}],
+			input: true,
+			size: 'lg'
+		}).then(function(value){
+			$http({
+				method: 'post',
+				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
+				c.assetSysId + '/' + value + '/false',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response){
+				if(response.statusText === 'OK'){
+					c.error = false;
+					c.freeformDescription = '';
+					c.freeformScan = false;
+					getTodoList(c.assetSysId);
+					c.toggleFreeformSlider();
+				}else{
+					c.error = true;
+					if(!!response.errorMessage){
+						c.errorMessage = response.errorMessage;
+					}
+				}
+			}, function(response){
+				c.errorMessage = "Unable to find this todo list. Try entering manually.";
+				c.error = true;
+			});
+		});
+	}
 	
   c.serial_no = c.getParameterByName('serial_no');
   c.getAsset(c.serial_no);
+	//checkLegalHold();
 }]]></client_script>
         <controller_as>c</controller_as>
         <css>
@@ -509,7 +494,7 @@
 }
 
 .more-details-button {
- margin: 10px 0; 
+ margin: 70px 0 10px 0; 
 }
 
 #confirm {
@@ -549,13 +534,13 @@ hr {
   margin: 10px;
 }
 
-#todo {
- padding: 5px; 
-}
-
 .barcode-row {
+  position: fixed;
   width: 100%;
-  display: flex;
+  padding: 0 10px;
+  background-color: #343d47;
+  color: #fff;
+  z-index: 999;
 }
 
 .barcode {
@@ -571,20 +556,26 @@ hr {
 
 .barcode-number {
 	font-size: 26px;
-  color: #000;
+  color: #fff;
 }
 
 .asset-image {
 	display: flex;
   align-self: center;
-  margin: 0 auto;
+  margin-bottom: 15px;
+  height: 150px;
+  width: 200px;
 }
 
 .details-toggle {
-  display: flex;
-  font-size: 24px;
-  align-self: flex-end;
+  margin-top: 15px;
+  font-size: 18px;
   margin-bottom: 3px;
+}
+
+.barcode-row-content {
+	display:flex;
+  justify-content: space-between;
 }
 
 .spinner {
@@ -593,11 +584,24 @@ hr {
 }
 
 .asset-details {
+  margin-top: 70px;
   width: 100%;
   display: flex;
 	flex-direction: column;
   flex: 1;
   justify-content: space-around;
+}
+
+.asset-slider {
+	overflow-y: hidden;
+  height: 400px;
+  transition: height .25s linear;
+}
+
+.asset-slider-closed {
+  height: 0px;
+  overflow-y: hidden;
+  transition: height .25s linear;
 }
 
 .important-asset-detail {
@@ -610,6 +614,12 @@ hr {
   width: 100%;
 	display: flex;
   flex-direction: column;
+  margin-bottom: 75px;
+  
+}
+
+.todo-instructions {
+ padding: 5px; 
 }
 
 .asset-attr {
@@ -687,24 +697,59 @@ button #confirm {
 }
 
 .todo-freeform-btn {
-	padding: 0;
-  height: 50px;
-  margin: 25px 0;
-  //max-width: 80%;
+  height: 70px;
+  background-color: #343d47;
+  color: #ffffff;
 }
 
 .todo-freeform-btn-text {
-	padding: 12px 0;
+	padding: 20px 0;
   font-size: 18px;
+  text-align: center;
 }
 
 .todo-green-plus {
   padding: 12px 0;
   font-size: 18px;
-	background-color: #1ed760;
+	background-color: #343d47;
   height: 100%;
   overflow: hidden;
   color: #fff;
+}
+
+#freeformPlusIcon {
+	border: 2px solid #ffffff;
+  border-radius: 50%;
+  padding: 5px 5px 6px 6px;
+  margin-left: 15px;
+  color: #fff;
+}
+
+.freeform-textarea-div {
+  background-color: #343d47;
+  height: 100%;
+}
+
+.create-new-task-container {
+	background-color: #343d47;
+  color: #ffffff;
+  padding: 0;
+}
+
+.create-new-task {
+  border: 1px dashed #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 15px;
+  overflow: auto;
+}
+
+.create-new-task-header {
+	float: left; 
+}
+
+.create-new-task-plus {
+ 	float: right; 
 }
 
 .checkbox {
@@ -730,7 +775,6 @@ textarea {
  border: 1px solid #ccc; 
  border-radius: 5px 0px 0px 5px;
  height: 50px;
- //margin-bottom: 5px;
  resize: none;
  vertical-align: top;
  width: 79.75%;
@@ -744,7 +788,6 @@ textarea {
 .freeform-submit {
  height: 50px;
  vertical-align: top;
- width: 13%;
  border-radius: 0px 5px 5px 0px; 
  padding: 0;
  background-color: #1ed760;
@@ -818,7 +861,43 @@ textarea {
 .checkbox {
 	font-size: 16px;
 }
-</css>
+
+.tab-content {
+	margin-bottom: 60px;
+}
+
+
+// Add Tasks 
+.add-tasks-row {
+  position: fixed;
+  width: 100%;
+  background-color: #343d47;
+  color: #fff;
+  padding: 20px 0;
+  font-size: 18px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.task-button {
+  background-color: #428bca;
+  margin-top: 20px;
+  padding: 30px 0;
+  border-radius: 5px;
+}
+
+.slider {
+	overflow-y: hidden;
+  bottom:0;
+  height: 100%;
+  transition: height .25s linear;
+}
+
+.slider-closed {
+  bottom: 60px;
+  height: 70px;
+  transition: height .25s linear;
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -858,56 +937,40 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1247</sys_mod_count>
+        <sys_mod_count>1564</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-06-06 17:11:40</sys_updated_on>
-        <template><![CDATA[<div id="content" ng-click="c.closeBox($event)">
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-18 20:14:53</sys_updated_on>
+        <template><![CDATA[<div id="content container-fluid" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
-  <div class="barcode-row">
-    <div class="barcode">
-      <span class="barcode-label">Barcode Information</span>
-      <span class="barcode-number">{{c.serial_no.toUpperCase()}}</span>
+  <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
+    <div class="barcode-row-content">
+      <div class="barcode">
+        <span class="barcode-label">Barcode Information</span>
+        <span class="barcode-number">{{c.serial_no.toUpperCase()}}</span>
+      </div>
+      <a class="details-toggle">
+        <i id="freeformPlusIcon" ng-class="{'glyphicon glyphicon-chevron-up': !c.showDetails, 'glyphicon glyphicon-chevron-down': c.showDetails}"></i>
+      </a>
     </div>
-    <img class="img img-responsive asset-image" width="65" height="65"
-         ng-src="{{c.image}}" />
-    <a href="#asset-details" ng-click="c.toggleDetails()" class="details-toggle">
-      <i class="glyphicon glyphicon-chevron-up" ng-show="c.showDetails"></i>
-      <i class="glyphicon glyphicon-chevron-down" ng-hide="c.showDetails"></i>
-    </a>
   </div>
-  <hr />
 
-  <div class="col-xs-6 more-details-button">
-    <!--<a ng-href="alm_hardware.do?sys_id={{c.assetSysId}}" class="btn btn-primary btn-sm center-block">
-      VIEW ASSET RECORD
-    </a>-->
-    <button ng-click="c.viewAsset()" class="btn btn-default btn-sm center-block">
+  <div class="col-xs-12 more-details-button">
+     <img ng-if="c.image" class="img img-responsive asset-image center-block" width="65" height="65"
+       ng-src="{{c.image}}" />
+    <button ng-click="c.viewAsset()" class="btn btn-default btn-sm col-xs-offset-3 col-xs-6">
       VIEW ASSET RECORD
     </button>
-    <!--
-    <button ng-click="c.createPDF(c.details)" class="btn btn-default btn-sm center-block">
-      CREATE BARCODE
-    </button>
--->
   </div>
-  
+
   <div id="barcode_container" ng-show="c.showBarcode">
-    
+
   </div>
-  
-  <!--
-  <object id ="barcode_pdf" type="application/pdf" width="500" height="300">
-    <iframe id="barcode_pdf_iframe" src="" width="100%" height="100%" style="border: none;">
-      Your browers doesnt support pdf.
-    </iframe>
-  </object>
--->
   
   <!-- Error Alert -->
   <div class="alert alert-danger error-message" ng-show="c.error">
@@ -915,7 +978,7 @@ textarea {
   </div>
 
   <!-- The row with all the information about the asset -->
-  <div id="asset-details" class="asset-details collapse in" ng-show="c.showDetails">
+  <div id="asset-details" class="asset-details" ng-class="{'asset-slider': c.showDetails, 'asset-slider-closed': !c.showDetails}">
     <div id="results" ng-show="c.loaded">
       <div id="asset-details">
         <div class="asset-attr"> 
@@ -952,7 +1015,7 @@ textarea {
           <div class="attr pull-left"><b>Asset Type</b></div> 
           <div class="attr pull-right capitalize">{{c.details["Asset Type"]}}</div>
         </div>
-       	<div class="asset-attr">    
+        <div class="asset-attr">    
           <div class="attr pull-left"><b>Retirement Date</b></div> 
           <div class="attr pull-right">{{c.details["Retirement Date"]}}</div>
         </div>
@@ -971,7 +1034,7 @@ textarea {
   <div class="spinner" ng-show="!c.loaded">
     <i class="fa fa-spinner fa-4x fa-pulse"></i>
   </div>
-    <!-- The row with all the lists of stuffs -->
+  <!-- The row with all the lists of stuffs -->
   <div class="asset-lists">
     <ul class="nav nav-tabs todo-nav">
       <li class="active col-xs-4 todo-tab">
@@ -988,7 +1051,7 @@ textarea {
 
       <!-- This is the todo tab content -->
       <div id="todo" class="tab-pane fade in active">
-        
+
         <div ng-show="c.openTodos.length === 0">
           <h6>
             There are no to do items for this Asset. This is probably because it was sent without
@@ -999,13 +1062,13 @@ textarea {
             Generate To Do List
           </button>
         </div>
-        
+
         <div ng-show="c.openTodos.length > 0">
-          <h6>
+          <h6 class="todo-instructions">
             Click Scan/Done to complete the task.  Click Skip to move to the next task.
           </h6>
           <div class="todo-list" ng-repeat="todo in c.openTodos | orderBy: todo.order"
-             ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
+               ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
             <div class="row todo-list-container">
               <div class="col-xs-1 todo-list-icon-container todo-number" ng-dblclick="c.orderFreeformTodos(todo)">
                 <span ng-hide="c.freeformOrderClicked" >{{$index + 1}}.</span>
@@ -1032,7 +1095,7 @@ textarea {
                         ng-if="todo.type == 'Freeform' || todo.type == 'Investigate'">
                   DONE
                 </button>
-               	<button class="btn btn-primary" ng-click="c.markLegalHold(todo.sysId)" 
+                <button class="btn btn-primary" ng-click="c.markLegalHold(todo.sysId)" 
                         ng-if="todo.type == 'Check Legal Hold'">
                   HOLD
                 </button>
@@ -1044,31 +1107,9 @@ textarea {
               </div>
             </div> 
           </div>
-          <button class="btn btn-default col-xs-12 todo-freeform-btn" ng-click="c.showFreeformForm()" ng-hide="c.freeformClicked">
-          <div id="freeformAdd" class="col-xs-10 todo-freeform-btn-text">
-            Add Custom Task
-          </div>
-          <div id="freeformPlusContainer" class="col-xs-2 todo-green-plus">
-            <i  id="freeformPlusIcon" class="glyphicon glyphicon-plus"></i>
-          </div>
-          </button>
-          <div class="col-xs-12 todo-freeform-btn" ng-show="c.freeformClicked">
-            <div class="row">
-              <div class="checkbox center-block">
-                <label id="freeformLabel">
-                  <input id="freeformCheckbox" type="checkbox" ng-model="c.freeformScan"
-                         ng-true-value="true" ng-false-value="false" checked="checked"/>Task requires a scan to new bin.</label>
-              </div>
-            </div>
-            <div class="row">
-          	<textarea id="freeformTextarea" class="form-control col-xs-9" ng-class="{'has-error' : c.shortDescriptionError == true }" 
-                      ng-model="c.freeformText" placeholder="Enter your custom task description here..." maxlength="160" rows="3" autofocus></textarea>
-          	<button id="freeformButton" class="btn freeform-submit col-xs-2" type="submit" ng-click="c.freeformSubmit(c.freeformText)">SUBMIT</button>
-          </div>
-        </div>
         </div>
       </div>
-        
+
       <!-- This is the completed todo tab content-->
       <div id="completedTodo" class="list-group tab-pane fade">
         <div ng-hide="c.completedTodos.length > 0">
@@ -1089,7 +1130,7 @@ textarea {
         </div>
 
         <div class="list-group-item todo-list" ng-repeat="todo in c.completedTodos | filter:{state:'!1'} | orderBy : '-lastUpdate'"
-           ng-class="{'disabled disabled-text': todo.state == '3' || todo.state == '7'}" >
+             ng-class="{'disabled disabled-text': todo.state == '3' || todo.state == '7'}" >
           <div class="row todo-list-container">
             <div class="col-xs-2">
               <div ng-if="todo.state== '3'">
@@ -1154,7 +1195,7 @@ textarea {
                   Stage:
                 </span>
                 <span class="col-xs-6">
-                 	{{request.details.Stage}}
+                  {{request.details.Stage}}
                 </span>
               </div>
               <div class="row">
@@ -1162,7 +1203,7 @@ textarea {
                   Data Reclamation:
                 </span>
                 <span class="col-xs-6">
-                 	{{request.details['Data Reclamation']}}
+                  {{request.details['Data Reclamation']}}
                 </span>
               </div>
             </div>
@@ -1176,26 +1217,41 @@ textarea {
       </div>
     </div>
   </div>
+  
+  <!-- New Task Section -->
+  <div class="add-tasks-row" ng-class="{slider: c.showTaskButtons, 'slider-closed': !c.showTaskButtons}">
+    <div ng-click="c.toggleFreeformSlider()">
+      ADD TASKS
+   		 <i id="freeformPlusIcon" ng-class="{'glyphicon glyphicon-chevron-up': !c.showTaskButtons, 'glyphicon glyphicon-chevron-down': c.showTaskButtons}"></i>
+    </div>
+    <div class="container-fluid">
+      <div class="col-xs-4 col-xs-offset-1 task-button" ng-click="c.addMoveTask()">
+        MOVE ASSET
+      </div>
+      <div class="col-xs-4 col-xs-offset-2 task-button" ng-click="c.openFreeformModal()">
+        FREEFORM
+      </div>
+    </div>
+  </div>
+  
+  <!-- Home nav -->
   <div class="navbar navbar-fixed-bottom bottom-nav">
     <div class="container-fluid">
       <ul class="nav navbar-nav col-xs-12">
         <li class="text-center center-block col-xs-12">
           <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
             <p>
-          		Home
+              Home
             </p>
           </a>
         </li>
       </ul>
     </div>
-     <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
+    <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
   </div>
 </div>
 <!-- <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Scan Bin</button>
 <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Manually Enter Bin</button></button> -->
-
-<script>
-</script>
 ]]></template>
     </sp_widget>
 </record_update>

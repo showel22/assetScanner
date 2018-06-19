@@ -5,25 +5,37 @@
         <client_script><![CDATA[function(cabrillo, $http, $location, $scope) {
 	/* widget controller */
 	var c = this;
+	//Captures current user's first name
 	c.currentUser = $scope.user.first_name;
+	//Used to determine if in the mobile app or not
 	c.isNative = cabrillo.isNative();
-	c.serialNumber = "";
+	//c.serialNumber = "";
+	//Show/hide Manual Entry Button/Input form
 	c.showForm = false;
+	//Show/hide main Inventory page
 	c.showHomeButtons = true;
-	c.itemDetails = '';
-	c.stockroom = '';
+	//c.itemDetails = '';
+	//c.stockroom = '';
+	//Set to true or false based on if there is an error
 	c.error = false;
+	//Holds the error message if there is an error
 	c.errorMessage = "";
+	//Show/hide the dropdown on the manual search
 	c.emptySearch = false;
+	//Stockroom chosed from manual list
 	c.stockroomSelected = false;
+	//Show/hide the options for Inventory once stockroom is scanned or entered
 	c.showInventoryOptions = false;
+	//Setting up variable for check to find the last non-closed Inventory scan
 	c.lastInventoryCheck = '';
 	
-	//Click the todo list item and bring up the camera to scan the stockroom
+	//Click the Scan Bin button and bring up the camera to scan the stockroom
 	c.scanBin = function(todo){
 		cabrillo.camera.getBarcode().then(function(barcode) {
 			if (barcode){
+				//If a barcode is found, call the API to get the stockroom data
 				getStockroomById(barcode);
+				//Append a hash to the URL
 				var binScannedHash = $location.hash("bin-scanned");
 			}else{
 				c.error = true;
@@ -43,12 +55,15 @@
 		c.error = false;
 	};
 	
-	//Search the stockrooms by the entry in the input field for the Manual Bin Search
+	//Search the stockrooms by the entry in the input field for the Manual Bin Search.
+	//This is called in an ng-change, so once the user types in a character, it searches through the stockrooms for a match on the Stockroom/Bin name
 	c.searchStockrooms = function(stockroomName){
+		//Check to see if user has typed into the input
 		if (stockroomName.length === 0){
 			c.emptySearch = true;
 			c.stockroomSelected = false;
 		} else if (stockroomName.length >= 1) {
+			//If entry in input, get the Stockrooms by their name
 			c.emptySearch = false;
 			getStockrooms(stockroomName);
 		} 
@@ -58,30 +73,35 @@
 	c.submitBin = function(){
 		c.showHomeButtons = false;
 		c.showInventoryOptions = true;
+		//Check to see if there are past inventory checks done on the stockroom
 		c.checkPreviousInventoryChecks(c.stockroomSysId);
 		var binSubmittedHash = $location.hash("bin-scanned");
 	};
 	
-	//Runs when the stockroom is chosen from the manual bin dropdown
+	//Once the user clicks on/selects a specific stockroom, save that stockroom's name and sysId and close the dropdown
 	c.selectStockroom = function(stockroom){
 		c.stockroomName = stockroom.name;
 		c.stockroomSysId = stockroom.sysId;
 		c.stockroomSelected = true;
 	}
 	
+	//When the user clicks on View Bin Items button, take them to the Inventory Information widget for the selected stockroom
 	c.viewBinItems = function(stockroomSysId, stockroomName){
 		window.location.href = '/asset_scan?id=inventory_information&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
 
 	}
 	
+	//When the user clicks the Start Inventory Check button, take them to the Inventory Check widget for the selected stockroom
 	c.startInventoryCheck = function(stockroomSysId, stockroomName){
 		window.location.href = '/asset_scan?id=inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
 	}
 	
+	//When the user clicks the Continue Previous Inventory button, take them to the Inventory Check widget for the last inventory check
 	c.continueInventoryCheck = function(stockroomSysId, stockroomName){
 		window.location.href = '/asset_scan?id=inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.lastInventoryCheck.sysId;
 	}
 	
+	//When the user clicks the View Past Inventory Checks button, take them to the Past Inventory Checks widget for the selected stockroom
 	c.viewPastInventoryChecks = function(stockroomSysId, stockroomName){
 		window.location.href = '/asset_scan?id=past_inventory_checks&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
 	}
@@ -95,7 +115,7 @@
 		c.showHomeButtons = true;
 	}
 	
-	//Get all the stockrooms
+	//Get all the stockrooms. Uses the getAllStockrooms scripted REST API.
 	function getStockrooms(stockroomName) {
 		$http({
 			method: 'get',
@@ -120,6 +140,10 @@
 		});
 	}
 	
+	//Get the past inventory checks on this stockroom.  Find the last still open (not closed) inventory check. 
+	//If it has an open check, display the Continue Previous Inventory button.
+	//Calls the getInventoryChecksByStockroom scripted REST API.
+	//Called in getStockroomById function below 
 	c.checkPreviousInventoryChecks = function(stockroomSysId) {
 		$http({
 			method: 'get',
@@ -131,13 +155,10 @@
 			if(response.statusText === 'OK'){
 				c.error = false;
 				c.stockroomInfo = response.data.result;
-				console.log(c.stockroomInfo);
 				c.lastInventoryCheck = c.stockroomInfo.find(function(check){
 					return check.closed == '';
 				});
-				console.log(c.lastInventoryCheck);
 			}else{
-				console.log('hello');
 				c.error = true;
 				c.lastInventoryCheck = false;
 				if(!!response.errorMessage){
@@ -153,6 +174,8 @@
 		});
 	}
 	
+	//Get the stockroom by the stockroom sysId. Called above in the c.scanBin function.
+	//Calls getStockroomById scripted REST API.
 	function getStockroomById(stockroomSysId) {
 		$http({
 			method: 'get',
@@ -192,12 +215,31 @@
 }
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>.error-message {
+        <css>//General Buttons Styling
+
+button {
+  font-size: 20px;
+  border: none;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+}
+
+//Errors
+.error-message {
   z-index: 999;
   margin-top: 10px;
   position: absolute;
 }
 
+//Title
 .inventory-home {
   background: linear-gradient(#A9A9A9 150px, 150px, #FFFFFF);
   height: 150vh;
@@ -214,42 +256,24 @@
   margin: 0 auto;
   padding: 10px;
 }
-//Start Scanning Button
 
+
+//Start Scanning Button
 .start-scanning-button {
   height: 150px;
   border: 1px solid #717171;
   background-color: #ffffff;
 }
 
-//Inventory Check Button
-.inventory-check-button-row {
-  display: none;
-}
-
-//Manual Button
-.manual-button {
-  height: 90px;
+#barcode-icon {
+  height: 75px;
 }
 
 //Manual Entry
-.manual-submit-cancel-row {
-	padding: 0;
-  margin-top: 15%;
-}
-.manual-submit-cancel {
-	width: 100%;
-  height: 70px;
-}
-
 .choose-bin {
 	padding: 0;
   border: 1px solid #717171;
   border-radius: 5px;
-}
-
-#binAdd {
-	padding-top: 30px;
 }
 
 .bin-freeform-btn {
@@ -259,6 +283,10 @@
 
 .bin-freeform-btn:hover {
   background-color: #ffffff;
+}
+
+#binAdd {
+	padding-top: 30px;
 }
 
 .bin-freeform-btn-text {
@@ -282,17 +310,21 @@
 
 .bin-search {
   padding: 0;
-}
-
-#binSubmitContainer {
-  border-radius: 0 5px 5px 0;
-  text-align: center;
+  border: 1px solid #717171;
+  border-radius: 5px;
 }
 
 //Inventory Search
 .stockroom-search {
   height: 90px;
   border-radius: 5px 0 0 5px;
+  border: none;
+}
+
+//Stockroom submit
+#binSubmitContainer {
+  border-radius: 0 5px 5px 0;
+  text-align: center;
 }
 
 .search-item-container {
@@ -313,46 +345,18 @@
   color: #ffffff;
 }
 
-//General Buttons Styling
+//Inventory Options
 
-button {
-  font-size: 20px;
-  border: none;
+.inventory-option-buttons-row {
+	margin: 0 auto;
+	padding: 10px;
 }
 
-.button-icon {
-  display: block;
-  margin: 0 auto;
+.intentory-options-button {
+  height: 90px;
 }
 
-.white-button {
-  background-color: #ffffff;
-  border: 1px solid #717171;
-}
-
-#barcode-icon {
-  height: 75px;
-}
-
-#pencil-icon {
-  width: 40px;
-}
-
-.navy-button {
-	background-color: #003366;
- 	color: #eeeeee;
-}
-.cancel-button {
-   background-color: #ffffff;
-   color: #007bff;
-   border: 1px solid #eeeeee 
-}
-
-.submit-button {
-   background-color: #005EB8;
-   color: #ffffff;
-}
-
+//Home nav
 .bottom-nav {
 	background-color: #fff;
   border-top: 1px solid #ccc;
@@ -380,20 +384,6 @@ button {
   padding-top: 10px !important;
 }
 
-//Inventory Options
-
-.hide {
-  display: none;
-}
-
-.inventory-option-buttons-row {
-	margin: 0 auto;
-	padding: 10px;
-}
-
-.intentory-options-button {
-  height: 90px;
-}
 </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -415,29 +405,32 @@ button {
         <sys_created_on>2018-05-02 19:33:06</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
-        <sys_mod_count>279</sys_mod_count>
+        <sys_mod_count>299</sys_mod_count>
         <sys_name>Inventory</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-07 20:23:36</sys_updated_on>
-        <template><![CDATA[<div id="home-screen">
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-06-18 17:46:54</sys_updated_on>
+        <template><![CDATA[<!-- Inventory Homepage -->
+<div id="home-screen">
   <div class="container-fluid">
     <div class="row">
       
+      <!-- Error Message -->
       <div class="alert alert-danger col-xs-8 col-xs-offset-2 error-message" ng-show="c.error">
         {{c.errorMessage}}
       </div>
       
+      <!-- Inventory Homepage Title and Buttons -->
       <div ng-show="c.showHomeButtons" class="inventory-home">
         <div class="inventory-title">
-          <h3 id="get-started-label">Inventory</h3>
+          <h3>Inventory</h3>
           <h4>Scan or type your bin to continue.</h4>
         </div>
-        <div class="home-buttons">
+        <div>
           <div class="row inventory-screen-row" id="scan-button-row">
             <button class="btn col-xs-8 col-xs-offset-2 start-scanning-button" ng-click="c.scanBin()">
               <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Bin
@@ -447,23 +440,23 @@ button {
             <div class="col-xs-8 col-xs-offset-2 choose-bin" ng-click="c.showBinInput()" ng-hide="c.showForm">
               <button class="btn btn-default col-xs-12 bin-freeform-btn">
                 <div id="binAdd" class="col-xs-10 bin-freeform-btn-text">
-                  Type in Bin Name
+                  Manually Enter Bin
                 </div>
-                <div id="binArrowContainer" class="col-xs-2 bin-green-arrow">
-                  <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
+                <div class="col-xs-2 bin-green-arrow">
+                  <i class="glyphicon glyphicon-chevron-right"></i>
                 </div>
               </button>
             </div>
             <div class="col-xs-8 col-xs-offset-2 bin-search" ng-show="c.showForm">
               <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
-                     placeholder="Type in bin name" ng-change="c.searchStockrooms(c.stockroomName)" 
+                     placeholder="Type bin name here" ng-change="c.searchStockrooms(c.stockroomName)" 
                      ng-model="c.stockroomName" />
               <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.stockroomSelected && c.submitBin()">
-                <i id="binArrowIcon" class="glyphicon glyphicon-chevron-down" ng-hide="c.stockroomSelected"></i>
-                <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right" ng-show="c.stockroomSelected"></i>
+                <i class="glyphicon glyphicon-chevron-down" ng-hide="c.stockroomSelected"></i>
+                <i class="glyphicon glyphicon-chevron-right" ng-show="c.stockroomSelected"></i>
               </div>
             </div>
-            <div id="stockrooms" class="col-xs-8 col-xs-offset-2 search-item-container" ng-hide="c.stockroomSelected">
+            <div class="col-xs-8 col-xs-offset-2 search-item-container" ng-hide="c.stockroomSelected">
               <li class="list-group-item search-item" ng-repeat="stockroom in c.stockrooms | limitTo: 20 | orderBy: 'name'" 
                   ng-hide="c.emptySearch" ng-click="c.selectStockroom(stockroom)">{{stockroom.name}}</li>
             </div>
@@ -471,6 +464,7 @@ button {
         </div>
       </div>
       
+      <!-- Inventory Option Buttons (once stockroom is selected/scanned) -->
       <div ng-show="c.showInventoryOptions">
         <div class="inventory-option-buttons-row">
           <div class="col-xs-10 col-xs-offset-1">
@@ -478,7 +472,7 @@ button {
               {{c.stockroomName}} Inventory
             </h4>
           </div>
-          <div class="row inventory-option-buttons-row" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
+          <div class="row inventory-option-buttons-row" ng-hide="c.lastInventoryCheck" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
             <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
               Start New Inventory Check
             </button>
@@ -508,6 +502,8 @@ button {
     </div>
   </div>
 </div>
+
+<!-- Home Nav -->
 <div class="navbar navbar-fixed-bottom bottom-nav">
   <div class="container-fluid">
     <ul class="nav navbar-nav col-xs-12">
@@ -522,6 +518,8 @@ button {
   </div>
   <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
 </div>
+
+<!-- Show if not in native mobile app -->
 <div ng-hide="c.isNative">
   <p>You must be in the ServiceNow mobile app.</p>
 </div>]]></template>
