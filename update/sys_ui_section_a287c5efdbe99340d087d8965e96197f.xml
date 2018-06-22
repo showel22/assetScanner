@@ -5,13 +5,13 @@
             <element>asset</element>
             <position>0</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>d815e53fdb6dd340d087d8965e96192b</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>27fb4f3ddbbe9340d087d8965e961936</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -19,13 +19,13 @@
             <element>order</element>
             <position>1</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>5c15e53fdb6dd340d087d8965e96192b</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>2ffb4f3ddbbe9340d087d8965e961936</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -33,13 +33,13 @@
             <element>.split</element>
             <position>2</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>dc15e53fdb6dd340d087d8965e96192b</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>affb4f3ddbbe9340d087d8965e961936</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type>.split</type>
         </sys_ui_element>
@@ -47,13 +47,13 @@
             <element>state</element>
             <position>3</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>5015e53fdb6dd340d087d8965e96192c</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>23fb4f3ddbbe9340d087d8965e961937</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -61,13 +61,13 @@
             <element>type</element>
             <position>4</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>d015e53fdb6dd340d087d8965e96192c</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>a3fb4f3ddbbe9340d087d8965e961937</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -75,13 +75,13 @@
             <element>.end_split</element>
             <position>5</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>5415e53fdb6dd340d087d8965e96192c</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>27fb4f3ddbbe9340d087d8965e961937</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type>.end_split</type>
         </sys_ui_element>
@@ -89,13 +89,13 @@
             <element>short_description</element>
             <position>6</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-04-25 10:57:57</sys_created_on>
-            <sys_id>d415e53fdb6dd340d087d8965e96192c</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>a7fb4f3ddbbe9340d087d8965e961937</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-04-25 10:57:57</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
@@ -103,13 +103,27 @@
             <element>stockroom</element>
             <position>7</position>
             <sys_created_by>212607632</sys_created_by>
-            <sys_created_on>2018-05-23 08:53:45</sys_created_on>
-            <sys_id>712515f0db969780d087d8965e9619f9</sys_id>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>2bfb4f3ddbbe9340d087d8965e961937</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
             <sys_updated_by>212607632</sys_updated_by>
-            <sys_updated_on>2018-05-23 08:53:45</sys_updated_on>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>parent</element>
+            <position>8</position>
+            <sys_created_by>212607632</sys_created_by>
+            <sys_created_on>2018-06-20 16:38:17</sys_created_on>
+            <sys_id>abfb4f3ddbbe9340d087d8965e961937</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_todo" sys_domain="global" view="Default view">a287c5efdbe99340d087d8965e96197f</sys_ui_section>
+            <sys_updated_by>212607632</sys_updated_by>
+            <sys_updated_on>2018-06-20 16:38:17</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>

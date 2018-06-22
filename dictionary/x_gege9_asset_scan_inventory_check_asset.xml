@@ -4,6 +4,7 @@
         <element label="Asset" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Inventory Check" max_length="32" name="inventory_check" reference="x_gege9_asset_scan_inventory_check" type="reference"/>
         <element attributes="ignore_filter_on_new=true" default="javascript:global.getNextObjNumberPadded();" label="Number" max_length="40" name="number" type="string"/>
+        <element label="Correct Location" max_length="40" name="u_correct_location" type="boolean"/>
         <index name="index">
             <element name="inventory_check"/>
         </index>

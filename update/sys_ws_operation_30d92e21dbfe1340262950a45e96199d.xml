@@ -6,50 +6,62 @@
         <consumes_customized>false</consumes_customized>
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
-        <http_method>POST</http_method>
-        <name>createInventoryAsset</name>
+        <http_method>GET</http_method>
+        <name>getUserBySso</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
-    var icGR;
+    var identifier = '', error, responseObj;
 	
-    icGR = new GlideRecord('x_gege9_asset_scan_inventory_check_asset');
-	icGR.initialize();
-	icGR.next();
-	icGR.inventory_check = request.pathParams.inventoryCheck;
-	icGR.asset = request.pathParams.asset;
-	//Check to see if the asset is in the right stockroom i.e. true or not i.e. false
-	if (icGR.asset.stockroom == icGR.inventory_check.stockroom){
-		icGR.u_correct_location = true;
-	} else {
-		icGR.u_correct_location = false;
+	if (request.pathParams.identifier){
+		identifier = request.pathParams.identifier;
 	}
-	icGR.insert();
-	response.setBody({sys_id: icGR.sys_id.toString()});
-	return response;
+	
+	var userGR = new GlideRecord('sys_user');
+	userGR.addEncodedQuery('user_name=' + identifier);
+	userGR.query();
+	
+	if(userGR.hasNext()){
+		while(userGR.next()){
+			responseObj = {
+				sysId: userGR.sys_id.toString(),
+				name: userGR.name.toString()
+			};
+		}
+		response.setBody(responseObj);
+		return response;
+	}else if (!userGR.hasNext()){
+		response.setBody(responseArr);
+		return response;
+	}else{
+		error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('I got nothin...');
+		return error;
+	}
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/inventoryAsset/{inventoryCheck}/{asset}</operation_uri>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getUserBySso/{identifier}</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/inventoryAsset/{inventoryCheck}/{asset}</relative_path>
+        <relative_path>/getUserBySso/{identifier}</relative_path>
         <request_example/>
         <requires_acl_authorization>true</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
-        <sys_created_on>2018-05-09 17:36:07</sys_created_on>
+        <sys_created_on>2018-06-19 19:32:24</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>eeb50b14dbc29340d087d8965e9619e8</sys_id>
-        <sys_mod_count>13</sys_mod_count>
-        <sys_name>createInventoryAsset</sys_name>
+        <sys_id>30d92e21dbfe1340262950a45e96199d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>getUserBySso</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_ws_operation_eeb50b14dbc29340d087d8965e9619e8</sys_update_name>
+        <sys_update_name>sys_ws_operation_30d92e21dbfe1340262950a45e96199d</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-19 20:27:37</sys_updated_on>
+        <sys_updated_on>2018-06-19 19:32:24</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

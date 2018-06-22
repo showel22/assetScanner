@@ -101,11 +101,29 @@
   text-align: center;
 }
 
-//Home Navigation
+.check-assets-button {
+	width: 100%; 
+  height: 40px;
+  background-color: #fff;
+  color: #5C6979;
+ 	border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
 .bottom-nav {
 	background-color: #fff;
   border-top: 1px solid #ccc;
-  height: 60px;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
 }
 
 .bottom-nav ul {
@@ -116,23 +134,24 @@
 	padding: 0;
 }
 
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
 .navbar-nav {
   margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
 }
 
 .home-p {
 	margin: 0; 
 }
-
-.check-assets-button {
-	width: 100%; 
-  height: 40px;
-  background-color: #fff;
-  color: #5C6979;
- 	border-radius: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}</css>
+</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -153,15 +172,15 @@
         <sys_created_on>2018-06-05 18:26:57</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>c105d6c9db6e5340d087d8965e961962</sys_id>
-        <sys_mod_count>53</sys_mod_count>
+        <sys_mod_count>56</sys_mod_count>
         <sys_name>Past Inventory Checks</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_c105d6c9db6e5340d087d8965e961962</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-06-08 10:10:47</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-21 19:53:08</sys_updated_on>
         <template><![CDATA[<div class="row color-scheme">
   <div>
 
@@ -182,10 +201,10 @@
       <div class="col-xs-12 asset-search">
         <input class="search" type="text" ng-model="c.searchText" placeholder="Search for inventory check here" />
       </div>
-      
+      <!--
        <a class="check-assets-button btn" ng-href="/x_gege9_asset_scan_inventory_check_asset.do?CSV&sysparm_query=inventory_check={{c.inventoryCheck}}" 
          download>DOWNLOAD REPORT</a>
-
+			-->
       <!-- List of inventory checks on this stockroom -->
       <div class="col-xs-12 asset-list-container">
         <div class="list-group">

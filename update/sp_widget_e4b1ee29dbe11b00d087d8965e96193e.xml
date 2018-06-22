@@ -143,7 +143,6 @@
 	//Click the number to change the order of the freeform todos
 	c.orderFreeformTodos = function(todo){
 		if (todo.state == '7') { 
-			console.log('clicked');
 			c.freeformOrderClicked = true;
 		}
 
@@ -182,7 +181,6 @@
 	
 	c.toggleNewTaskForm = function() {
 		c.createNewClicked = !c.createNewClicked;
-		console.log('c.createNewClicked ' + c.createNewClicked);
 	};
 	
 	c.freeformSubmit = function(shortDescription) {
@@ -214,7 +212,6 @@
 				'Content-Type': 'application/json'
 			}
 		}).then(function(response){
-			console.log(response);
 			if(response.statusText === 'OK'){
 				var data = response.data.result;
 				c.requests = data.map(function(item) {
@@ -229,7 +226,6 @@
 		},
 		function(data){
 			c.noItems = true;
-			console.log(data);
 		})
 	}
 	
@@ -242,7 +238,6 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				console.log(response.data.result);
 				c.openTodos = response.data.result.filter(function(todo){
 					todo.shortDescription.replace("ʼ", "'");
 					return todo.state == '1';
@@ -437,7 +432,7 @@
 			$http({
 				method: 'post',
 				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
-				c.assetSysId + '/' + value + '/false',
+				c.assetSysId + '/' + value.replace("’", "'") + '/false',
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -841,28 +836,6 @@ textarea {
   align-items: center;
 }
 
-.bottom-nav {
-	background-color: #fff;
-  border-top: 1px solid #ccc;
-  height: 60px;
-}
-
-.bottom-nav ul {
-	padding: 0;
-}
-
-.bottom-nav li {
-	padding: 0;
-}
-
-.home-menu {
-  position: absolute;
-  bottom: 0;
-}
-
-.navbar-nav {
-  margin: 0 !important;
-}
 
 .checkbox {
 	font-size: 16px;
@@ -900,9 +873,46 @@ textarea {
 }
 
 .slider-closed {
-  bottom: 60px;
+  bottom: 40px;
   height: 70px;
   transition: height .25s linear;
+}
+
+//Home nav
+.navbar {
+	min-height: 0 !important;  
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
 }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -943,15 +953,15 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1567</sys_mod_count>
+        <sys_mod_count>1574</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-06-19 15:33:33</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-21 19:48:42</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1107,7 +1117,7 @@ textarea {
                 </button>
               </div>
               <div class="col-xs-1 todo-list-icon-container to-do-items">
-                <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)">
+                <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)" ng-if="todo.type != 'Receiving'">
                   SKIP
                 </button>
               </div>

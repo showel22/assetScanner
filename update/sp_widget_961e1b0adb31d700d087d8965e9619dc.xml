@@ -356,11 +356,19 @@ button {
   height: 90px;
 }
 
-//Home nav
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
 .bottom-nav {
 	background-color: #fff;
   border-top: 1px solid #ccc;
-  height: 60px;
+  height: 10px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 30px; 
 }
 
 .bottom-nav ul {
@@ -381,8 +389,10 @@ button {
 }
 
 .navbar-nav li a {
-  padding-top: 10px !important;
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
 }
+
 
 </css>
         <data_table>sp_instance</data_table>
@@ -405,15 +415,15 @@ button {
         <sys_created_on>2018-05-02 19:33:06</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
-        <sys_mod_count>299</sys_mod_count>
+        <sys_mod_count>300</sys_mod_count>
         <sys_name>Inventory</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-06-18 17:46:54</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-21 19:49:47</sys_updated_on>
         <template><![CDATA[<!-- Inventory Homepage -->
 <div id="home-screen">
   <div class="container-fluid">

@@ -119,10 +119,19 @@
   font-size: 20px;
 }
 
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
 .bottom-nav {
 	background-color: #fff;
   border-top: 1px solid #ccc;
-  height: 60px;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
 }
 
 .bottom-nav ul {
@@ -133,12 +142,18 @@
 	padding: 0;
 }
 
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
 .navbar-nav {
   margin: 0 !important;
 }
 
-.home-link {
-  padding: 10px !important;
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
 }
 
 .home-p {
@@ -165,15 +180,15 @@
         <sys_created_on>2018-06-06 14:46:32</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>0a2c669ddb26d340d087d8965e96191d</sys_id>
-        <sys_mod_count>43</sys_mod_count>
+        <sys_mod_count>44</sys_mod_count>
         <sys_name>Past Inventory Check Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_0a2c669ddb26d340d087d8965e96191d</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-06-08 10:06:22</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-06-21 19:53:54</sys_updated_on>
         <template><![CDATA[<div id="home-screen">
   <div class="container-fluid">
     <div class="row color-scheme">

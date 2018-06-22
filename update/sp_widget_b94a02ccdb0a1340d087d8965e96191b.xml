@@ -2,7 +2,7 @@
 <record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function($location, $http, cabrillo) {
+        <client_script><![CDATA[function($location, $http, cabrillo, $scope) {
   /* widget controller */
   var c = this;
 	c.loaded = true;
@@ -17,6 +17,7 @@
 	c.hideManualInput = true;
 	c.hideEntireStartForm = false;
 	c.inventoryCheckComplete = false;
+	c.inventoryCheckCreator = '';
 	
 	
 	c.getParameterByName = function(param) {
@@ -34,6 +35,7 @@
 			if(response.statusText === 'OK'){
 				c.loaded = false;
 				c.inventoryCheck = response.data.result.sys_id;
+				console.log(c.inventoryCheck.sys_created_by);
 				cabrillo.camera.getBarcode().then(function(barcode) {
 					if (barcode){
 						c.loaded = true;
@@ -311,6 +313,78 @@
 		});
 	}
 	
+	function getInventoryCheck(checkId){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryCheck/' + checkId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.inventoryCheckInfo = response.data.result;
+				c.inventoryCheckUpdatedBy = response.data.result.updatedBy;
+				getUserBySso(c.inventoryCheckUpdatedBy);
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find the assets.";
+		});
+	}
+	
+	function getUserBySso(sso){
+				$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getUserBySso/' + sso,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.userName = response.data.result.name;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find the assets.";
+		});
+	}
+	
+	c.sendReport = function(){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/sendEmail/'+ $scope.user.email +'/' + c.inventoryCheck,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+		});
+	}
+	
 	
 	c.stockroomSysId = c.getParameterByName('stockroom');
 	c.stockroomName = c.getParameterByName('stockroomName');
@@ -318,6 +392,7 @@
 	
 	if (c.inventoryCheckSysId) {
 		c.inventoryCheck = c.inventoryCheckSysId; 
+		getInventoryCheck(c.inventoryCheck);
 		c.getInventoryAssets(c.inventoryCheck);
 		c.scanAnother = true;
 	}
@@ -441,27 +516,6 @@
   color: #ffffff;
 }
 
-.bottom-nav {
-	background-color: #fff;
-  border-top: 1px solid #ccc;
-  height: 60px;
-}
-
-.bottom-nav ul {
-	padding: 0;
-}
-
-.bottom-nav li {
-	padding: 0;
-}
-
-.navbar-nav {
-  margin: 0 !important;
-}
-
-.home-link {
-  padding-top: 10px !important;
-}
 
 .next-asset-div {
   display: flex;
@@ -483,9 +537,43 @@
   margin-top: 10px;
 }
 
-.home-p {
-	margin: 0; 
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
 }
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
+}
+
 </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -500,14 +588,15 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */
+})();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
         <sys_created_on>2018-05-08 18:34:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b94a02ccdb0a1340d087d8965e96191b</sys_id>
-        <sys_mod_count>489</sys_mod_count>
+        <sys_mod_count>539</sys_mod_count>
         <sys_name>Inventory Check</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -515,7 +604,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_b94a02ccdb0a1340d087d8965e96191b</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-08 16:26:10</sys_updated_on>
+        <sys_updated_on>2018-06-21 19:54:54</sys_updated_on>
         <template><![CDATA[<div class="row">
   <div>
 
@@ -532,6 +621,14 @@
       <h4 ng-hide="c.inventoryCheckComplete">
         Build your list, then click "Check Assets".
       </h4>
+      <div ng-if="c.inventoryCheckInfo">
+        <p>
+          <b>Inventory Check Creator: </b> {{c.inventoryCheckInfo.inventoryCreator}}
+        </p>
+        <p>
+          <b>Last Updated By: </b> {{c.userName}}
+        </p>
+      </div>
       <h3 ng-show="c.inventoryCheckComplete">
         Inventory Check Completed
       </h3>
@@ -568,8 +665,9 @@
 
       <button class="check-assets-button btn" ng-click="c.checkAssets()" ng-show="c.scanAnother">CHECK ASSETS</button>
       <button class="check-assets-button btn" ng-click="c.completeInventory(c.inventoryCheck)" ng-show="c.scanAnother">COMPLETE INVENTORY</button>
-			<a class="check-assets-button btn" ng-href="/x_gege9_asset_scan_inventory_check_asset.do?CSV&sysparm_query=inventory_check={{c.inventoryCheck}}" 
+			<a class="check-assets-button btn" ng-click="c.sendReport()" 
          download>DOWNLOAD REPORT</a>
+      <a class="check-assets-button btn" href="/asset_scan?id=inventory" ng-show="c.inventoryCheckComplete">BACK TO INVENTORY HOME</a>
 
       <div class="col-xs-12 asset-search" ng-show="c.scanAnother || c.inventoryCheckComplete">
 
