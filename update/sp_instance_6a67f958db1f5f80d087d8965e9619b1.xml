@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">88377118db1f5f80d087d8965e9619a1</sp_column>
+        <sp_widget display_value="Reverse Inventory Start">22d33d98dbdb5f80d087d8965e9619b2</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-07-10 15:09:17</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6a67f958db1f5f80d087d8965e9619b1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_instance_6a67f958db1f5f80d087d8965e9619b1</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-07-10 15:09:17</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=6a67f958db1f5f80d087d8965e9619b1"/>
+</record_update>

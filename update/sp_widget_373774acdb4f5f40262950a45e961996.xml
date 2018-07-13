@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location, $http, cabrillo, $scope) {
+	/* widget controller */
+	var c = this;
+	c.manualEntryClicked = false;
+	c.hideManualInput = true;
+	c.loaded = false;
+	c.assetRemoved = false;
+	c.noAssetsLeft = false;
+
+	c.getParameterByName = function(param) {
+		return $location.search()[param];
+	};
+	
+	
+	
+	//Get all the assets currently in the Inventory Check
+	c.getInventoryAssets = function(inventoryCheck){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryAssets/' + inventoryCheck,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.inventoryAssets = response.data.result;
+				c.inventoryAssets.find(function(asset){
+					if(asset.correctLocation === 'false'){
+						asset.location = 'wrong';
+						return;
+					} 
+				});
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = false;
+			}
+		}, function(response){
+			c.errorMessage = "There are no assets left in this bin.";
+			c.noAssetsLeft = true;
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+
+	c.getLimits = function(inventoryAssets){
+		return [
+			Math.floor(inventoryAssets.length / 2) + 1,
+      -Math.floor(inventoryAssets.length / 2)
+		];
+	}
+	
+	//Add all the assets currently in the stockroom to the inventory scan
+	function addAllAssetsToInventory(inventoryCheck, assets){
+		assets.forEach(function(arrayItem){
+			$http({
+				method: 'post',
+				url: '/api/x_gege9_asset_scan/asset_scanner/inventoryAsset/' + inventoryCheck + '/' + arrayItem.sysId,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response){
+				if(response.statusText === 'OK'){
+					c.loaded = true;
+				}else{
+					c.error = true;
+					c.errorMessage = "Try Again";
+				}
+			}, function(error) {
+				c.error = true;
+				c.errorMessage = "Unable.";
+			});
+		}
+	)}
+	
+	//Remove asset searched or scanned from bin from the inventory check
+	c.removeSearchedAsset = function(inventoryCheck, asset){
+		$http({
+			method: 'delete',
+			url: '/api/x_gege9_asset_scan/asset_scanner/removeInventoryAsset/' + inventoryCheck + '/' + asset,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				//c.loaded = false;
+				c.hideEntireStartForm = true;
+				c.assetRemoved = true;
+				c.deletedResult = response.data.result;
+				if (c.deletedResult.deleted == 'deleted'){
+					c.error = false;
+					c.success = true;
+					c.successMessage = "Asset removed from Inventory Check";
+					//Re-set the input field
+					c.assetIdentifier = '';
+				} else if (c.deletedResult.deleted == 'nothing to delete'){
+					c.success = false;
+					c.error = true;
+					c.errorMessage = "Asset not in this bin.";
+					//Re-set the input field
+					c.assetIdentifier = '';
+				}
+				c.getInventoryAssets(c.inventoryCheck);
+			}else{
+						c.error = true;
+						c.errorMessage = "Try Again";
+				}
+			}, function(error) {
+					c.error = true;
+					c.errorMessage = "Unable to delete.";
+		});
+	}
+	
+	c.getAsset = function(serial){
+	    c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/GetAssetInfo/' + serial,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.assetSysId = response.data.result.sysId;
+				var assetSerial = response.data.result.serialNumber;
+				var searchAssetsForDuplicate = c.inventoryAssets.find(function(asset){
+						return asset.serialNumber.toString().toUpperCase().trim() === assetSerial.toString().toUpperCase().trim();
+				});
+				console.log(searchAssetsForDuplicate);
+				if (!!searchAssetsForDuplicate){
+					console.log('hello');
+					c.error = true;
+					c.success = false;
+					c.errorMessage = 'You already scanned this asset.';
+				} else {
+					createInventoryAsset(c.inventoryCheck, c.assetSysId);
+				}
+				c.assetIdentifier = '';
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this serial number. Try entering manually.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	function createInventoryAsset(inventoryCheck, assetSysId){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/inventoryAsset/' + inventoryCheck + '/' + assetSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.inventoryAsset = response.data.result;
+				/*c.correctLocation = response.data.result.correct_location;
+				if (c.correctLocation === 'false'){
+					c.wrongLocation = true;
+				}*/
+				c.getInventoryAssets(c.inventoryCheck);
+				c.scanAnother = true;
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this asset.";
+			c.error = true;
+			c.loaded = true;
+		});
+	}
+
+	c.scanAnotherAsset = function(){
+		cabrillo.camera.getBarcode().then(function(barcode) {
+			if (barcode){
+				var assetBarcode = barcode;
+				searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
+					if (asset.correctLocation === 'true') {
+						return asset.serialNumber.toString().toUpperCase().trim() === assetBarcode.toString().toUpperCase().trim();
+					} else {
+						return false;
+					}
+				});
+				if (searchInventoryAssetsForDuplicate) {
+					c.removeSearchedAsset(c.inventoryCheck, assetBarcode);
+					c.success = true;
+					c.successMessage = "Asset removed from Inventory Check";
+				} else {
+					c.getAsset(barcode);
+					c.loaded = true;
+				}
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		})
+	}
+
+	c.manuallyEnterAnotherAsset = function(assetIdentifier){
+			searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
+				if (asset.correctLocation === 'true'){
+					return asset.serialNumber.toString().toUpperCase().trim() === assetIdentifier.toString().toUpperCase().trim();
+				} else {
+					return false;
+				}
+			});
+			if (searchInventoryAssetsForDuplicate) {
+				c.removeSearchedAsset(c.inventoryCheck, c.assetIdentifier);
+				c.success = true;
+				c.successMessage = "Asset removed from Inventory Check";
+			} else {
+				c.getAsset(c.assetIdentifier);
+				c.success = false;
+			}
+	}
+	
+	//Mark the inventory check as complete
+	c.completeInventory = function(inventoryCheckSysId){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/markInventoryComplete/' + inventoryCheckSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.scanAnother = false;
+				c.inventoryCheckComplete = true;
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to close this check.";
+			c.error = true;
+			c.loaded = true;
+		});
+	}
+	
+	function getUserBySso(sso){
+				$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getUserBySso/' + sso,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.userName = response.data.result.name;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find the assets.";
+		});
+	}
+	
+	c.sendReport = function(){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/sendEmail/'+ $scope.user.email +'/' + c.inventoryCheck,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.success = true;
+				c.successMessage = 'Report sent via email.';
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = 'Unable to send report via email.'
+		});
+	}
+
+	c.stockroomSysId = c.getParameterByName('stockroom');
+	
+	c.stockroomName = c.getParameterByName('stockroomName');
+	
+	c.inventoryCheck = c.getParameterByName('inventoryCheck');
+
+	c.firstAssetMessage = c.getParameterByName('firstAssetMessage');
+
+
+	c.getInventoryAssets(c.inventoryCheck);
+	
+	/*if (c.firstAssetMessage === 'success') {
+		c.success = true;
+		c.error = false;
+		c.successMessage = 'Asset removed from Inventory Check.';
+	} else if (c.firstAssetMessage === 'notremoved'){
+		c.error = true;
+		c.success = false;
+		c.errorMessage = 'Asset not found in this bin.';
+	}*/
+
+
+
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.color-scheme {
+  color: #ffffff;
+  height: 100vh;
+}
+
+//Scanning Buttons
+
+.start-scanning-button, .start-manual-button, .next-asset-button {
+  height: 90px;
+  margin-bottom: 15px;
+  color: #717171;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+}
+
+.next-asset-button {
+	height: 50px;
+  margin-bottom: 10px;
+}
+
+
+//Asset Search
+.search {
+	margin-top: 10px;  
+}
+
+.asset-search {
+  padding: 0;
+  margin: 15px 0;
+}
+
+.bin-green-arrow {
+  font-size: 18px;
+	background-color: #1ed760;
+  height: 50px;
+  overflow: hidden;
+  color: #fff;
+  padding-top: 15px;
+  width: 16.6%;
+}
+
+#binSubmitContainer {
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+}
+
+.stockroom-search {
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  color: #717171;
+}
+
+.check-assets-button {
+	width: 100%; 
+  height: 40px;
+  background-color: #00B2EE;
+  color: #ffffff;
+ 	border-radius: 5px;
+  margin-top: 10px;
+}
+
+//Asset List
+.search {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  height: 40px;
+  color: #5C6979;
+}
+
+.spinner {
+  text-align: center;
+}
+
+.asset-list-container {
+ 	padding: 0px; 
+ 	color: #5C6979;
+  margin-bottom: 60px;
+}
+.list-group {
+	margin-bottom: -1px; 
+  width: 100%;
+}
+
+.list-group-item {
+	padding: 15px;
+  border-radius: 4px;
+  //margin-bottom: 5px;
+}
+
+.wrong {
+  background-image: url('red-x.svg');
+  background-repeat: no-repeat;
+  //background-position: 50% center;
+  height: 40px;
+  
+}
+
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
+}
+
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>reverse-inventory-check</id>
+        <internal>false</internal>
+        <link/>
+        <name>Reverse Inventory Check</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-06-28 18:51:43</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>373774acdb4f5f40262950a45e961996</sys_id>
+        <sys_mod_count>276</sys_mod_count>
+        <sys_name>Reverse Inventory Check</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_373774acdb4f5f40262950a45e961996</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-07-13 15:26:01</sys_updated_on>
+        <template><![CDATA[<div id="home-screen">
+  <div class="container-fluid">
+    <div class="row color-scheme">
+      <div>
+
+        <!-- Error Alert -->
+        <div class="alert alert-danger error-message col-xs-10 col-xs-offset-1" ng-show="c.error">
+          {{c.errorMessage}}
+        </div>
+
+        <!-- Success Alert -->
+        <div class="alert alert-success col-xs-10 col-xs-offset-1" ng-show="c.success">
+          {{c.successMessage}}
+        </div>
+
+
+        <div class="col-xs-10 col-xs-offset-1">
+          <h3>
+            {{c.stockroomName}} Inventory Check
+          </h3>
+
+          <!-- Scanning buttons -->
+
+          <button class="btn col-xs-12 next-asset-button white-button" ng-click="c.scanAnotherAsset()">
+            SCAN NEXT ASSET
+          </button>      
+          <div>
+            <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
+                   placeholder="Enter another asset serial number" 
+                   ng-model="c.assetIdentifier" />
+            <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.manuallyEnterAnotherAsset(c.assetIdentifier)">
+              <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
+            </div>
+          </div>
+
+          <button class="check-assets-button btn" ng-click="c.completeInventory(c.inventoryCheck)" ng-hide="c.inventoryCheckComplete">COMPLETE INVENTORY</button>
+
+          <a class="check-assets-button btn" ng-show="c.inventoryCheckComplete" ng-click="c.sendReport()" 
+             download>EMAIL REPORT</a>
+          <a class="check-assets-button btn" href="/asset_scan?id=inventory" ng-show="c.inventoryCheckComplete">BACK TO INVENTORY HOME</a>
+
+          <input class="search" type="text" ng-model="c.searchText" placeholder="Search for asset here" />
+        </div>
+        <div class="row asset-list-container">
+          <div class="col-xs-12" ng-repeat="asset in c.inventoryAssets | filter: c.searchText | orderBy: 'correctLocation'" ng-hide="c.noAssetsLeft">
+            <a ng-href="/asset_scan?id=scanned_information&serial_no={{asset.serialNumber}}" class="list-group-item">
+              <div class="row">
+                <div class="col-xs-offset-1 col-xs-8">
+                  <div>
+                    <b>Serial Number: </b> {{asset.serialNumber}}
+                  </div>
+                  <div>
+                    <b>Name: </b> {{asset.name}}
+                  </div>
+                </div>
+                <div class="col-xs-2" ng-class="asset.location"></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="spinner" ng-hide="c.loaded">
+          <i class="fa fa-spinner fa-4x fa-pulse"></i>
+        </div>
+
+
+
+        <div class="navbar navbar-fixed-bottom bottom-nav">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav col-xs-12">
+              <li class="text-center center-block col-xs-12">
+                <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+                  <p class="home-p">
+                    Home
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

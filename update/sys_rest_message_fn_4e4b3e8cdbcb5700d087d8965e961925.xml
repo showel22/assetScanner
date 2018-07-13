@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_rest_message_fn">
+    <sys_rest_message_fn action="INSERT_OR_UPDATE">
+        <authentication_type>inherit_from_parent</authentication_type>
+        <basic_auth_password/>
+        <basic_auth_profile/>
+        <basic_auth_user/>
+        <content/>
+        <function_name>Default GET</function_name>
+        <http_method>get</http_method>
+        <lock>false</lock>
+        <oauth2_profile/>
+        <protocol_name/>
+        <qualified_name>Atlas Onhold Check [ Default GET ]</qualified_name>
+        <rest_endpoint>https://legalhold.legal.ge.com/webservices/hold_lookup/status/${SSO}</rest_endpoint>
+        <rest_message display_value="Atlas Onhold Check">ac0bb2ccdbcb5700d087d8965e96191a</rest_message>
+        <sys_class_name>sys_rest_message_fn</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-06-27 15:11:36</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>4e4b3e8cdbcb5700d087d8965e961925</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Default GET</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_rest_message_fn_4e4b3e8cdbcb5700d087d8965e961925</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-07-13 14:56:50</sys_updated_on>
+        <use_basic_auth>false</use_basic_auth>
+        <use_mid_server display_value="midserver_geitdev">cb68844cdb0d8b0084b85d6e5e961904</use_mid_server>
+        <use_mutual_auth>false</use_mutual_auth>
+    </sys_rest_message_fn>
+</record_update>

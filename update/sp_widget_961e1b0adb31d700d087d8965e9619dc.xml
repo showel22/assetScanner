@@ -28,6 +28,8 @@
 	c.showInventoryOptions = false;
 	//Setting up variable for check to find the last non-closed Inventory scan
 	c.lastInventoryCheck = '';
+	//Hide main inventory buttons when Reverse Inventory Check Button clicked and 
+	c.reverseInventoryClicked = false;
 	
 	//Click the Scan Bin button and bring up the camera to scan the stockroom
 	c.scanBin = function(todo){
@@ -75,6 +77,7 @@
 		c.showInventoryOptions = true;
 		//Check to see if there are past inventory checks done on the stockroom
 		c.checkPreviousInventoryChecks(c.stockroomSysId);
+		c.getStockroomAssets(c.stockroomSysId);
 		var binSubmittedHash = $location.hash("bin-scanned");
 	};
 	
@@ -91,14 +94,103 @@
 
 	}
 	
+	
+	
 	//When the user clicks the Start Inventory Check button, take them to the Inventory Check widget for the selected stockroom
-	c.startInventoryCheck = function(stockroomSysId, stockroomName){
-		window.location.href = '/asset_scan?id=inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
+	c.startInventoryCheck = function(stockroomSysId, stockroomName, inventoryCheck){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/createInventory/' + c.stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.loaded = false;
+				//Open Manual Inventory Form
+				c.manualEntryClicked = true;
+				c.hideManualInput = false;
+				c.inventoryCheck = response.data.result.sys_id;
+				addAllAssetsToInventory(c.inventoryCheck, c.assetSysIdObject, c.stockroomSysId, c.stockroomName);
+			} else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			} }, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		});
+	}
+
+	c.getStockroomAssets = function(stockroomSysId){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomAssets/' + stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.stockroomAssets = response.data.result;
+				 c.assetSysIdObject = [];
+				for (var i=0; i<c.stockroomAssets.length; i++){
+					
+					c.assetSysIdObject[i] = {
+						sysId: c.stockroomAssets[i].sysId
+					};
+				}
+				c.error = false;
+				c.loaded = true;
+				c.noOfPages = Math.floor(c.stockroomAssets.length/c.pageSize);
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "This stockroom has no assets assigned.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	//Add all the assets currently in the stockroom to the inventory scan
+	function addAllAssetsToInventory(inventoryCheck, assets, stockroomSysId, stockroomName){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/allInventoryAssets/' + inventoryCheck,
+			headers: {
+						'Content-Type': 'application/json'
+					}, 
+			data: {"assetArray": c.stockroomAssets}
+		}).then(function(response){
+			if (response.statusText === 'OK'){
+				window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.inventoryCheck;
+
+			} else {
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response) {
+				c.error = true;
+				c.errorMessage = 'Unable to add assets to inventory check';
+				c.loaded = true;
+		});
 	}
 	
 	//When the user clicks the Continue Previous Inventory button, take them to the Inventory Check widget for the last inventory check
 	c.continueInventoryCheck = function(stockroomSysId, stockroomName){
 		window.location.href = '/asset_scan?id=inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.lastInventoryCheck.sysId;
+	}
+	
+	//When the user clicks the Continue Previous Inventory button, take them to the Reverse Inventory Check widget for the last inventory check
+	c.continueInventoryCheck = function(stockroomSysId, stockroomName){
+		window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.lastInventoryCheck.sysId;
 	}
 	
 	//When the user clicks the View Past Inventory Checks button, take them to the Past Inventory Checks widget for the selected stockroom
@@ -194,6 +286,7 @@
 				c.showBinButtons = false;
 				c.showHomeButtons = false;
 				c.showInventoryOptions = true;
+				c.getStockroomAssets(c.stockroomSysId);
 			}else{
 				c.error = true;
 				c.lastInventoryCheck = false;
@@ -353,7 +446,16 @@ button {
 }
 
 .intentory-options-button {
-  height: 90px;
+  height: 150px;
+  margin: 0 4%;
+  white-space: normal;
+  color: #fff;
+  background-color: #00B2EE;
+  border: none !important;
+}
+
+.inventory-start-title {
+  padding: 20px 0;
 }
 
 //Home Nav
@@ -415,7 +517,7 @@ button {
         <sys_created_on>2018-05-02 19:33:06</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
-        <sys_mod_count>300</sys_mod_count>
+        <sys_mod_count>364</sys_mod_count>
         <sys_name>Inventory</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -423,7 +525,7 @@ button {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-21 19:49:47</sys_updated_on>
+        <sys_updated_on>2018-07-13 15:19:00</sys_updated_on>
         <template><![CDATA[<!-- Inventory Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
@@ -476,34 +578,42 @@ button {
       
       <!-- Inventory Option Buttons (once stockroom is selected/scanned) -->
       <div ng-show="c.showInventoryOptions">
-        <div class="inventory-option-buttons-row">
-          <div class="col-xs-10 col-xs-offset-1">
+        <div class="col-xs-10 col-xs-offset-1 inventory-start-title">
             <h4>
               {{c.stockroomName}} Inventory
             </h4>
           </div>
-          <div class="row inventory-option-buttons-row" ng-hide="c.lastInventoryCheck" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
+        <div class="inventory-option-buttons-row">
+         
+          
+          <!-- OLD INVENTORY CHECK BUTTONS
+          <div class="row inventory-option-buttons-row" ng-hide="c.lastInventoryCheck || c.reverseInventoryClicked" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
             <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
               Start New Inventory Check
             </button>
           </div>
-          <div class="row inventory-option-buttons-row" ng-show="c.lastInventoryCheck" ng-click="c.continueInventoryCheck(c.stockroomSysId, c.stockroomName, c.lastInventoryCheck)">
+          <div class="row inventory-option-buttons-row" ng-show="c.lastInventoryCheck" ng-hide="c.reverseInventoryClicked" ng-click="c.continueInventoryCheck(c.stockroomSysId, c.stockroomName, c.lastInventoryCheck)">
             <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
               Continue Previous Inventory 
             </button>
-          </div>
-          <div class="row inventory-option-buttons-row" ng-click="c.viewBinItems(c.stockroomSysId, c.stockroomName)">
-            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
+          </div> -->
+          <!-- Reverse Inventory Buttons current showing-->
+          <div class="row inventory-option-buttons-row">
+            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-hide="c.lastInventoryCheck" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
+              Start New Inventory Check
+            </button>
+            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-show="c.lastInventoryCheck" ng-click="c.continueInventoryCheck(c.stockroomSysId, c.stockroomName, c.lastInventoryCheck)">
+              Continue Previous Inventory 
+            </button>
+            <button class="btn col-xs-5 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked" ng-click="c.viewBinItems(c.stockroomSysId, c.stockroomName)">
               View Bin Items
             </button>
           </div>
            <div class="row inventory-option-buttons-row">
-            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button" ng-click="c.viewPastInventoryChecks(c.stockroomSysId, c.stockroomName)">
+            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked" ng-click="c.viewPastInventoryChecks(c.stockroomSysId, c.stockroomName)">
               View Past Inventory Checks
             </button>
-          </div>
-          <div class="row inventory-option-buttons-row">
-            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button" ng-click="c.chooseAnotherBin()">
+             <button class="btn col-xs-5 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked" ng-click="c.chooseAnotherBin()">
               Select a Different Bin
             </button>
           </div>

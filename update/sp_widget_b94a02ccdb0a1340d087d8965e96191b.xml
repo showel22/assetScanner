@@ -596,7 +596,7 @@
         <sys_created_on>2018-05-08 18:34:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>b94a02ccdb0a1340d087d8965e96191b</sys_id>
-        <sys_mod_count>539</sys_mod_count>
+        <sys_mod_count>541</sys_mod_count>
         <sys_name>Inventory Check</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -604,7 +604,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_b94a02ccdb0a1340d087d8965e96191b</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-21 19:54:54</sys_updated_on>
+        <sys_updated_on>2018-07-11 13:45:16</sys_updated_on>
         <template><![CDATA[<div class="row">
   <div>
 

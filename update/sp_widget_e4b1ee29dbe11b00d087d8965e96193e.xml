@@ -49,8 +49,9 @@
 		'dataReclamation': 'Data Reclamation'
 	};
 	
-	// This function is used to open the servicenow
-	// form for the current asset.
+	// These functions are used to open the servicenow
+	// forms for the current asset, item or incident.
+	
 	c.viewAsset = function(){
 		spModal.open({
 			title: "Asset",
@@ -58,6 +59,32 @@
 			widgetInput:{
 				table: "alm_asset",
 				sys_id: c.assetSysId,
+				view: 'Default'
+			},
+			size: "lg"
+		});
+	}
+	
+	c.viewRequestedItem = function(sys_id){
+		spModal.open({
+			title: "Requested Item",
+			widget: "fd1f4ec347730200ba13a5554ee490c0",
+			widgetInput:{
+				table: "sc_req_item",
+				sys_id: sys_id,
+				view: 'Default'
+			},
+			size: "lg"
+		});
+	}
+	
+	c.viewIncident = function(sys_id){
+		spModal.open({
+			title: "Incident",
+			widget: "fd1f4ec347730200ba13a5554ee490c0",
+			widgetInput:{
+				table: "incident",
+				sys_id: sys_id,
 				view: 'Default'
 			},
 			size: "lg"
@@ -167,6 +194,9 @@
 		}
 	};
 	
+	// This function is called to invoke
+	// all the actions to skip a todo item 
+	// from the UI.
 	c.markSkipped = function(todoSysId){
 		skipTodo(todoSysId);
 		c.showBinResults = true;
@@ -221,6 +251,33 @@
 					request.details = c.mapProperties(item, c.ITEM_KEY_MAP);
 					c.requestsLoaded = true;
 					return request;
+				});
+			}
+		},
+		function(data){
+			c.noItems = true;
+		})
+	}
+	
+	c.getRecentIncidents = function(){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getRecentIncidents/' + c.assetSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				var data = response.data.result;
+				c.incidents = data.map(function(item) {
+					var incident = {};
+					incident.url = item.url;
+					incident.number = item.itemNumber;
+					incident.sysId = item.sysId;
+					incident.description = item.description;
+					incident.state = item.state;
+					c.requestsLoaded = true;
+					return incident;
 				});
 			}
 		},
@@ -376,18 +433,6 @@
 	c.binScanPage = function(){
 			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
 	};
-	
-	function checkLegalHold(){
-		$http({
-			method: 'get',
-			url: 'https://legalhold.legal.ge.com/webservices/hold_lookup/status/212594278',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			console.log(response);
-		});
-	}
 	
 	c.addMoveTask = function(){
 		spModal.open({
@@ -932,12 +977,10 @@ textarea {
   /* e.g., data.table = $sp.getValue('table'); */
 	data.userSkills = [];
 	var thisUser = gs.getUserID();
-	gs.info(thisUser);
 	var userSkillGR = new GlideRecord('sys_user_has_skill');
 	userSkillGR.addQuery('active', true);
 	userSkillGR.addQuery('user', thisUser);
 	userSkillGR.query();
-	gs.info('test');
 	while(userSkillGR.next()){
 		gs.info('test');
 		data.userSkills.push({
@@ -953,15 +996,15 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1574</sys_mod_count>
+        <sys_mod_count>1590</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-21 19:48:42</sys_updated_on>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-07-13 15:42:27</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1060,7 +1103,7 @@ textarea {
         <a data-toggle="tab" href="#completedTodo">To Do History</a>
       </li>
       <li class="col-xs-4 todo-tab">
-        <a data-toggle="tab" href="#openRequest" ng-click="c.getRequestedItems()">Open Requests</a>
+        <a data-toggle="tab" href="#openRequest" ng-click="c.getRequestedItems(); c.getRecentIncidents();">Open Records</a>
       </li>
     </ul>
     <div class="tab-content">
@@ -1185,17 +1228,14 @@ textarea {
         <div class="spinner" ng-hide="c.noItems || c.requestsLoaded">
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
         </div>
-        <div class="no-requests" ng-show="c.noItems">
-          <p>
-            There are no open requests.
-          </p>
-        </div>
         <div class="request-block col-xs-12" ng-repeat="request in c.requests">
           <div class="row">
             <div class="col-xs-12 request-number">
               {{request.details.RITM}}
             </div>
           </div>
+          
+          <!-- Requests -->
           <div class="row requests-details">
             <div class="col-xs-8">
               <div class="row">
@@ -1224,7 +1264,41 @@ textarea {
               </div>
             </div>
             <div class="col-xs-4">
-              <a href="{{request.url}}" class="btn btn-default center-block">
+              <a ng-click="c.viewRequestedItem(request.sysId)" class="btn btn-default center-block">
+                DETAILS
+              </a>
+            </div>
+          </div>
+        </div>
+        
+         <!-- Incidents -->
+        <div class="request-block col-xs-12" ng-repeat="incident in c.incidents">
+          <div class="row">
+            <div class="col-xs-12 request-number">
+              {{incident.number}}
+            </div>
+          </div>
+          <div class="row requests-details">
+            <div class="col-xs-8">
+              <div class="row">
+                <span class="col-xs-6 request-title">
+                  State:
+                </span>
+                <span class="col-xs-6">
+                  {{incident.state}}
+                </span>
+              </div>
+              <div class="row">
+                <span class="col-xs-6 request-title">
+                  Description:
+                </span>
+                <span class="col-xs-6">
+                  {{incident.description}}
+                </span>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <a ng-click="c.viewIncident(incident.sysId)" class="btn btn-default center-block">
                 DETAILS
               </a>
             </div>
@@ -1263,11 +1337,8 @@ textarea {
         </li>
       </ul>
     </div>
-    <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
   </div>
 </div>
-<!-- <button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Scan Bin</button>
-<button ng-show="c.loaded" class="btn btn-primary -align--stretch" ng-click="c.binScan()">Manually Enter Bin</button></button> -->
 ]]></template>
     </sp_widget>
 </record_update>

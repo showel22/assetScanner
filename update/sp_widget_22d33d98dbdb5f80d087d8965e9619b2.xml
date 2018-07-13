@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($location, $http, cabrillo) {
+	/* widget controller */
+	var c = this;
+	c.manualEntryClicked = false;
+	c.hideManualInput = true;
+	c.loaded = false;
+	c.assetRemoved = false;
+
+	c.getParameterByName = function(param) {
+		return $location.search()[param];
+	};
+
+	c.getStockroomAssets = function(stockroomSysId){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomAssets/' + stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.stockroomAssets = response.data.result;
+				 c.assetSysIdObject = [];
+				for (var i=0; i<c.stockroomAssets.length; i++){
+					
+					c.assetSysIdObject[i] = {
+						sysId: c.stockroomAssets[i].sysId
+					};
+				}
+				c.error = false;
+				c.loaded = true;
+				c.noOfPages = Math.floor(c.stockroomAssets.length/c.pageSize);
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = true;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this stockroom's assets.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+	c.startScanInventoryCheck = function(stockroomSysId, stockroomName, inventoryCheck){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/createInventory/' + c.stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.loaded = false;
+				//Open Manual Inventory Form
+				c.manualEntryClicked = true;
+				c.hideManualInput = false;
+				c.inventoryCheck = response.data.result.sys_id;
+				addAllAssetsToInventory(c.inventoryCheck, c.assetSysIdObject);
+				cabrillo.camera.getBarcode().then(function(barcode) {
+					if (barcode){
+						c.loaded = true;
+						c.scanAnother = true;
+						c.hideManualInput = true;
+						c.removeSearchedAsset(c.inventoryCheck, barcode);
+					}else{
+						c.error = true;
+						c.errorMessage = "Try Again";
+					}
+				}, function(error) {
+					c.error = true;
+					c.errorMessage = "Unable to scan.";
+				})
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		});
+	}
+
+	//Start a blank inventory scan record and add all the assets currently in the bin to that Inventory Check
+	c.startManualInventoryCheck = function(){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/createInventory/' + c.stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.loaded = true;
+				//Open Manual Inventory Form
+				c.manualEntryClicked = true;
+				c.hideManualInput = false;
+				c.inventoryCheck = response.data.result.sys_id;
+				addAllAssetsToInventory(c.inventoryCheck, c.assetSysIdObject);
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		});
+	}
+	
+	//Remove asset searched or scanned from bin from the inventory check
+	c.removeSearchedAsset = function(inventoryCheck, asset, stockroomSysId, stockroomName){
+		$http({
+			method: 'delete',
+			url: '/api/x_gege9_asset_scan/asset_scanner/removeInventoryAsset/' + inventoryCheck + '/' + asset,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				//c.loaded = false;
+				c.scanAnother = true;
+				c.hideEntireStartForm = true;
+				c.assetRemoved = true;
+				console.log('hello');
+				c.deletedResult = response.data.result;
+				if (c.deletedResult.deleted == 'deleted'){
+					c.error = false;
+					//Re-load the list of assets from the inventory check instead of assets in bin
+					c.getInventoryAssets(c.inventoryCheck);
+					//Re-set the input field
+					c.assetIdentifier = '';
+					//Determine if first asset scanned or entered was removed from IC or if it was not in the bin.  This is so we can put a message at the top on the Reverse Inventory Check page after the below URL change
+					c.successMessage = "success";
+					//Navigate to the Reverse Inventory Check page
+					window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + inventoryCheck + '&firstAssetMessage=' + c.successMessage;
+				} else if (c.deletedResult.deleted == 'nothing to delete'){
+					c.success = false;
+					c.error = true;
+					c.errorMessage = "Asset not in this bin.";
+					//Re-load the list of assets from the inventory check instead of assets in bin
+					c.getInventoryAssets(c.inventoryCheck);
+					//Re-set the input field
+					c.assetIdentifier = '';
+					//Determine if first asset scanned or entered was removed from IC or if it was not in the bin.  This is so we can put a message at the top on the Reverse Inventory Check page after the below URL change
+					c.successMessage = "notremoved";
+					window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + inventoryCheck + '&firstAssetMessage=' + c.successMessage;
+				}
+			}else{
+						c.error = true;
+						c.errorMessage = "Try Again";
+				}
+			}, function(error) {
+					c.error = true;
+					c.errorMessage = "Unable to delete.";
+		});
+	}
+	
+	//Add all the assets currently in the stockroom to the inventory scan
+	function addAllAssetsToInventory(inventoryCheck, assets){
+		assets.forEach(function(arrayItem){
+			$http({
+				method: 'post',
+				url: '/api/x_gege9_asset_scan/asset_scanner/inventoryAsset/' + inventoryCheck + '/' + arrayItem.sysId,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response){
+				if(response.statusText === 'OK'){
+					c.loaded = true;
+				}else{
+					c.error = true;
+					c.errorMessage = "Try Again";
+				}
+			}, function(error) {
+				c.error = true;
+				c.errorMessage = "Unable.";
+			});
+		}
+	)}
+	
+	c.getInventoryAssets = function(inventoryCheck){
+		c.loaded = false;
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryAssets/' + inventoryCheck,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.inventoryAssets = response.data.result.map(function(obj){
+					c.loaded = true;
+					var rObj = obj;
+					rObj.inventoryCheck = 'noCheck';
+					if (rObj.stockroom == '') {
+						rObj.stockroom = 'Not assigned';
+					}
+					return rObj;
+				});
+	
+				c.error = false;
+				c.loaded = true;
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+				c.loaded = false;
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this inventory's assets.";
+			c.error = true;
+			c.loaded = true;
+		});
+	};
+	
+
+	c.stockroomSysId = c.getParameterByName('stockroom');
+  c.getStockroomAssets(c.stockroomSysId);
+	
+	c.stockroomName = c.getParameterByName('stockroomName');
+	
+	c.inventoryCheck = c.getParameterByName('inventoryCheck');
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.color-scheme {
+  color: #ffffff;
+  height: 100vh;
+}
+
+//Scanning Buttons
+
+.start-scanning-button, .start-manual-button, .next-asset-button {
+  height: 90px;
+  margin-bottom: 15px;
+  color: #717171;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+}
+
+.next-asset-button {
+	height: 50px;
+  margin-bottom: 10px;
+}
+
+
+//Asset Search
+.search {
+	margin-top: 10px;  
+}
+
+.asset-search {
+  padding: 0;
+  margin: 15px 0;
+}
+
+.bin-green-arrow {
+  font-size: 18px;
+	background-color: #1ed760;
+  height: 50px;
+  overflow: hidden;
+  color: #fff;
+  padding-top: 15px;
+  width: 16.6%;
+}
+
+#binSubmitContainer {
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+}
+
+.stockroom-search {
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  color: #717171;
+}
+
+//Asset List
+.search {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  height: 40px;
+  color: #5C6979;
+}
+
+.spinner {
+  text-align: center;
+}
+
+.asset-list-container {
+ padding: 0px; 
+ color: #5C6979;
+}
+.list-group {
+	margin-bottom: -1px; 
+  width: 100%;
+}
+
+.list-group-item {
+	padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  height: 40px;
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
+}
+
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>reverse-inventory-start</id>
+        <internal>false</internal>
+        <link/>
+        <name>Reverse Inventory Start</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-07-10 14:53:42</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>22d33d98dbdb5f80d087d8965e9619b2</sys_id>
+        <sys_mod_count>35</sys_mod_count>
+        <sys_name>Reverse Inventory Start</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_22d33d98dbdb5f80d087d8965e9619b2</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-07-12 18:42:30</sys_updated_on>
+        <template><![CDATA[<div id="home-screen">
+  <div class="container-fluid">
+    <div class="row color-scheme">
+      <div>
+
+        <!-- Error Alert -->
+        <div class="alert alert-danger error-message" ng-show="c.error">
+          {{c.errorMessage}}
+        </div>
+        
+         <!-- Success Alert -->
+        <div class="alert alert-success" ng-show="c.success">
+          {{c.successMessage}}
+        </div>
+
+
+        <div class="col-xs-10 col-xs-offset-1">
+          <h3>
+            Start Inventory Check - {{c.stockroomName}}
+          </h3>
+          
+          <p>
+            Scan or enter an asset to check it against the assets currently assigned this bin.  As you check, the assets will be removed from the list.
+          </p>
+          
+          <!-- Scanning buttons -->
+          <button class="btn col-xs-12 start-scanning-button white-button" ng-hide="c.scanAnother" ng-click="c.startScanInventoryCheck(c.stockroomSysId, c.stockroomName, c.inventoryCheck)">
+            Start Scanning
+          </button>
+
+          <div ng-hide="c.hideEntireStartForm" >
+            <button class="btn col-xs-12 start-manual-button white-button" ng-hide="c.manualEntryClicked" ng-click="c.startManualInventoryCheck()">
+              Start Manual Entry
+            </button>
+            <div class="col-xs-12 asset-search" ng-show="c.manualEntryClicked" ng-hide="c.hideManualInput">
+              <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
+                     placeholder="Type in asset serial number" 
+                     ng-model="c.assetIdentifier" />
+              <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.removeSearchedAsset(c.inventoryCheck, c.assetIdentifier, c.stockroomSysId, c.stockroomName)">
+                <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        
+
+        <div class="navbar navbar-fixed-bottom bottom-nav">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav col-xs-12">
+              <li class="text-center center-block col-xs-12">
+                <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+                  <p class="home-p">
+                    Home
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>
