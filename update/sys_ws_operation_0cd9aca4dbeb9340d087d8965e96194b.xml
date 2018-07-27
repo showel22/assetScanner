@@ -7,56 +7,57 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>GET</http_method>
-        <name>checkLegalHoldFromAtlas</name>
+        <name>getAllComputerModels</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    var modelName = '', responseArr = [], error;
 	
-	try { 
-		var r = new sn_ws.RESTMessageV2('x_gege9_asset_scan.Atlas Onhold Check', 'Default GET');
-		r.setStringParameterNoEscape('SSO', request.pathParams.sso);
-
-		//set a MID server name if one wants to run the message on MID
-		//r.setMIDServer(gs.getProperty('ge.mid.server.geit'));
-		var instance = gs.getProperty('instance_name');
-		var midserver = gs.getProperty('ge.mid.server.' + instance);
-		r.setMIDServer(midserver);
-
-		//if the message is configured to communicate through ECC queue, either
-		//by setting a MID server or calling executeAsync, one needs to set skip_sensor
-		//to true. Otherwise, one may get an intermittent error that the response body is null
-		//r.setEccParameter('skip_sensor', true);
-
-		var result = r.execute();
-		var httpStatus = result.getStatusCode();
-		response = result.getBody();
-		return response;
+	if (request.pathParams.displayName){
+		modelName = request.pathParams.displayName;
 	}
-	catch(ex) {
-		var message = ex.getMessage();
+	
+	var modelGR = new GlideRecord('cmdb_hardware_product_model');
+	modelGR.addEncodedQuery('cmdb_model_categoryLIKEbaa94624db1bf6007cdcd3eb5e9619f6^display_nameLIKE' + modelName);
+	modelGR.query();
+	if (modelGR.hasNext()){
+		while (modelGR.next()){
+			responseArr.push({
+				name: modelGR.display_name.getDisplayValue(),
+				sysId: modelGR.sys_id.toString(),
+				modelCategory: modelGR.cmdb_model_category.toString()
+			});
+		}
+		return responseArr;
+	} else {
+		error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('I got nothin...');
+		return error;
 	}
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/checkLegalHoldFromAtlas/{sso}</operation_uri>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getAllComputerModels/{displayName}</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/checkLegalHoldFromAtlas/{sso}</relative_path>
+        <relative_path>/getAllComputerModels/{displayName}</relative_path>
         <request_example/>
         <requires_acl_authorization>true</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
-        <sys_created_by>212607632</sys_created_by>
-        <sys_created_on>2018-07-13 15:31:38</sys_created_on>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-07-23 14:25:14</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>a7189159db9b1704262950a45e961935</sys_id>
-        <sys_mod_count>23</sys_mod_count>
-        <sys_name>checkLegalHoldFromAtlas</sys_name>
+        <sys_id>0cd9aca4dbeb9340d087d8965e96194b</sys_id>
+        <sys_mod_count>19</sys_mod_count>
+        <sys_name>getAllComputerModels</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_ws_operation_a7189159db9b1704262950a45e961935</sys_update_name>
+        <sys_update_name>sys_ws_operation_0cd9aca4dbeb9340d087d8965e96194b</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-07-27 13:54:58</sys_updated_on>
+        <sys_updated_on>2018-07-25 18:41:24</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

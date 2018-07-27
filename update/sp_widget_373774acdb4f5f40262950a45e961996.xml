@@ -5,19 +5,35 @@
         <client_script><![CDATA[function($location, $http, cabrillo, $scope) {
 	/* widget controller */
 	var c = this;
-	c.manualEntryClicked = false;
-	c.hideManualInput = true;
+	
+	//Controls spinner when something isn't loaded
 	c.loaded = false;
-	c.assetRemoved = false;
+	
+	//Show/hide variables
 	c.noAssetsLeft = false;
+	c.inventoryCheckComplete = false;
+	
+	//Messages variables
+	c.error = false;
+	c.errorMessage = '';
+	c.success = false;
+	c.successMessage = '';
+	
+	//Variables that hold data
+	c.assetIdentifier = '';
+	c.inventoryAssets = '';
+	c.deletedResult = '';
+	c.stockroomSysId = '';
+	c.stockroomName = '';
+	c.inventoryCheck = '';
+	c.searchText = '';
 
+	//Function to get parameter data from the URL
 	c.getParameterByName = function(param) {
 		return $location.search()[param];
 	};
 	
-	
-	
-	//Get all the assets currently in the Inventory Check
+	//Get all the assets currently in the Inventory Check.  Identifier is Inventory Check sys id.  
 	c.getInventoryAssets = function(inventoryCheck){
 		c.loaded = false;
 		$http({
@@ -28,13 +44,23 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
+				//Response is an array of objects with each of the assets in the IC. 
+				//Asset includes asset name, sys id, IC number, serial number, stockroom, retirement date, keyboard, aquisition method, aquisition country, correct location (true/talse)
 				c.inventoryAssets = response.data.result;
-				c.inventoryAssets.find(function(asset){
-					if(asset.correctLocation === 'false'){
-						asset.location = 'wrong';
-						return;
-					} 
-				});
+				//If the asset check is empty
+				if (c.inventoryAssets.noAssets) {
+					c.error = true;
+					c.errorMessage = 'No assets left in this Inventory Check';
+					c.inventoryAssets = [];
+				} else {
+					//If the Inventory check has assets in it, search through the assets and find the assets that are in the wrong location.  Set the class to wrong to show the red X on the page. 
+					c.inventoryAssets.find(function(asset){
+						if(asset.correctLocation === 'false'){
+							asset.location = 'wrong';
+							return;
+						} 
+					});
+				}
 				c.loaded = true;
 			}else{
 				c.error = true;
@@ -44,45 +70,15 @@
 				c.loaded = false;
 			}
 		}, function(response){
-			c.errorMessage = "There are no assets left in this bin.";
+			//Error getting inventory check assets.
+			c.errorMessage = "Cannot find Inventory Check assets.";
 			c.noAssetsLeft = true;
 			c.error = true;
 			c.loaded = true;
 		});
 	};
 	
-
-	c.getLimits = function(inventoryAssets){
-		return [
-			Math.floor(inventoryAssets.length / 2) + 1,
-      -Math.floor(inventoryAssets.length / 2)
-		];
-	}
-	
-	//Add all the assets currently in the stockroom to the inventory scan
-	function addAllAssetsToInventory(inventoryCheck, assets){
-		assets.forEach(function(arrayItem){
-			$http({
-				method: 'post',
-				url: '/api/x_gege9_asset_scan/asset_scanner/inventoryAsset/' + inventoryCheck + '/' + arrayItem.sysId,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(function(response){
-				if(response.statusText === 'OK'){
-					c.loaded = true;
-				}else{
-					c.error = true;
-					c.errorMessage = "Try Again";
-				}
-			}, function(error) {
-				c.error = true;
-				c.errorMessage = "Unable.";
-			});
-		}
-	)}
-	
-	//Remove asset searched or scanned from bin from the inventory check
+	//Remove asset searched or scanned from bin from the inventory check.  Inventory check is IC sys id and asset is serial number or asset tag.
 	c.removeSearchedAsset = function(inventoryCheck, asset){
 		$http({
 			method: 'delete',
@@ -92,16 +88,16 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				//c.loaded = false;
-				c.hideEntireStartForm = true;
-				c.assetRemoved = true;
+				//c.hideEntireStartForm = true;
 				c.deletedResult = response.data.result;
+				//If the asset is an asset assigned to the stockroom, it will return 'deleted' and will be deleted.
 				if (c.deletedResult.deleted == 'deleted'){
 					c.error = false;
 					c.success = true;
 					c.successMessage = "Asset removed from Inventory Check";
 					//Re-set the input field
 					c.assetIdentifier = '';
+					//If the asset is not assignd to this bin:
 				} else if (c.deletedResult.deleted == 'nothing to delete'){
 					c.success = false;
 					c.error = true;
@@ -109,6 +105,7 @@
 					//Re-set the input field
 					c.assetIdentifier = '';
 				}
+				//Reload all the inventory assets
 				c.getInventoryAssets(c.inventoryCheck);
 			}else{
 						c.error = true;
@@ -120,6 +117,8 @@
 		});
 	}
 	
+	//Serial is serial number or asset tag. 
+	//Gets information on one asset including sys id, serial number, legal hold, state, substate, stockroom, model image, model category, model, acquisition country, retirement date, asset type, assigned to, assigned to is VIP, and url
 	c.getAsset = function(serial){
 	    c.loaded = false;
 		$http({
@@ -132,15 +131,17 @@
 			if(response.statusText === 'OK'){
 				c.assetSysId = response.data.result.sysId;
 				var assetSerial = response.data.result.serialNumber;
+				//Look through the inventory check assets to see if this asset has already been scanned
 				var searchAssetsForDuplicate = c.inventoryAssets.find(function(asset){
 						return asset.serialNumber.toString().toUpperCase().trim() === assetSerial.toString().toUpperCase().trim();
 				});
-				console.log(searchAssetsForDuplicate);
+				//If it has been scanned/entered, show an error message and do nothing
 				if (!!searchAssetsForDuplicate){
-					console.log('hello');
 					c.error = true;
 					c.success = false;
 					c.errorMessage = 'You already scanned this asset.';
+					c.getInventoryAssets(c.inventoryCheck);
+					//If it hasn't been scanned/entered, create a new IC Asset record on the IC with the inventory check sysid and the asset sysid
 				} else {
 					createInventoryAsset(c.inventoryCheck, c.assetSysId);
 				}
@@ -154,12 +155,14 @@
 				c.loaded = true;
 			}
 		}, function(response){
+			//If the asset serial number does not exist, show an error
 			c.errorMessage = "Unable to find this serial number. Try entering manually.";
 			c.error = true;
 			c.loaded = true;
 		});
 	};
 	
+	//Create a record for a new scanned/entered asset to the Inventory Check
 	function createInventoryAsset(inventoryCheck, assetSysId){
 		$http({
 			method: 'post',
@@ -170,12 +173,9 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.inventoryAsset = response.data.result;
-				/*c.correctLocation = response.data.result.correct_location;
-				if (c.correctLocation === 'false'){
-					c.wrongLocation = true;
-				}*/
+				//Reload all the Inventory Check assets on the page including the new one
 				c.getInventoryAssets(c.inventoryCheck);
-				c.scanAnother = true;
+				//c.scanAnother = true;
 				c.error = false;
 				c.loaded = true;
 			}else{
@@ -191,9 +191,11 @@
 			c.loaded = true;
 		});
 	}
-
+	
+	//Click on Scan Next Asset button.  Uses Cabrillo library to use the phone camera to scan the barcode. 
 	c.scanAnotherAsset = function(){
 		cabrillo.camera.getBarcode().then(function(barcode) {
+			//If it gets a barcode, look through the list of assets from c.getInventoryAssets function to see if its one of the assets that is supposed to be in that bin.  If an asset is in the correct location, return true.  If its not, return false.
 			if (barcode){
 				var assetBarcode = barcode;
 				searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
@@ -203,6 +205,7 @@
 						return false;
 					}
 				});
+				//If the above search returns true (asset checked is in the right location), remove the asset from the inventory check.
 				if (searchInventoryAssetsForDuplicate) {
 					c.removeSearchedAsset(c.inventoryCheck, assetBarcode);
 					c.success = true;
@@ -221,7 +224,9 @@
 		})
 	}
 
+	//Click on the green arrow button.  
 	c.manuallyEnterAnotherAsset = function(assetIdentifier){
+		//Look through the list of assets from c.getInventoryAssets function to see if the entered asset is one of the assets that is supposed to be in the bin.  If an asset is in the correct location, return true.  If its not, return false.
 			searchInventoryAssetsForDuplicate = c.inventoryAssets.find(function(asset){
 				if (asset.correctLocation === 'true'){
 					return asset.serialNumber.toString().toUpperCase().trim() === assetIdentifier.toString().toUpperCase().trim();
@@ -229,17 +234,19 @@
 					return false;
 				}
 			});
+		//If the above search returns true (asset checked is in the right location), remove the asset from the inventory check.
 			if (searchInventoryAssetsForDuplicate) {
 				c.removeSearchedAsset(c.inventoryCheck, c.assetIdentifier);
 				c.success = true;
 				c.successMessage = "Asset removed from Inventory Check";
+				c.getInventoryAssets(c.inventoryCheck);
 			} else {
 				c.getAsset(c.assetIdentifier);
 				c.success = false;
 			}
 	}
 	
-	//Mark the inventory check as complete
+	//When the Complete Inventory button is clicked, mark the inventory check as complete.  This fills in the Closed date/time field with the current date/time.
 	c.completeInventory = function(inventoryCheckSysId){
 		$http({
 			method: 'post',
@@ -249,7 +256,8 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				c.scanAnother = false;
+				//c.scanAnother = false;
+				//Hide the Complete Inventory Button and show the Email Report and Inventory Home button
 				c.inventoryCheckComplete = true;
 				c.error = false;
 				c.loaded = true;
@@ -267,30 +275,7 @@
 		});
 	}
 	
-	function getUserBySso(sso){
-				$http({
-			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/getUserBySso/' + sso,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				c.userName = response.data.result.name;
-			}else{
-				c.error = true;
-				
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			c.error = true;
-			c.errorMessage = "Unable to find the assets.";
-		});
-	}
-	
+	//Click the Email Report button.  Send a CSV file via email to the user of the inventory check.
 	c.sendReport = function(){
 		$http({
 			method: 'get',
@@ -315,28 +300,13 @@
 		});
 	}
 
+	//Save the followng from the parameters in the URL
 	c.stockroomSysId = c.getParameterByName('stockroom');
-	
 	c.stockroomName = c.getParameterByName('stockroomName');
-	
 	c.inventoryCheck = c.getParameterByName('inventoryCheck');
 
-	c.firstAssetMessage = c.getParameterByName('firstAssetMessage');
-
-
+	//Load up the list of all IC Assets when the page loads.
 	c.getInventoryAssets(c.inventoryCheck);
-	
-	/*if (c.firstAssetMessage === 'success') {
-		c.success = true;
-		c.error = false;
-		c.successMessage = 'Asset removed from Inventory Check.';
-	} else if (c.firstAssetMessage === 'notremoved'){
-		c.error = true;
-		c.success = false;
-		c.errorMessage = 'Asset not found in this bin.';
-	}*/
-
-
 
 }]]></client_script>
         <controller_as>c</controller_as>
@@ -347,9 +317,9 @@
 
 //Scanning Buttons
 
-.start-scanning-button, .start-manual-button, .next-asset-button {
-  height: 90px;
-  margin-bottom: 15px;
+.next-asset-button {
+  height: 50px;
+  margin-bottom: 10px;
   color: #717171;
 }
 
@@ -358,20 +328,15 @@
   border: 1px solid #717171;
 }
 
-.next-asset-button {
-	height: 50px;
-  margin-bottom: 10px;
+.stockroom-search {
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  color: #717171;
 }
 
-
-//Asset Search
-.search {
-	margin-top: 10px;  
-}
-
-.asset-search {
-  padding: 0;
-  margin: 15px 0;
+#binSubmitContainer {
+  border-radius: 0 5px 5px 0;
+  text-align: center;
 }
 
 .bin-green-arrow {
@@ -384,18 +349,7 @@
   width: 16.6%;
 }
 
-#binSubmitContainer {
-  border-radius: 0 5px 5px 0;
-  text-align: center;
-}
-
-.stockroom-search {
-  height: 50px;
-  border-radius: 5px 0 0 5px;
-  color: #717171;
-}
-
-.check-assets-button {
+.blue-assets-button {
 	width: 100%; 
   height: 40px;
   background-color: #00B2EE;
@@ -404,8 +358,9 @@
   margin-top: 10px;
 }
 
-//Asset List
+//Asset Search
 .search {
+	margin-top: 10px;  
   width: 100%;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -414,18 +369,11 @@
   color: #5C6979;
 }
 
-.spinner {
-  text-align: center;
-}
-
+//Asset List
 .asset-list-container {
  	padding: 0px; 
  	color: #5C6979;
   margin-bottom: 60px;
-}
-.list-group {
-	margin-bottom: -1px; 
-  width: 100%;
 }
 
 .list-group-item {
@@ -442,19 +390,24 @@
   
 }
 
+//Loading Spinn]er
+.spinner {
+  text-align: center;
+}
+
 //Home Nav
 .navbar {
 	min-height: 0 !important;  
+}
+
+.navbar-fixed-bottom {
+	bottom: 0; 
 }
 
 .bottom-nav {
 	background-color: #fff;
   border-top: 1px solid #ccc;
   height: 40px;
-}
-
-.navbar-fixed-bottom {
-	bottom: 0; 
 }
 
 .bottom-nav ul {
@@ -500,7 +453,7 @@
         <sys_created_on>2018-06-28 18:51:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>373774acdb4f5f40262950a45e961996</sys_id>
-        <sys_mod_count>276</sys_mod_count>
+        <sys_mod_count>339</sys_mod_count>
         <sys_name>Reverse Inventory Check</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -508,8 +461,8 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_373774acdb4f5f40262950a45e961996</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-07-13 15:26:01</sys_updated_on>
-        <template><![CDATA[<div id="home-screen">
+        <sys_updated_on>2018-07-19 19:51:38</sys_updated_on>
+        <template><![CDATA[<div>
   <div class="container-fluid">
     <div class="row color-scheme">
       <div>
@@ -524,34 +477,46 @@
           {{c.successMessage}}
         </div>
 
-
+				<!-- Header -->
         <div class="col-xs-10 col-xs-offset-1">
           <h3>
             {{c.stockroomName}} Inventory Check
           </h3>
 
           <!-- Scanning buttons -->
-
+					
+           <!-- Scan Next Asset-->
           <button class="btn col-xs-12 next-asset-button white-button" ng-click="c.scanAnotherAsset()">
             SCAN NEXT ASSET
-          </button>      
+          </button> 
+          
+          <!-- Input field-->
           <div>
             <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
                    placeholder="Enter another asset serial number" 
                    ng-model="c.assetIdentifier" />
+            
+          <!-- Green Submit Button -->
             <div id="binSubmitContainer" class="col-xs-2 bin-green-arrow" ng-click="c.manuallyEnterAnotherAsset(c.assetIdentifier)">
-              <i id="binArrowIcon" class="glyphicon glyphicon-chevron-right"></i>
+              <i class="glyphicon glyphicon-chevron-right"></i>
             </div>
           </div>
-
-          <button class="check-assets-button btn" ng-click="c.completeInventory(c.inventoryCheck)" ng-hide="c.inventoryCheckComplete">COMPLETE INVENTORY</button>
-
-          <a class="check-assets-button btn" ng-show="c.inventoryCheckComplete" ng-click="c.sendReport()" 
+					
+          <!-- Complete Inventory Button -->
+          <button class="blue-assets-button btn" ng-click="c.completeInventory(c.inventoryCheck)" ng-hide="c.inventoryCheckComplete">COMPLETE INVENTORY</button>
+          
+					<!-- Email Report Button -->
+          <a class="blue-assets-button btn" ng-show="c.inventoryCheckComplete" ng-click="c.sendReport()" 
              download>EMAIL REPORT</a>
-          <a class="check-assets-button btn" href="/asset_scan?id=inventory" ng-show="c.inventoryCheckComplete">BACK TO INVENTORY HOME</a>
-
+          
+          <!-- Inventory Home Button -->
+          <a class="blue-assets-button btn" href="/asset_scan?id=inventory" ng-show="c.inventoryCheckComplete">BACK TO INVENTORY HOME</a>
+					
+          <!-- Asset search -->
           <input class="search" type="text" ng-model="c.searchText" placeholder="Search for asset here" />
         </div>
+        
+        <!-- Asset List -->
         <div class="row asset-list-container">
           <div class="col-xs-12" ng-repeat="asset in c.inventoryAssets | filter: c.searchText | orderBy: 'correctLocation'" ng-hide="c.noAssetsLeft">
             <a ng-href="/asset_scan?id=scanned_information&serial_no={{asset.serialNumber}}" class="list-group-item">
@@ -569,12 +534,14 @@
             </a>
           </div>
         </div>
+        
+        <!-- Loading Spinner -->
         <div class="spinner" ng-hide="c.loaded">
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
         </div>
 
 
-
+				<!-- Home Nav -->
         <div class="navbar navbar-fixed-bottom bottom-nav">
           <div class="container-fluid">
             <ul class="nav navbar-nav col-xs-12">

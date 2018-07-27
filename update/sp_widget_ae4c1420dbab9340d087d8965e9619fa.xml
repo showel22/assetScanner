@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($http, cabrillo) {
+  /* widget controller */
+  var c = this;
+	//Message variables
+	c.error = false;
+	c.errorMessage = '';
+	
+	//Data variables
+	c.computerModels = '';
+	c.enteredAssets = [];
+	
+	//Show/Hide variables
+	//Show/hide PC Model main button to select field
+	c.showForm = false;
+	c.showPcModelButton = false;
+	c.showAddAllAssets = false;
+	
+	
+	//Show the Manual Bin Input and button form when click on "Manually Enter Bin" button
+	c.showBinInput = function(){
+		//Show the input field and label
+		c.showForm = true;
+		//Hide error message if already loaded
+		c.error = false;
+	};
+	
+	//Get the stockroom by the stockroom sysId. Called above in the c.scanBin function.
+	//Calls getStockroomById scripted REST API.
+	function getStockroomById(stockroomSysId){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomInfo/' + stockroomSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if (response.statusText === 'OK'){
+				c.error = false;
+				c.submittedBinName = response.data.result.name;
+				c.stockroomSysId = response.data.result.sysId;
+			} else {
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		},function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that stockroom.";
+		});
+	}
+	
+	//Click the Scan Bin button and bring up the camera to scan the stockroom
+	c.scanBin = function(todo){
+		cabrillo.camera.getBarcode().then(function(barcode) {
+			if (barcode){
+				//If a barcode is found, call the API to get the stockroom data
+				getStockroomById(barcode);
+				c.binSubmitted = true;
+				c.showPcModelButton = true;
+			}else{
+				c.error = true;
+				c.errorMessage = "Try Again";
+			}
+		}, function(error) {
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		})
+	};
+	
+	//Get all the stockrooms. Uses the getAllStockrooms scripted REST API.
+	function getAllStockrooms(stockroomName) {
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.stockrooms = response.data.result;
+			}else{
+				c.error = true;
+				
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that stockroom.";
+		});
+	}
+	
+	//Search the stockrooms by the entry in the input field for the Manual Bin Search.
+	//This is called in an ng-change, so once the user types in a character, it searches through the stockrooms for a match on the Stockroom/Bin name
+	c.searchStockrooms = function(stockroomName){
+		//Check to see if user has typed into the input
+		if (stockroomName.length === 0){
+			c.emptySearch = true;
+			c.stockroomSelected = false;
+		} else if (stockroomName.length >= 1) {
+			//If entry in input, get the Stockrooms by their name
+			c.emptySearch = false;
+			getAllStockrooms(stockroomName);
+		} 
+	}
+	
+	
+	
+	//Once the user clicks on/selects a specific stockroom, save that stockroom's name and sysId and close the dropdown
+	c.selectStockroom = function(stockroom){
+		c.stockroomName = stockroom.name;
+		c.stockroomSysId = stockroom.sysId;
+		c.stockroomSelected = true;
+	}
+	
+	//Save the submitted bin to a variable.  Hide the bin selection buttons/form.
+	c.submitBin = function(){
+		if (c.stockroomSelected === false){
+			c.error = true;
+			c.errorMessage = "Please select a bin."
+		} else {
+			c.submittedBinName = c.stockroomName;
+			c.submittedStockroomSysId = c.stockroomSysId;
+			c.stockroomName = '';
+			c.binSubmitted = true;
+			c.showPcModelButton = true;
+		}
+	}
+	
+	
+	//Get a list of all the models for Personal Computers
+ function getAllComputerModels(pcModelName){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getAllComputerModels/' + pcModelName,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if (response.statusText === 'OK'){
+				c.error = false;
+				c.computerModels = response.data.result;
+			} else {
+				c.error = true;
+				c.errorMessage = 'Try Again'
+			}
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that computer model."
+		});
+	}
+	
+	//
+	c.showPcModelInput = function(){
+		//Show the input field and label
+		c.showForm = true;
+		//Hide error message if already loaded
+		c.error = false;
+	}
+	
+	//Search the PC models by the entry in the input field
+	//This is called in an ng-change, so once the user types in a character, it searches through the PC models for a match on the model name
+	c.searchPcModels = function(pcModelName){
+		//Check to see if the user has typed in the input
+		if (pcModelName.length === 0) {
+			c.emptySearch = true;
+			c.pcModelSelected = false;
+		} else {
+			//If entry in the input, get the PC models by their name
+			c.emptySearch = false;
+			getAllComputerModels(pcModelName);
+		}
+	}
+	
+	//When the user selects a PC model from the list, change the input to match the full name selected
+	c.selectPcModel = function(model){
+		c.pcModelName = model.name;
+		c.pcModelSysId = model.sysId;
+		c.pcModelCategory = model.modelCategory;
+		c.pcModelSelected = true;
+		c.error = false;
+	}
+	
+	//Submit the model for the current PC
+	c.submitPcModel = function(){
+		if (!c.pcModelSelected) {
+			c.error = true;
+			c.errorMessage = 'Please enter a model.';
+		} else {
+			c.pcModelSubmitted = true;
+		}	
+	}
+	
+	//Scan asset and add it to the list of assets for adding
+	c.scanAsset = function(pcModel, stockroom, modelCategory){
+		cabrillo.camera.getBarcode().then(function(barcode){
+			if(barcode){
+				var barcodeUpperCase = barcode.toUpperCase();
+				c.enteredAssets.push({
+					pcModel: pcModel,
+					barcode: barcodeUpperCase,
+					stockroom: stockroom,
+					modelCategory: modelCategory
+				});
+				c.showAddAllAssets = true;
+				c.pcModelName = null;
+				c.assetNumber = '';
+				c.showPcModelButton = true;
+				c.showAssetListAndAdd = true;
+				c.pcModelSubmitted = false;
+				c.emptySearch = true;
+				c.pcModelSelected = false;
+			} else {
+				c.error = true;
+				c.errorMessage = 'Cannot add asset';
+			}
+		}, function(){
+			c.error = true;
+			c.errorMessage = "Unable to scan.";
+		})
+	};
+	
+	//Manually enter asset and add it to the list of assets for adding
+	
+	c.manuallyEnterAsset = function(pcModel, assetNumber, stockroom, modelCategory){
+		if (assetNumber && assetNumber.length >= 1) {
+			var assetNumberUppercase = assetNumber.toUpperCase();
+			c.enteredAssets.push({
+				pcModel: pcModel,
+				barcode: assetNumberUppercase,
+				stockroom: stockroom,
+				modelCategory: modelCategory
+			});
+			c.error = false;
+			c.pcModelName = null;
+			c.assetNumber = '';
+			c.showAddAllAssets = true;
+			c.showPcModelButton = true;
+			c.showAssetListAndAdd = true;
+			c.pcModelSubmitted = false;
+			c.pcModelSelected = false;
+			c.emptySearch = true;
+		} else {
+			c.error = true;
+			c.errorMessage = 'Please enter a serial number to add the asset.'
+		}
+	}
+	
+	//Add all entered assets into the alm_hardware table
+	c.addAllAssets = function(){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/addNewAssets',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data: {'assetArray': c.enteredAssets}
+		}).then(function(response){
+			console.log(response);
+			if (response.statusText === 'OK'){
+				c.success = true;
+				c.successMessage = 'Assets successfully added.'
+				c.enteredAssets = [];
+				c.showAddAllAssets = false;
+			} else {
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+				c.error = true;
+				c.errorMessage = 'Unable to add assets.';
+		})
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>//Main styling
+.new-asset-home {
+  background: linear-gradient(#00B2EE 150px, 150px, #FFFFFF);
+  height: 150vh;
+  width: 100%;
+}
+
+//Errors
+.error-message {
+  z-index: 999;
+  margin-top: 10px;
+  position: absolute;
+}
+
+//Title
+.new-asset-title {
+	padding: 20px; 
+  text-align: center;
+  color: #ffffff; 
+}
+
+//Button Containers
+.button-row {
+  margin: 0 auto;
+  //padding: 10px 0;
+}
+
+.button-container {
+	padding: 0;
+  border: 1px solid #717171;
+  border-radius: 5px;
+}
+
+
+//PC Model
+
+.model-btn {
+	padding: 0;
+  height: 90px;
+}
+
+.model-btn:hover {
+  background-color: #ffffff;
+}
+
+#modelAdd {
+	padding-top: 30px;
+}
+
+.model-btn-text {
+  font-size: 18px;
+  color: #717171;
+}
+
+.model-btn-text:hover {
+  color: black;
+}
+
+.model-green-arrow {
+  font-size: 18px;
+	background-color: #1ed760;
+  height: 90px;
+  overflow: hidden;
+  color: #fff;
+  padding-top: 30px;
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+}
+
+.search-container {
+  padding: 0;
+  border: 1px solid #717171;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+//PC Model Search
+.stockroom-search {
+  height: 90px;
+  border-radius: 5px 0 0 5px;
+  border: none;
+}
+
+.search-item-container {
+  max-height: 250px;
+  overflow-y: scroll;
+  padding: 0px;
+  //margin-bottom: 50px;
+}
+
+.search-item {
+  padding: 5px 10px !important;
+  height: 50px;
+  line-height: 3;
+}
+
+//General Buttons Styling
+
+button {
+  font-size: 20px;
+  border: none;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-button {
+  background-color: #ffffff;
+  border: 1px solid #717171;
+  border-radius: 5px;
+}
+
+a .white-button{
+  color: inherit;
+}
+
+//Scanning Button
+.start-scanning-button {
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+#barcode-icon {
+  height: 50px;
+}
+
+//Manual Asset Search
+/*.manual-button {
+  height: 90px;
+  margin-top: 10px;
+}
+
+#pencil-icon {
+  width: 40px;
+}
+
+.small-button-text {
+  font-size: 15px;
+}*/
+
+//Add Assets Button
+.blue-button {
+  background-color: #00B2EE;
+  color: #ffffff;
+  border-radius: 5px;
+  margin-top: 10px;
+  height: 90px;
+}
+
+
+//Home Nav
+.navbar {
+	min-height: 0 !important;  
+}
+
+.bottom-nav {
+	background-color: #fff;
+  border-top: 1px solid #ccc;
+  //height: 10px;
+}
+
+.navbar-fixed-bottom {
+	//bottom: 30px; 
+  height: 45px;
+}
+
+.bottom-nav ul {
+	padding: 0;
+}
+
+.bottom-nav li {
+	padding: 0;
+}
+
+.home-menu {
+  position: absolute;
+  bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0 !important;
+}
+
+.navbar-nav li a {
+ line-height: 15px !important; 
+ padding: 5px 0 !important;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>add_new_asset</id>
+        <internal>false</internal>
+        <link/>
+        <name>Add New Asset</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-07-23 13:25:19</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ae4c1420dbab9340d087d8965e9619fa</sys_id>
+        <sys_mod_count>235</sys_mod_count>
+        <sys_name>Add New Asset</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_ae4c1420dbab9340d087d8965e9619fa</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-07-25 20:15:03</sys_updated_on>
+        <template><![CDATA[<div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 new-asset-home">
+		
+        <!-- Error Message -->
+        <div class="alert alert-danger col-xs-10 col-xs-offset-1 error-message" ng-show="c.error">
+          {{c.errorMessage}}
+        </div>
+        
+        <!-- Success Message -->
+        <div class="alert alert-success col-xs-10 col-xs-offset-1" ng-show="c.success">
+          {{c.successMessage}}
+        </div>
+
+
+        <!-- Title -->
+        <div class="new-asset-title col-xs-12">
+          <h3>Add New Assets</h3>
+          <h4 ng-hide="c.binSubmitted">Start by selecting the bin where you would like to assign the assets.</h4>
+          <h4 ng-show="c.showPcModelButton">Now scan or enter the assets one at a time, then add them all to ServiceNow.  They will be assigned to the {{c.submittedBinName}} bin.</h4>
+        </div>
+        
+        <!-- Bin Select -->
+         <div ng-hide="c.binSubmitted">
+          <div class="row button-row" id="scan-button-row">
+            <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-click="c.scanBin()">
+              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Bin
+            </button>
+          </div>
+          <div class="row button-row manual-button-row">
+            <div class="col-xs-10 col-xs-offset-1 button-container" ng-click="c.showBinInput()" ng-hide="c.showForm">
+              <button class="btn btn-default col-xs-12 model-btn">
+                <div id="modelAdd" class="col-xs-10 model-btn-text">
+                  Manually Enter Bin
+                </div>
+                <div class="col-xs-2 model-green-arrow">
+                  <i class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+              </button>
+            </div>
+            <div class="col-xs-10 col-xs-offset-1 search-container" ng-show="c.showForm">
+              <input class="col-xs-10 stockroom-search" type="text" list="stockrooms" 
+                     placeholder="Type bin name here" ng-change="c.searchStockrooms(c.stockroomName)" 
+                     ng-model="c.stockroomName" />
+              <div class="col-xs-2 model-green-arrow" ng-click="c.stockroomSelected && c.submitBin()">
+                <i class="glyphicon glyphicon-chevron-down" ng-hide="c.stockroomSelected"></i>
+                <i class="glyphicon glyphicon-chevron-right" ng-show="c.stockroomSelected"></i>
+              </div>
+            </div>
+            <div class="col-xs-10 col-xs-offset-1 search-item-container" ng-hide="c.stockroomSelected">
+              <li class="list-group-item search-item" ng-repeat="stockroom in c.stockrooms | limitTo: 20 | orderBy: 'name'" 
+                  ng-hide="c.emptySearch" ng-click="c.selectStockroom(stockroom)">{{stockroom.name}}</li>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Select PC Model -->
+        <div class="row button-row manual-button-row" ng-show="c.showPcModelButton">
+          <!-- Select Computer Model Button -->
+          <div class="col-xs-10 col-xs-offset-1 button-container" ng-click="c.showPcModelInput()" ng-hide="c.showForm">
+            <button class="btn btn-default col-xs-12 model-btn">
+              <div id="modelAdd" class="col-xs-10 model-btn-text">
+                Select Computer Model
+              </div>
+              <div class="col-xs-2 model-green-arrow">
+                <i class="glyphicon glyphicon-chevron-right"></i>
+              </div>
+            </button>
+          </div>
+
+          <!-- PC Model Select -->
+          <div class="col-xs-10 col-xs-offset-1 search-container" ng-show="c.showForm">
+            <input class="col-xs-10 stockroom-search" type="text" list="pcModels" 
+                   placeholder="Type PC model name here" ng-change="c.searchPcModels(c.pcModelName)" 
+                   ng-model="c.pcModelName" />
+            <div class="col-xs-2 model-green-arrow" ng-click="c.submitPcModel()">
+              <i class="glyphicon glyphicon-chevron-down" ng-hide="c.pcModelSelected"></i>
+              <i class="glyphicon glyphicon-chevron-right" ng-show="c.pcModelSelected"></i>
+            </div>
+          </div>
+
+          <!-- List of available PC models -->
+          <div class="col-xs-10 col-xs-offset-1 search-item-container" ng-hide="c.pcModelSelected">
+            <li class="list-group-item search-item" ng-repeat="model in c.computerModels | limitTo: 20 | orderBy: 'name'" 
+                ng-hide="c.emptySearch" ng-click="c.selectPcModel(model)">{{model.name}}</li>
+          </div>
+        </div>
+
+				<!-- Enter Asset Buttons-->
+        <div ng-show="c.pcModelSubmitted">
+          <!-- Scan Asset Button -->
+          <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-click="c.scanAsset(c.pcModelSysId, c.stockroomSysId, c.pcModelCategory)">
+            <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Asset
+          </button>
+          <!-- Manual Input Asset  -->
+         <!-- <button class="btn col-xs-10 col-xs-offset-1 manual-button white-button" ng-click="c.showManualInput()">
+            <img class="button-icon" id="pencil-icon" src="pencil-icon.png"/><span class="small-button-text">Manual Input</span>
+          </button> -->
+          
+          <div class="col-xs-10 col-xs-offset-1 search-container" ng-show="c.showForm">
+            <input class="col-xs-10 stockroom-search" type="text" 
+                   placeholder="Type serial number here"
+                   ng-model="c.assetNumber"/>
+            <div id="binSubmitContainer" class="col-xs-2 model-green-arrow" ng-click="c.manuallyEnterAsset(c.pcModelSysId, c.assetNumber, c.stockroomSysId, c.pcModelCategory)">
+              <i class="glyphicon glyphicon-chevron-down" ng-hide="c.pcModelSelected"></i>
+              <i class="glyphicon glyphicon-chevron-right" ng-show="c.pcModelSelected"></i>
+            </div>
+          </div>
+        
+        </div>
+       
+           <!-- Asset List -->
+        <div ng-show="c.showAssetListAndAdd">
+          <div class="row asset-list-container">
+            <div class="col-xs-12" ng-repeat="asset in c.enteredAssets">
+
+              <div class="row">
+                <div class="col-xs-12 list-group-item">
+                  <div class="col-xs-offset-1 col-xs-8">
+                    <b>Asset Serial Number: </b> {{asset.barcode}}
+                  </div>
+                  <div class="col-xs-offset-1 col-xs-8">
+                    <b>PC Model: </b> {{asset.pcModel}}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Add Assets Button -->
+          <button class="btn col-xs-10 col-xs-offset-1 blue-button" ng-show="c.showAddAllAssets" ng-click="c.addAllAssets()">
+            Add All Assets
+          </button>
+        </div>
+        
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Home Nav -->
+<div class="navbar navbar-fixed-bottom bottom-nav">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav col-xs-12">
+      <li class="text-center center-block col-xs-12">
+        <a class="home-link" href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+          <p>
+            Home
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -89,7 +89,7 @@ button {
 }
 
 a .white-button{
-  color: inherit;;
+  color: inherit;
 }
 
 //Manual Entry Form
@@ -232,7 +232,7 @@ a.button-link:hover {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>255</sys_mod_count>
+        <sys_mod_count>258</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -240,7 +240,7 @@ a.button-link:hover {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-06-21 17:48:10</sys_updated_on>
+        <sys_updated_on>2018-07-27 14:44:56</sys_updated_on>
         <template><![CDATA[<!-- Main Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
@@ -293,6 +293,12 @@ a.button-link:hover {
             <a href="/asset_scan?id=inventory" class="button-link"><button class="btn col-xs-8 inventory-check-button white-button"><img class="button-icon" id="pencil-icon" src="inventory.svg"/><span class="small-button-text">Inventory</span>
               </button></a>
           </div>
+          <!--
+          <div class="col-xs-6 home-screen-row inventory-check-button-row">
+            <a href="/asset_scan?id=add_new_asset" class="button-link"><button class="btn col-xs-8 inventory-check-button white-button"><img class="button-icon" id="pencil-icon" src="inventory.svg"/><span class="small-button-text">Add New Asset</span>
+              </button></a>
+          </div>
+					-->
         </div>
       </div>
       

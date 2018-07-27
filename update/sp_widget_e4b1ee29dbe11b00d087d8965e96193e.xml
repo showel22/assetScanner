@@ -22,6 +22,7 @@
 	c.assetSysId = '';
 	c.showBarcode = false;
 	c.showTaskButtons = false;
+	c.notAssigned = false;
 	
 	// This map is used to reformat the asset object
 	// to a more readible format.
@@ -131,6 +132,15 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.assetSysId = response.data.result.sysId;
+				c.assignedTo = response.data.result.assignedTo;
+				console.log(response.data.result);
+				if (c.assignedTo.length === 0) {
+					c.loaded = true;
+					c.notAssigned = true;
+					
+				} else {
+					c.checkLegalHoldFromAtlas(c.assignedTo);
+				}
 				getTodoList(response.data.result.sysId);
 				c.transformData(response.data.result);
 				c.error = false;
@@ -166,6 +176,59 @@
       });
     return obj;
   };
+	
+	//Make sure legal hold field matches Atlas
+	 c.checkLegalHoldFromAtlas = function(assignedTo){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/checkLegalHoldFromAtlas/' + assignedTo,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			
+			if (response.statusText === 'OK'){
+				//convert to an object because it comes back from Atlas as a string
+				var responseObj = JSON.parse(response.data.result);
+				if(responseObj.hold === 'yes'){
+					c.legalHold = 'true';
+					c.loaded = true;
+					c.markLegalHold(c.assetSysId, c.legalHold);
+				} else {
+					c.legalHold = 'false';
+					c.loaded = true;
+					c.markLegalHold(c.assetSysId, c.legalHold);
+				}
+			} else {
+				c.error = true; 
+				c.errorMessage = "Cannot get Legal Hold information."
+			}
+		})
+	} 
+	
+	c.markLegalHold = function(todoSysId, legalHold){
+		//var legalHold = 'true';
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId + '/' + legalHold,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				//c.completeTodo(todoSysId);
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.errorMessage = "Unable to update Legal Hold.";
+			c.error = true;
+		});
+	}
 	
 	//Click the number to change the order of the freeform todos
 	c.orderFreeformTodos = function(todo){
@@ -382,29 +445,7 @@
 		});
 	}
 	
-	c.markLegalHold = function(todoSysId){
-		var legalHold = 'true';
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId + '/' + legalHold,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				c.completeTodo(todoSysId);
-			}else{
-				c.error = true;
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			c.errorMessage = "Unable to update Legal Hold.";
-			c.error = true;
-		});
-	}
+	
 	
 	function skipTodo(todoSysId){
 		$http({
@@ -996,15 +1037,15 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1590</sys_mod_count>
+        <sys_mod_count>1645</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-07-13 15:42:27</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-07-27 14:06:33</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1042,7 +1083,17 @@ textarea {
       <div id="asset-details">
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>Legal Hold</b></div> 
-          <div class="attr pull-right" ng-class="{'important-asset-detail': c.details['Legal Hold'] == 'true'}">{{c.details["Legal Hold"]}}</div>
+          <div class="attr pull-right">
+            <div ng-show="c.legalHold">
+              <i class="fa fa-spinner fa-4x fa-pulse" ng-show="!c.loaded"></i>
+              <div ng-class="{'important-asset-detail': c.legalHold == 'true'}">
+                {{c.legalHold}}
+              </div>
+            </div>
+            <div ng-show="c.notAssigned" ng-class="{'important-asset-detail': c.details['Legal Hold'] == 'true'}">
+              {{c.details['Legal Hold']}}
+            </div>
+          </div>
         </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 

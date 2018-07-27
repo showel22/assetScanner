@@ -43,12 +43,9 @@
 		}
 		response.setBody(responseArr);
 		return response;
-	}
-	else{
-		error = new sn_ws_err.ServiceError();
-		error.setStatus(404);
-		error.setMessage('I got nothin...');
-		return error;
+	} else{
+		response.setBody({noAssets: "No assets"});
+		return response;
 	}
 
 })(request, response);]]></operation_script>
@@ -65,7 +62,7 @@
         <sys_created_on>2018-05-09 20:05:47</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>4647af18db469340d087d8965e9619c0</sys_id>
-        <sys_mod_count>35</sys_mod_count>
+        <sys_mod_count>44</sys_mod_count>
         <sys_name>getAllInventoryAssets</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -73,7 +70,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_4647af18db469340d087d8965e9619c0</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-07-11 19:13:10</sys_updated_on>
+        <sys_updated_on>2018-07-18 19:29:37</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
