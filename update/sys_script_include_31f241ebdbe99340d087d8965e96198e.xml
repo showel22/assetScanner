@@ -93,7 +93,6 @@ AssetToDo.prototype = {
 	
 	createToDoListNoRequests: function(asset){
 		var order = 0;
-		this.createCheckLegalHold(asset, order++);
 		this.createInvestigate(asset, order++);
 		return true;
 	},
@@ -105,14 +104,14 @@ AssetToDo.prototype = {
 		toDoGR.orderBy('order');
 		toDoGR.query();
 		while(toDoGR.next()){
-			var gdt = new GlideDateTime(toDoGR.sys_updated_on.getDisplayValue());
+			var gdt = new GlideDateTime(toDoGR.sys_updated_on.toString());
 			toDoList.push({
 				type: toDoGR.type.getDisplayValue(),
 				state: toDoGR.state.toString(),
 				shortDescription: toDoGR.short_description.toString(),
 				stockroom: toDoGR.stockroom.getDisplayValue(),
 				order: toDoGR.order.toString(),
-				lastUpdate: gdt.getNumericValue(), 
+					lastUpdate: gdt.getDisplayValue(), 
 				sysId: toDoGR.sys_id.toString()
 			});
 		}
@@ -152,7 +151,7 @@ AssetToDo.prototype = {
         <sys_created_on>2018-04-24 13:51:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>31f241ebdbe99340d087d8965e96198e</sys_id>
-        <sys_mod_count>49</sys_mod_count>
+        <sys_mod_count>66</sys_mod_count>
         <sys_name>AssetToDo</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
@@ -160,6 +159,6 @@ AssetToDo.prototype = {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_31f241ebdbe99340d087d8965e96198e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-23 09:15:56</sys_updated_on>
+        <sys_updated_on>2018-08-06 13:22:40</sys_updated_on>
     </sys_script_include>
 </record_update>

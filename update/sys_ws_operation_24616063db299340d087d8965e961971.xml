@@ -26,6 +26,7 @@
 			assetGR.install_status = 6;
 			assetGR.substatus = 'available';
 			assetGR.stockroom = stockroomGR.sys_id;
+			assetGR.reserved_for = assetGR.assigned_to;
 			if (assetGR.update() != null){
 				response.setBody({ 
 					name: stockroomGR.name, 
@@ -67,7 +68,7 @@
         <sys_created_on>2018-04-24 11:26:21</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>24616063db299340d087d8965e961971</sys_id>
-        <sys_mod_count>14</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>updateStockroom</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -75,7 +76,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_24616063db299340d087d8965e961971</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-07-12 16:46:10</sys_updated_on>
+        <sys_updated_on>2018-08-01 17:11:40</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

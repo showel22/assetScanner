@@ -10,62 +10,26 @@
   c.loaded = false;
 	c.requestsLoaded = false;
 	c.showDetails = true;
-	c.freeformClicked = false;
-	c.createNewClicked = false;
-	c.freeformOrderClicked = false;
-	c.closeNewTask = true;
-	c.closeWholeForm = true;
-	c.maxLength = 160;
-	c.noItems = false;
-	c.freeformText = '';
-	c.freeformScan = true;
-	c.assetSysId = '';
-	c.showBarcode = false;
 	c.showTaskButtons = false;
-	c.notAssigned = false;
-	
-	// This map is used to reformat the asset object
-	// to a more readible format.
-  c.ASSET_KEY_MAP = {
-    'modelCategory': 'Model Category',
-    'model': 'Model',
-		'acquisitionCountry': 'Acquisition Country',
-    'assetType': 'Asset Type',
-    'retirementDate': 'Retirement Date',
-		'assignedTo': 'Assigned To',
-		'assignedToIsVIP': 'Assigned to VIP',
-		'state': 'State',
-		'substate': 'Sub State',
-		'stockroom': 'Bin',
-		'legalHold': 'Legal Hold',
-		'serialNumber': 'Serial Number'
-  };
-	
-	// This map is used reformat the ritm object
-	// to a more readible format.
-	c.ITEM_KEY_MAP = {
-		'itemNumber': 'RITM',
-		'item': 'Type',
-		'stage': 'Stage',
-		'dataReclamation': 'Data Reclamation'
-	};
 	
 	// These functions are used to open the servicenow
 	// forms for the current asset, item or incident.
 	
+	//Open the asset record modal
 	c.viewAsset = function(){
 		spModal.open({
 			title: "Asset",
 			widget: "fd1f4ec347730200ba13a5554ee490c0",
 			widgetInput:{
 				table: "alm_asset",
-				sys_id: c.assetSysId,
+				sys_id: c.asset.sysId,
 				view: 'Default'
 			},
 			size: "lg"
 		});
 	}
 	
+	//Open the modal to view the information about a requested item in the Open Records tab
 	c.viewRequestedItem = function(sys_id){
 		spModal.open({
 			title: "Requested Item",
@@ -79,6 +43,7 @@
 		});
 	}
 	
+		//Open the modal to view the information about an incident in the Open Records tab
 	c.viewIncident = function(sys_id){
 		spModal.open({
 			title: "Incident",
@@ -92,7 +57,7 @@
 		});
 	}
 	
-	
+	//Close any of the modals when you click outside of the modal
 	c.closeBox = function(event){
 		var target = event.target || event.srcElement;
 		if (target.id == "freeformAdd" ||
@@ -104,25 +69,25 @@
 							 target.id != "freeformLabel") {
 		}
 	}
-
-  c.getParameterByName = function(param) {
-	   return $location.search()[param];
-  };
 	
-  c.navigate = function(link) {
-	  window.location.href = link;
-  };
-	
+	//Show/hide details for the asset when you click the arrow in the top right corner
 	c.toggleDetails = function(){
-		if(c.showDetails){
-			c.showDetails = false;
-		}else{
-			c.showDetails = true;
-		}
+		c.showDetails = !c.showDetails;
 	};
+	
+	//Show/hide the freeform slider on click of "Add Tasks" at the bottom of the screen
+	c.toggleFreeformSlider = function(){
+		c.showTaskButtons = !c.showTaskButtons;
+	};
+	
+	// Client side access to camera scan
+	/*c.binScanPage = function(){
+			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
+	};*/
   
+	//Get the data about the entered asset - getByIdentifier API.  This call handles the check to Atlas on the backend.
   c.getAsset = function(serial){
-	    c.loaded = false;
+	    c.loadedAsset = false;
 		$http({
 			method: 'get',
 			url: '/api/x_gege9_asset_scan/asset_scanner/GetAssetInfo/' + serial,
@@ -131,111 +96,22 @@
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				c.assetSysId = response.data.result.sysId;
-				c.assignedTo = response.data.result.assignedTo;
-				console.log(response.data.result);
-				if (c.assignedTo.length === 0) {
-					c.loaded = true;
-					c.notAssigned = true;
-					
-				} else {
-					c.checkLegalHoldFromAtlas(c.assignedTo);
-				}
-				getTodoList(response.data.result.sysId);
-				c.transformData(response.data.result);
+				c.asset = response.data.result;
+				getTodoList(c.asset.sysId);
 				c.error = false;
-				c.loaded = true;
+				c.loadedAsset = true;
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
+				c.loadedAsset = true;
 			}
 		}, function(response){
 			c.errorMessage = "Unable to find this serial number. Try entering manually.";
 			c.error = true;
-			c.loaded = true;
+			c.loadedAsset = true;
 		});
-	};
-  
-  c.transformData = function(data) {
-	  c.image = data.modelImage;
-		c.sysId = data.sysId;
-	  c.url = data.url;
-	  c.details = c.mapProperties(data, c.ASSET_KEY_MAP);
-  };
-	
-  c.mapProperties = function(obj, mapping) {
-	Object.keys(obj)
-      .forEach(function(key) {
-        var newKey = mapping[key];
-        if (typeof(newKey) != 'undefined')
-          obj[newKey] = obj[key];
-        delete(obj[key]);
-      });
-    return obj;
-  };
-	
-	//Make sure legal hold field matches Atlas
-	 c.checkLegalHoldFromAtlas = function(assignedTo){
-		$http({
-			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/checkLegalHoldFromAtlas/' + assignedTo,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			
-			if (response.statusText === 'OK'){
-				//convert to an object because it comes back from Atlas as a string
-				var responseObj = JSON.parse(response.data.result);
-				if(responseObj.hold === 'yes'){
-					c.legalHold = 'true';
-					c.loaded = true;
-					c.markLegalHold(c.assetSysId, c.legalHold);
-				} else {
-					c.legalHold = 'false';
-					c.loaded = true;
-					c.markLegalHold(c.assetSysId, c.legalHold);
-				}
-			} else {
-				c.error = true; 
-				c.errorMessage = "Cannot get Legal Hold information."
-			}
-		})
-	} 
-	
-	c.markLegalHold = function(todoSysId, legalHold){
-		//var legalHold = 'true';
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId + '/' + legalHold,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				//c.completeTodo(todoSysId);
-			}else{
-				c.error = true;
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			c.errorMessage = "Unable to update Legal Hold.";
-			c.error = true;
-		});
-	}
-	
-	//Click the number to change the order of the freeform todos
-	c.orderFreeformTodos = function(todo){
-		if (todo.state == '7') { 
-			c.freeformOrderClicked = true;
-		}
-
 	};
 	
 	//Click the todo list item and bring up the camera to scan the stockroom
@@ -245,7 +121,7 @@
 				if (barcode){
 					c.showBinResults = true;
 					c.showBinButtons = false;
-					updateStockroom(c.assetSysId, todo.sysId, barcode);
+					updateStockroom(c.asset.sysId, todo.sysId, barcode);
 				}else{
 					c.error = true;
 					c.errorMessage = "Try Again";
@@ -267,88 +143,142 @@
 		c.showBinButtons = false;
 	};
 	
-	
-	c.toggleFreeformSlider = function() {
-		c.showTaskButtons = !c.showTaskButtons;
-	};
-	
-	c.toggleNewTaskForm = function() {
-		c.createNewClicked = !c.createNewClicked;
-	};
-	
-	c.freeformSubmit = function(shortDescription) {
-		if (shortDescription.length > 160) {
+	//Mark the todo as completed
+	c.completeTodo = function(todoSysId){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/completeToDo/' + todoSysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.getAsset(c.serial_no)
+			}else{
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.errorMessage = "Unable to find this todo item.";
 			c.error = true;
-			c.shortDescriptionError = true;
-			c.errorMessage = "Your description is too long.";
-			return;
-		} 
-		
-		if (shortDescription.trim().length === 0) {
-			c.error = true;
-			c.shortDescriptionError = true;
-			c.errorMessage = "Please enter a description.";
-			return;
-		} 
-		
-		c.freeformText = '';
-		c.shortDescriptionError = false;
-		c.error = false;
-		createTodo(shortDescription);
-	};
+		});
+	}
 	
+	
+	//Call to get the requested item tickets related to the asset for the Open Records tab
 	c.getRequestedItems = function(){
 		$http({
 			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/getAssetRequestedItems/' + c.assetSysId,
+			url: '/api/x_gege9_asset_scan/asset_scanner/getAssetRequestedItems/' + c.asset.sysId,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				var data = response.data.result;
-				c.requests = data.map(function(item) {
-					var request = {};
-					request.url = item.url;
-					request.sysId = item.sysId;
-					request.details = c.mapProperties(item, c.ITEM_KEY_MAP);
-					c.requestsLoaded = true;
-					return request;
-				});
+				c.requests = response.data.result;
+				c.loadedRecords = true;
+			} else {
+				c.noRequestedItems = true;
 			}
 		},
 		function(data){
-			c.noItems = true;
+			c.noRequestedItems = true;
 		})
 	}
 	
+	//Call to get the incident tickets related to the asset for the Open Records tab
 	c.getRecentIncidents = function(){
 		$http({
 			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/getRecentIncidents/' + c.assetSysId,
+			url: '/api/x_gege9_asset_scan/asset_scanner/getRecentIncidents/' + c.asset.sysId,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				var data = response.data.result;
-				c.incidents = data.map(function(item) {
-					var incident = {};
-					incident.url = item.url;
-					incident.number = item.itemNumber;
-					incident.sysId = item.sysId;
-					incident.description = item.description;
-					incident.state = item.state;
-					c.requestsLoaded = true;
-					return incident;
-				});
+				c.incidents = response.data.result;
+				c.loadedRecords = true;
+			} else {
+				c.noIncidents = true;
 			}
 		},
 		function(data){
-			c.noItems = true;
+			c.noIncidents = true;
 		})
 	}
 	
+	//Open modal to create a move task when the user clicks the "Move Asset" button
+	c.addMoveTask = function(){
+		spModal.open({
+			title: 'Description of Move',
+			buttons: [{label: 'Submit', primary: true}],
+			input: true,
+			size: 'lg'
+		}).then(function(value){
+			$http({
+				method: 'post',
+				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
+				c.asset.sysId + '/' + value + '/true',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response){
+				if(response.statusText === 'OK'){
+					c.error = false;
+					c.freeformDescription = '';
+					getTodoList(c.asset.sysId);
+					c.toggleFreeformSlider();
+				}else{
+					c.error = true;
+					if(!!response.errorMessage){
+						c.errorMessage = response.errorMessage;
+					}
+				}
+			}, function(response){
+				c.error = true;
+			});
+		});
+	}
+
+	//Open modal for creating a freeform task
+	c.openFreeformModal = function(){
+		spModal.open({
+			title: 'Freeform Task',
+			buttons: [{label: 'Submit', primary: true}],
+			input: true,
+			size: 'lg'
+		}).then(function(value){
+			$http({
+				method: 'post',
+				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
+				c.asset.sysId + '/' + value.replace("’", "'") + '/false',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response){
+				if(response.statusText === 'OK'){
+					c.error = false;
+					c.freeformDescription = '';
+					getTodoList(c.asset.sysId);
+					c.toggleFreeformSlider();
+				}else{
+					c.error = true;
+					if(!!response.errorMessage){
+						c.errorMessage = response.errorMessage;
+					}
+				}
+			}, function(response){
+				c.errorMessage = "Unable to find this todo list. Try entering manually.";
+				c.error = true;
+			});
+		});
+	}
+	
+	//Call to get the todo tasks related to the asset.  
+	//Open todos in the To Do Items tab and closed todos for the To Do History tab
 	function getTodoList(sysId){
 		$http({
 			method: 'get',
@@ -378,20 +308,7 @@
 		});
 	}
 	
-	c.createNoRequestTodos = function(){
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/' + c.assetSysId,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				getTodoList(c.assetSysId);
-			}
-		});
-	}
-	
+	//Update the stockroom on the asset to the scanned stockroom 
 	function updateStockroom(assetSysId, todoSysId, stockroom){
 	    c.loaded = false;
 		$http({
@@ -421,32 +338,7 @@
 		});
 	}
 	
-	c.completeTodo = function(todoSysId){
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/completeToDo/' + todoSysId,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				c.getAsset(c.serial_no)
-				//getTodoList(c.assetSysId);
-			}else{
-				c.error = true;
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			c.errorMessage = "Unable to find this todo item.";
-			c.error = true;
-		});
-	}
-	
-	
-	
+	//Mark todos as skipped when the user presses skip
 	function skipTodo(todoSysId){
 		$http({
 			method: 'post',
@@ -457,7 +349,7 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
-				getTodoList(c.assetSysId);
+				getTodoList(c.asset.sysId);
 			}else{
 				c.error = true;
 				if(!!response.errorMessage){
@@ -470,79 +362,12 @@
 		});
 	}
 	
-	// Client side access to camera scan
-	c.binScanPage = function(){
-			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
-	};
+		//Function to be able to get a parameter from the URL
+  function getParameterByName(param) {
+	   return $location.search()[param];
+  } 
 	
-	c.addMoveTask = function(){
-		spModal.open({
-			title: 'Description of Move',
-			buttons: [{label: 'Submit', primary: true}],
-			input: true,
-			size: 'lg'
-		}).then(function(value){
-			$http({
-				method: 'post',
-				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
-				c.assetSysId + '/' + value + '/true',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(function(response){
-				if(response.statusText === 'OK'){
-					c.error = false;
-					c.freeformDescription = '';
-					c.freeformScan = false;
-					getTodoList(c.assetSysId);
-					c.toggleFreeformSlider();
-				}else{
-					c.error = true;
-					if(!!response.errorMessage){
-						c.errorMessage = response.errorMessage;
-					}
-				}
-			}, function(response){
-				c.error = true;
-			});
-		});
-	}
-
-	c.openFreeformModal = function(){
-		spModal.open({
-			title: 'Freeform Task',
-			buttons: [{label: 'Submit', primary: true}],
-			input: true,
-			size: 'lg'
-		}).then(function(value){
-			$http({
-				method: 'post',
-				url: '/api/x_gege9_asset_scan/asset_scanner/createFreeForm/' +
-				c.assetSysId + '/' + value.replace("’", "'") + '/false',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(function(response){
-				if(response.statusText === 'OK'){
-					c.error = false;
-					c.freeformDescription = '';
-					c.freeformScan = false;
-					getTodoList(c.assetSysId);
-					c.toggleFreeformSlider();
-				}else{
-					c.error = true;
-					if(!!response.errorMessage){
-						c.errorMessage = response.errorMessage;
-					}
-				}
-			}, function(response){
-				c.errorMessage = "Unable to find this todo list. Try entering manually.";
-				c.error = true;
-			});
-		});
-	}
-	
-  c.serial_no = c.getParameterByName('serial_no');
+  c.serial_no = getParameterByName('serial_no');
   c.getAsset(c.serial_no);
 }]]></client_script>
         <controller_as>c</controller_as>
@@ -671,7 +496,7 @@ hr {
 }
 
 .asset-details {
-  margin-top: 70px;
+  margin-top: 0px;
   width: 100%;
   display: flex;
 	flex-direction: column;
@@ -701,8 +526,11 @@ hr {
   width: 100%;
 	display: flex;
   flex-direction: column;
-  margin-bottom: 75px;
-  
+  margin-bottom: 75px;  
+}
+
+.asset-lists-collapse {
+	margin-top: 70px;
 }
 
 .todo-instructions {
@@ -773,6 +601,11 @@ button #confirm {
 
 .to-do-items {
   padding-left: 0;
+}
+
+.todo-default {
+ text-align: center; 
+  padding: 10px;
 }
 
 .todo-list {
@@ -1037,7 +870,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1645</sys_mod_count>
+        <sys_mod_count>1708</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1045,7 +878,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-07-27 14:06:33</sys_updated_on>
+        <sys_updated_on>2018-08-06 14:11:53</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeBox($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1059,18 +892,6 @@ textarea {
       </a>
     </div>
   </div>
-
-  <div class="col-xs-12 more-details-button">
-     <img ng-if="c.image" class="img img-responsive asset-image center-block" width="65" height="65"
-       ng-src="{{c.image}}" />
-    <button ng-click="c.viewAsset()" class="btn btn-default btn-sm col-xs-offset-3 col-xs-6">
-      VIEW ASSET RECORD
-    </button>
-  </div>
-
-  <div id="barcode_container" ng-show="c.showBarcode">
-
-  </div>
   
   <!-- Error Alert -->
   <div class="alert alert-danger error-message" ng-show="c.error">
@@ -1079,73 +900,74 @@ textarea {
 
   <!-- The row with all the information about the asset -->
   <div id="asset-details" class="asset-details" ng-class="{'asset-slider': c.showDetails, 'asset-slider-closed': !c.showDetails}">
-    <div id="results" ng-show="c.loaded">
+    <div class="spinner" ng-show="!c.loadedAsset">
+      <i class="fa fa-spinner fa-4x fa-pulse"></i>
+    </div>
+    <div id="results" ng-show="c.loadedAsset">
+      <div class="col-xs-12 more-details-button">
+        <img ng-if="c.image" class="img img-responsive asset-image center-block" width="65" height="65"
+             ng-src="{{c.image}}" />
+        <button ng-click="c.viewAsset()" class="btn btn-default btn-sm col-xs-offset-3 col-xs-6">
+          VIEW ASSET RECORD
+        </button>
+      </div>
       <div id="asset-details">
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>Legal Hold</b></div> 
           <div class="attr pull-right">
-            <div ng-show="c.legalHold">
-              <i class="fa fa-spinner fa-4x fa-pulse" ng-show="!c.loaded"></i>
-              <div ng-class="{'important-asset-detail': c.legalHold == 'true'}">
-                {{c.legalHold}}
-              </div>
-            </div>
-            <div ng-show="c.notAssigned" ng-class="{'important-asset-detail': c.details['Legal Hold'] == 'true'}">
-              {{c.details['Legal Hold']}}
+            <div ng-class="{'important-asset-detail': c.asset.legalHold == 'True'}">
+              {{c.asset.legalHold}}
             </div>
           </div>
         </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 
-          <div class="attr pull-right">{{c.details["State"]}}</div>
+          <div class="attr pull-right">{{c.asset.state}}</div>
         </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>Sub State</b></div> 
-          <div class="attr pull-right" ng-class="{'important-asset-detail': c.details['Sub State'] == 'Pending repair'}">{{c.details["Sub State"]}}</div>
+          <div class="attr pull-right" ng-class="{'important-asset-detail': c.asset.substate == 'Pending repair'}">{{c.asset.substate}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Bin</b></div> 
-          <div class="attr pull-right" ng-hide="c.details['Bin'] == ''">{{c.details["Bin"]}}</div>
-          <div class="attr pull-right" ng-show="c.details['Bin'] == ''">This asset is not assigned to a bin.</div>
+          <div class="attr pull-right" ng-hide="c.asset.stockroom == ''">{{c.asset.stockroom}}</div>
+          <div class="attr pull-right" ng-show="c.asset.stockroom == ''">This asset is not assigned to a bin.</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Model Category</b></div> 
-          <div class="attr pull-right">{{c.details["Model Category"]}}</div>
+          <div class="attr pull-right">{{c.asset.modelCategory}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Model</b></div> 
-          <div class="attr pull-right">{{c.details["Model"]}}</div>
+          <div class="attr pull-right">{{c.asset.model}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Acquisition Country</b></div> 
-          <div class="attr pull-right" ng-hide="c.details['Acquisition Country'] == ''">{{c.details["Acquisition Country"]}}</div>
-          <div class="attr pull-right" ng-show="c.details['Acquisition Country'] == ''">This asset is not assigned to a country.</div>
+          <div class="attr pull-right" ng-hide="c.asset.acquisitionCountry == ''">{{c.asset.acquisitionCountry}}</div>
+          <div class="attr pull-right" ng-show="c.asset.acquisitionCountry == ''">This asset is not assigned to a country.</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Asset Type</b></div> 
-          <div class="attr pull-right capitalize">{{c.details["Asset Type"]}}</div>
+          <div class="attr pull-right capitalize">{{c.asset.assetType}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Retirement Date</b></div> 
-          <div class="attr pull-right">{{c.details["Retirement Date"]}}</div>
+          <div class="attr pull-right">{{c.asset.retirementDate}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Assigned to</b></div> 
-          <div class="attr pull-right" ng-hide="c.details['Assigned To'] == ''">{{c.details["Assigned To"]}}</div>
-          <div class="attr pull-right" ng-show="c.details['Assigned To'] == ''">This asset is not assigned.</div>
+          <div class="attr pull-right" ng-hide="c.asset.assignedTo == ''">{{c.asset.assignedTo}}</div>
+          <div class="attr pull-right" ng-show="c.asset.assignedTo == ''">This asset is not assigned.</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Assigned to VIP</b></div> 
-          <div class="attr pull-right capitalize">{{c.details["Assigned to VIP"]}}</div>
+          <div class="attr pull-right capitalize">{{c.asset.assignedToIsVIP}}</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="spinner" ng-show="!c.loaded">
-    <i class="fa fa-spinner fa-4x fa-pulse"></i>
-  </div>
   <!-- The row with all the lists of stuffs -->
-  <div class="asset-lists">
+  <div class="asset-lists" ng-class="{'asset-lists-collapse': !c.showDetails}">
     <ul class="nav nav-tabs todo-nav">
       <li class="active col-xs-4 todo-tab">
         <a data-toggle="tab" href="#todo">To Do Items</a>
@@ -1162,15 +984,10 @@ textarea {
       <!-- This is the todo tab content -->
       <div id="todo" class="tab-pane fade in active">
 
-        <div ng-show="c.openTodos.length === 0">
+        <div class="col-xs-12 todo-default" ng-show="c.openTodos.length === 0">
           <h6>
-            There are no to do items for this Asset. This is probably because it was sent without
-            opening a request or the request was created before this app. Click the button below 
-            to generate a list of to do items to receive it in to the depot.
+            There are no to do items for this asset. Click "Add Tasks" below to add to do list tasks.
           </h6>
-          <button class="btn btn-primary center-block" ng-click="c.createNoRequestTodos()">
-            Generate To Do List
-          </button>
         </div>
 
         <div ng-show="c.openTodos.length > 0">
@@ -1180,9 +997,8 @@ textarea {
           <div class="todo-list" ng-repeat="todo in c.openTodos | orderBy: todo.order"
                ng-class="{'disabled disabled-text': todo.state == '3', 'disabled disabled-text-red': todo.state == '7'}">
             <div class="row todo-list-container">
-              <div class="col-xs-1 todo-list-icon-container todo-number" ng-dblclick="c.orderFreeformTodos(todo)">
-                <span ng-hide="c.freeformOrderClicked" >{{$index + 1}}.</span>
-                <input ng-show="c.freeformOrderClicked" width="15" />
+              <div class="col-xs-1 todo-list-icon-container todo-number">
+                <span>{{$index + 1}}.</span>
               </div>
               <div class="col-xs-7 todo-container">
                 <div class="row">
@@ -1198,16 +1014,12 @@ textarea {
               </div>
               <div class="col-xs-2 todo-list-icon-container to-do-items">
                 <button class="btn btn-primary" ng-click="c.scanTodo(todo)" 
-                        ng-if="todo.type != 'Freeform' && todo.type != 'Investigate' && todo.type != 'Check Legal Hold'">
+                        ng-if="todo.type != 'Freeform'">
                   SCAN
                 </button>
                 <button class="btn btn-primary" ng-click="c.completeTodo(todo.sysId)" 
-                        ng-if="todo.type == 'Freeform' || todo.type == 'Investigate'">
+                        ng-if="todo.type == 'Freeform'">
                   DONE
-                </button>
-                <button class="btn btn-primary" ng-click="c.markLegalHold(todo.sysId)" 
-                        ng-if="todo.type == 'Check Legal Hold'">
-                  HOLD
                 </button>
               </div>
               <div class="col-xs-1 todo-list-icon-container to-do-items">
@@ -1275,14 +1087,17 @@ textarea {
       </div>
 
       <!-- Open request tab content -->
-      <div id="openRequest" class="tab-pane fade">
-        <div class="spinner" ng-hide="c.noItems || c.requestsLoaded">
+      <div id="openRequest" class="col-xs-12 tab-pane fade">
+        <div class="spinner" ng-hide="c.loadedRecords">
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
+        </div>
+        <div class="col-xs-12" ng-show="c.noIncidents && c.noRequestedItems">
+          No open records.
         </div>
         <div class="request-block col-xs-12" ng-repeat="request in c.requests">
           <div class="row">
             <div class="col-xs-12 request-number">
-              {{request.details.RITM}}
+              {{request.itemNumber}}
             </div>
           </div>
           
@@ -1294,7 +1109,7 @@ textarea {
                   Type:
                 </span>
                 <span class="col-xs-6">
-                  {{request.details.Type}}
+                  {{request.item}}
                 </span>
               </div>
               <div class="row">
@@ -1302,7 +1117,7 @@ textarea {
                   Stage:
                 </span>
                 <span class="col-xs-6">
-                  {{request.details.Stage}}
+                  {{request.stage}}
                 </span>
               </div>
               <div class="row">
@@ -1310,7 +1125,7 @@ textarea {
                   Data Reclamation:
                 </span>
                 <span class="col-xs-6">
-                  {{request.details['Data Reclamation']}}
+                  {{request.dataReclamation}}
                 </span>
               </div>
             </div>
@@ -1326,7 +1141,7 @@ textarea {
         <div class="request-block col-xs-12" ng-repeat="incident in c.incidents">
           <div class="row">
             <div class="col-xs-12 request-number">
-              {{incident.number}}
+              {{incident.itemNumber}}
             </div>
           </div>
           <div class="row requests-details">

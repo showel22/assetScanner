@@ -6,59 +6,53 @@
         <consumes_customized>false</consumes_customized>
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
-        <http_method>POST</http_method>
-        <name>markLegalHold</name>
+        <http_method>GET</http_method>
+        <name>getKeyboardLayouts</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
-	var error;
+    var responseArr = [], error;
 	
-    var gr = new GlideRecord('alm_hardware');
-	gr.addQuery('sys_id', request.pathParams.assetId);
-	gr.query();
-	if(gr.hasNext()){
-		gr.next();
-		gr.u_legal_hold = request.pathParams.legalHold;
-		if (gr.update()){
-			response.setStatus(200);
-			response.setBody({message: 'Good Vibrations'});
-			return response;
-		}else{
-			error = new sn_ws_err.ServiceError();
-			error.setStatus(404);
-			error.setMessage("Unable to update.");
-			return error;
+	var choiceGR = new GlideRecord('sys_choice');
+	choiceGR.addEncodedQuery('name=alm_hardware^element=u_keyboard_layout');
+	choiceGR.query();
+	if (choiceGR.hasNext()) {
+		while (choiceGR.next()){
+			responseArr.push({
+				label: choiceGR.label.toString(),
+				value: choiceGR.value.toString()
+			});
 		}
-	}else{
+		return responseArr;
+	} else {
 		error = new sn_ws_err.ServiceError();
 		error.setStatus(404);
-		error.setMessage("Can't find this asset.");
+		error.setMessage('I got nothin...');
 		return error;
 	}
-	
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/{assetId}/{legalHold}</operation_uri>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getKeyboardLayouts</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/{assetId}/{legalHold}</relative_path>
+        <relative_path>/getKeyboardLayouts</relative_path>
         <request_example/>
         <requires_acl_authorization>true</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
-        <sys_created_by>212607632</sys_created_by>
-        <sys_created_on>2018-05-04 13:38:10</sys_created_on>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-07-31 17:35:09</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>6b7890fadbb19b00d087d8965e96198c</sys_id>
-        <sys_mod_count>6</sys_mod_count>
-        <sys_name>markLegalHold</sys_name>
+        <sys_id>a2bd520bdbe35b40262950a45e96191c</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>getKeyboardLayouts</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_ws_operation_6b7890fadbb19b00d087d8965e96198c</sys_update_name>
+        <sys_update_name>sys_ws_operation_a2bd520bdbe35b40262950a45e96191c</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-04 18:22:21</sys_updated_on>
+        <sys_updated_on>2018-08-06 19:03:56</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

@@ -20,10 +20,10 @@
 	assetGR.query();
 	if(assetGR.hasNext()){
 		assetGR.next();
+		
 		responseObj = {
 			sysId: assetGR.sys_id,
 			serialNumber: assetGR.serial_number.toString(),
-			legalHold: assetGR.u_legal_hold.toString(),
 			state: assetGR.install_status.getDisplayValue(),
 			substate: assetGR.substatus.getDisplayValue(),
 			stockroom: assetGR.stockroom.getDisplayValue(),
@@ -34,9 +34,25 @@
 			retirementDate: assetGR.retirement_date.getDisplayValue(),
 			assetType: assetGR.acquisition_method.toString(),
 			assignedTo: assetGR.assigned_to.user_name.toString(),
+			reservedFor: assetGR.reserved_for.toString(),
 			assignedToIsVIP: assetGR.assigned_to.vip.toString(),
 			url: "/" + assetGR.getTableName() + ".do?sys_id=" + assetGR.sys_id.toString()
 		};
+		
+		if (assetGR.assigned_to.user_name){
+			responseObj.legalHold = checkAtlas(assetGR.assigned_to.user_name);
+			updateLegalHold(assetGR.sys_id, responseObj.legalHold);
+		} else if (assetGR.reserved_for.user_name){
+			responseObj.legalHold = checkAtlas(assetGR.reserved_for.user_name);
+			updateLegalHold(assetGR.sys_id, responseObj.legalHold);
+		} else {
+			responseObj.legalHold = assetGR.u_legal_hold.toString();
+		}
+		
+		if (responseObj.legalHold === 'Atlas error'){
+			responseObj.legalHold = assetGR.u_legal_hold.toString();
+		}
+		
 		response.setBody(responseObj);
 		response.setStatus(200);
 		return response;
@@ -46,7 +62,51 @@
 		error.setMessage('No asset for this Serial Number.');
 		return error;
 	}
+
+	//Check Atlas for legal hold	
+	function checkAtlas(userSSO){
+		try { 
+			//get the SSO associated with the asset
+			//Get response from Atlas
+			var r = new sn_ws.RESTMessageV2('x_gege9_asset_scan.Atlas Onhold Check', 'Default GET');
+			r.setStringParameterNoEscape('SSO', userSSO);
+			var instance = gs.getProperty('instance_name');
+			var midserver = gs.getProperty('ge.mid.server.' + instance);
+			r.setMIDServer(midserver);
+			var result = r.execute();
+			var httpStatus = result.getStatusCode();
+			var atlasResponse = JSON.parse(result.getBody());
+			var atlasFormatter;
+			if (atlasResponse.hold === 'no'){
+				atlasFormatter = 'False';
+			} else if (atlasResponse.hold === 'yes'){
+				atlasFormatter = 'True';
+			}
+			return atlasFormatter;
+		}
+		catch(ex) {
+			var message = ex.getMessage();
+			return 'Atlas error';
+		}
+	}
 	
+	function updateLegalHold(assetSysId, legalHold){
+		var error;
+		var assetGR = new GlideRecord('alm_hardware');
+		assetGR.addQuery('sys_id', assetSysId);
+		assetGR.query();
+		if(assetGR.hasNext()){
+			assetGR.next();
+			if (assetGR.u_legal_hold !== legalHold) {
+				assetGR.u_legal_hold = legalHold;
+				assetGR.update();
+			}
+		} else {
+			return 'Legal Hold Update Error';
+		}
+		
+	}
+
 
 })(request, response);]]></operation_script>
         <operation_uri>/api/x_gege9_asset_scan/asset_scanner/GetAssetInfo/{Indentifier}</operation_uri>
@@ -62,15 +122,15 @@
         <sys_created_on>2018-04-18 11:52:04</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>22872de5dbe9d700d087d8965e9619c1</sys_id>
-        <sys_mod_count>36</sys_mod_count>
+        <sys_mod_count>54</sys_mod_count>
         <sys_name>getByIdentifier</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_22872de5dbe9d700d087d8965e9619c1</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-23 10:02:54</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-08-02 18:50:30</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
