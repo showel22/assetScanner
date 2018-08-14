@@ -2,12 +2,12 @@
 <record_update table="sys_push_notif_app_install">
     <sys_push_notif_app_install action="INSERT_OR_UPDATE">
         <active>true</active>
-        <last_registered_on>2018-08-09 18:54:26</last_registered_on>
+        <last_registered_on>2018-08-14 17:27:00</last_registered_on>
         <sys_class_name>sys_push_notif_app_install</sys_class_name>
         <sys_created_by>212607632</sys_created_by>
-        <sys_created_on>2018-08-09 18:54:26</sys_created_on>
+        <sys_created_on>2018-08-14 17:27:00</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>d5aa498edbfb5340262950a45e9619d1</sys_id>
+        <sys_id>d596a2a3db735740262950a45e9619a1</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>dUf9gg6sYfk:APA91bEUbRSMINMJEfihX0COaRm1NsRh1k5Oz8JH7giDxQlyRLmb1Ka0dNRCy7s8i7mc_1ApQyT5C6zwfg2zeHvpwwHtzNabyJbc4pS6Abr90DhhyMPjtSq3w93KfO7Fo7iiuqAq9DnM</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
@@ -16,9 +16,9 @@
         <sys_push_platform_id display_value="Google">53e75f30ff0002009738ffffffffff12</sys_push_platform_id>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_push_notif_app_install_d5aa498edbfb5340262950a45e9619d1</sys_update_name>
+        <sys_update_name>sys_push_notif_app_install_d596a2a3db735740262950a45e9619a1</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-08-09 18:54:26</sys_updated_on>
+        <sys_updated_on>2018-08-14 17:27:00</sys_updated_on>
         <sys_user_id display_value="Howell, Steven (212607632) ">2545e806db4fb2005e305f2e5e9619de</sys_user_id>
         <token>dUf9gg6sYfk:APA91bEUbRSMINMJEfihX0COaRm1NsRh1k5Oz8JH7giDxQlyRLmb1Ka0dNRCy7s8i7mc_1ApQyT5C6zwfg2zeHvpwwHtzNabyJbc4pS6Abr90DhhyMPjtSq3w93KfO7Fo7iiuqAq9DnM</token>
     </sys_push_notif_app_install>
