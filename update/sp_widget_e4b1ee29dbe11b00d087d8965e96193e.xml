@@ -157,13 +157,15 @@
 	//Open Reassign modal
 	c.startReassign = function(serialNo, todo){
 		c.error = false;
+		c.reassignError = false;
 		c.reassignStarted = true;
 		c.reassignTodo = todo;
+		c.sso = '';
+		c.comments = '';
 	}
 	
 	//Mark the todo as completed
 	c.submitReassign = function(serial, sso, comments, todo){
-		console.log(todo);
 		$http({
 			method: 'post',
 			url: '/api/x_gege9_asset_scan/asset_scanner/updateAsset/' + serial + '/' + sso + '/' + comments + '/' + todo,
@@ -173,6 +175,7 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
+				c.reassignError = false;
 				c.submitSuccess = true;
 				getTodoList(c.asset.sysId);
 				if(!!response.errorMessage){
@@ -180,14 +183,13 @@
 				}
 			}
 		}, function(response){
-			c.reassignErrorMessage = 'Invalid SSO';
+			c.reassignErrorMessage = 'Please enter a valid SSO';
 			c.reassignError = true;
 		});
 	}
 	
 	c.closeReassign = function(){
 		var target = event.target || event.srcElement;
-		console.log(target.className);
 		if(target.id !== 'reassignModal' && target.tagName !== 'BUTTON' || 
 			 target.classList.contains('reassign-close-x')){
 			c.reassignStarted = false;
@@ -825,7 +827,7 @@ textarea {
   width: 75%;
   background: #fff;
   border: 1px solid #ccc;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
 }
 
@@ -833,10 +835,13 @@ textarea {
   text-align: right;
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .reassign-close-x {
   font-size: 20px;
+  line-height: 2;
 }
 
 .reassign-input {
@@ -863,11 +868,12 @@ textarea {
 }
 
 .reassign-button-div {
-  margin-top: 40px;
+  //margin-top: 40px;
+  border-top: 1px solid #ccc;
 }
 
 .reassign-submit {
-	margin-top: -30px; 
+	margin-top: 10px; 
 }
 
 //Completed Tab
@@ -1024,7 +1030,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1882</sys_mod_count>
+        <sys_mod_count>1900</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1032,7 +1038,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-18 18:11:20</sys_updated_on>
+        <sys_updated_on>2018-09-18 21:09:19</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1171,7 +1177,7 @@ textarea {
                         ng-if="todo.type == 'Move Asset'">
                   SCAN
                 </button>
-                <!-- Modal includes Reassign Form widget-->
+                <!-- Modal includes Reassign Form widget -->
                 <button class="btn btn-primary"
                         ng-if="todo.type == 'Reassign'"
                         ng-click="c.startReassign(c.serial_no, todo.sysId)">
@@ -1200,8 +1206,11 @@ textarea {
         </div>
         
         <div class="reassign-modal-header">
-            <i class="fa fa-times reassign-close-x" aria-hidden="true"></i>
-          </div>
+          <h4>
+            Reassign Asset
+          </h4>
+          <i class="fa fa-times reassign-close-x" aria-hidden="true"></i>
+        </div>
         
          <!-- Reassign Success Message -->
         <div class="alert alert-success" ng-show="c.submitSuccess">
@@ -1282,7 +1291,7 @@ textarea {
 
       <!-- Open request tab content -->
       <div id="openRequest" class="col-xs-12 tab-pane fade">
-        <div class="spinner" ng-hide="c.loadedRecords">
+        <div class="spinner" ng-hide="c.loadedRecords" ng-hide="c.noIncidents && c.noRequestedItems">
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
         </div>
         <div class="col-xs-12" ng-show="c.noIncidents && c.noRequestedItems">
@@ -1386,7 +1395,7 @@ textarea {
       <div class="col-xs-4 col-xs-offset-1 task-button" ng-click="c.openReassignModal()">
         REASSIGN
       </div>
-    </div> -->
+    </div>-->
   </div>
   
   <!-- Home nav -->
