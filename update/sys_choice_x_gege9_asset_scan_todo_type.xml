@@ -101,7 +101,7 @@
             <element>type</element>
             <hint/>
             <inactive>false</inactive>
-            <label>Move Asset</label>
+            <label>Freeform Scan</label>
             <language>en</language>
             <name>x_gege9_asset_scan_todo</name>
             <sequence/>
@@ -110,9 +110,9 @@
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>0efdd9c9db8e1bc42aead54b5e96193c</sys_id>
-            <sys_mod_count>1</sys_mod_count>
+            <sys_mod_count>2</sys_mod_count>
             <sys_updated_by>212606938</sys_updated_by>
-            <sys_updated_on>2018-09-11 17:04:42</sys_updated_on>
+            <sys_updated_on>2018-09-18 22:13:51</sys_updated_on>
             <value>600</value>
         </sys_choice>
         <sys_choice action="INSERT_OR_UPDATE">

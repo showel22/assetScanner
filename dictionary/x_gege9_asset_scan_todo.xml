@@ -8,9 +8,9 @@
                 <element label="Check Legal Hold" value="700"/>
                 <element label="Data Wipe" value="400"/>
                 <element label="Freeform" value="100"/>
+                <element label="Freeform Scan" value="600"/>
                 <element label="Investigate" value="800"/>
                 <element label="Legal Hold" value="300"/>
-                <element label="Move Asset" value="600"/>
                 <element label="Reassign" value="900"/>
                 <element label="Receiving" value="500"/>
                 <element label="Reclamation" value="200"/>
