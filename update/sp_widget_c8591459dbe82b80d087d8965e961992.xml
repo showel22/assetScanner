@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($http) {
+  /* widget controller */
+  var c = this; 
+	c.sso = '';
+	c.submitSuccess = false;
+	
+	//Mark the todo as completed
+	c.submitReassign = function(serial, sso, comments, todo){
+		$http({
+			method: 'post',
+			url: '/api/x_gege9_asset_scan/asset_scanner/updateAsset/' + serial + '/' + sso + '/' + comments + '/' + todo,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if(response.statusText === 'OK'){
+				c.error = false;
+				c.submitSuccess = true;
+				c.data.reassigned = true;
+				c.server.update();
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+			c.errorMessage = 'Invalid SSO';
+			c.error = true;
+		});
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.reassign-input {
+  width: 100%;
+  height: 34px;
+  display: block;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: #555555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.reassign-form-div {
+  padding: 10px;
+}
+
+.reassign-button-div {
+  margin-top: 40px;
+}
+
+.reassign-submit {
+	margin-top: -30px; 
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>reassign_form</id>
+        <internal>false</internal>
+        <link/>
+        <name>Reassign Form</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	
+	data.serial = input.serial;
+	data.todo = input.todo;
+	
+	gs.log(data);
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>212606938</sys_created_by>
+        <sys_created_on>2018-09-13 14:10:33</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c8591459dbe82b80d087d8965e961992</sys_id>
+        <sys_mod_count>82</sys_mod_count>
+        <sys_name>Reassign Form</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sp_widget_c8591459dbe82b80d087d8965e961992</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-09-17 19:14:28</sys_updated_on>
+        <template><![CDATA[<div>
+  <!-- Error Message -->
+   <div class="alert alert-danger error-message" ng-show="c.error">
+    {{c.errorMessage}}
+  </div>
+    <!-- Success Message -->
+  <div class="alert alert-success" ng-show="c.submitSuccess">
+    Asset reassigned to {{c.sso}}.
+  </div>
+  <form ng-hide="c.submitSuccess">
+    <div class="reassign-form-div">
+      <input class="reassign-input" ng-model="c.sso" type="text" placeholder="Enter user SSO">
+    </div>
+    <div class="reassign-form-div">
+      <input class="reassign-input" ng-model="c.comments" type="text" placeholder="Comments">
+    </div>
+    <div class="reassign-button-div">
+      <input class="btn btn-success reassign-submit pull-right" 
+             type="submit" 
+             value="Reassign"
+             align="right"
+             ng-click="c.submitReassign(c.data.serial, c.sso, c.comments, c.data.todo)">
+    </div>
+  </form>
+</div>]]></template>
+    </sp_widget>
+</record_update>

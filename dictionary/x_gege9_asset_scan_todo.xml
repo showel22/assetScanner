@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
-    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="23144" type="collection">
+    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="39619" type="collection">
         <element label="Asset" mandatory="true" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Stockroom" max_length="32" name="stockroom" reference="alm_stockroom" type="reference"/>
         <element choice="1" label="Type" mandatory="true" max_length="40" name="type" type="choice">
@@ -8,9 +8,10 @@
                 <element label="Check Legal Hold" value="700"/>
                 <element label="Data Wipe" value="400"/>
                 <element label="Freeform" value="100"/>
-                <element label="Freeform Scan" value="600"/>
                 <element label="Investigate" value="800"/>
                 <element label="Legal Hold" value="300"/>
+                <element label="Move Asset" value="600"/>
+                <element label="Reassign" value="900"/>
                 <element label="Receiving" value="500"/>
                 <element label="Reclamation" value="200"/>
             </choice>

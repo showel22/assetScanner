@@ -25,11 +25,12 @@ AssetToDo.prototype = {
 		return toDoGR.insert();
 	},
 	
-	createFreeForm: function(asset, shortDescription, scan){
-		var type = 100;
-		if(scan === 'true'){
-			type = 600;
-		}
+	createFreeForm: function(asset, shortDescription, scan, type){
+// 		var type = 100;
+// 		if(scan === 'true'){
+// 			type = 600;
+// 		}
+		
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.addQuery('asset', asset);
 		toDoGR.orderByDesc('order');
@@ -151,14 +152,14 @@ AssetToDo.prototype = {
         <sys_created_on>2018-04-24 13:51:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>31f241ebdbe99340d087d8965e96198e</sys_id>
-        <sys_mod_count>66</sys_mod_count>
+        <sys_mod_count>67</sys_mod_count>
         <sys_name>AssetToDo</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_31f241ebdbe99340d087d8965e96198e</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-08-06 13:22:40</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-09-11 16:45:03</sys_updated_on>
     </sys_script_include>
 </record_update>
