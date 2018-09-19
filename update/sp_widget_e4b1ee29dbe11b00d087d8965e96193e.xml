@@ -12,6 +12,7 @@
 	c.showDetails = true;
 	c.showTaskButtons = false;
 	c.submitSuccess = false;
+	c.inStock = false;
 	c.sso = '';
 	c.comments = '';
 	
@@ -101,6 +102,11 @@
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.asset = response.data.result;
+				if (c.asset.state === 'In stock'){
+					c.inStock = true;
+				} else {
+					c.inStock = false;
+				}
 				getTodoList(c.asset.sysId);
 				c.error = false;
 				c.loadedAsset = true;
@@ -168,16 +174,21 @@
 	c.submitReassign = function(serial, sso, comments, todo){
 		$http({
 			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/updateAsset/' + serial + '/' + sso + '/' + comments + '/' + todo,
+			url: '/api/x_gege9_asset_scan/asset_scanner/updateAsset/' + serial,
 			headers: {
 				'Content-Type': 'application/json'
+			},
+			data: {
+				sso: sso,
+				comments: comments,
+				todo: todo
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
 				c.error = false;
 				c.reassignError = false;
 				c.submitSuccess = true;
-				getTodoList(c.asset.sysId);
+				c.getAsset(c.serial_no);
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
@@ -1030,7 +1041,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1902</sys_mod_count>
+        <sys_mod_count>1916</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1038,7 +1049,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-19 13:30:57</sys_updated_on>
+        <sys_updated_on>2018-09-19 18:45:19</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1174,12 +1185,12 @@ textarea {
               </div>
               <div class="col-xs-2 todo-list-icon-container to-do-items">
                 <button class="btn btn-primary" ng-click="c.scanTodo(todo)" 
-                        ng-if="todo.type != 'Freeform'">
+                        ng-if="todo.type != 'Freeform' && todo.type != 'Assign'">
                   SCAN
                 </button>
                 <!-- Modal includes Reassign Form widget -->
                 <button class="btn btn-primary"
-                        ng-if="todo.type == 'Reassign'"
+                        ng-if="todo.type == 'Assign'"
                         ng-click="c.startReassign(c.serial_no, todo.sysId)">
                   START 
                 </button>
@@ -1207,14 +1218,14 @@ textarea {
         
         <div class="reassign-modal-header">
           <h4>
-            Reassign Asset
+            Assign Asset
           </h4>
           <i class="fa fa-times reassign-close-x" aria-hidden="true"></i>
         </div>
         
          <!-- Reassign Success Message -->
         <div class="alert alert-success" ng-show="c.submitSuccess">
-          Asset reassigned to {{c.sso}}.
+          Asset assigned to {{c.sso}}.
         </div>
 
         <form ng-hide="c.submitSuccess">
@@ -1227,7 +1238,7 @@ textarea {
           <div class="reassign-button-div">
             <input class="btn btn-success reassign-submit pull-right" 
                    type="submit" 
-                   value="Reassign"
+                   value="Assign"
                    align="right"
                    ng-click="c.submitReassign(c.serial_no, c.sso, c.comments, c.reassignTodo)">
           </div>
@@ -1391,11 +1402,11 @@ textarea {
         FREEFORM
       </div>
     </div>
-    <!--<div class="container-fluid" ng-show="c.asset.state === 'In stock'">
+    <div class="container-fluid" ng-show="c.inStock">
       <div class="col-xs-4 col-xs-offset-1 task-button" ng-click="c.openReassignModal()">
-        REASSIGN
+        ASSIGN
       </div>
-    </div>-->
+    </div>
   </div>
   
   <!-- Home nav -->

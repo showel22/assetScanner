@@ -9,9 +9,21 @@
         <http_method>POST</http_method>
         <name>createFreeForm</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
-
+	
+	
     var atd = new AssetToDo();
-	var newToDoId = atd.createFreeForm(request.pathParams.assetId, request.pathParams.shortDescription, request.pathParams.scan, request.pathParams.type);
+	var newToDoId;
+	//Freeform todo - 100
+	if (request.pathParams.type === '100') {
+		newToDoId = atd.createFreeForm(request.pathParams.assetId, request.pathParams.shortDescription, request.pathParams.scan, '100');
+	//Move asset - 600
+	} else if (request.pathParams.type === '600'){
+		newToDoId = atd.createFreeForm(request.pathParams.assetId, request.pathParams.shortDescription, request.pathParams.scan, '600');
+	}
+	//Reassign - 900
+	else if (request.pathParams.type === '900'){
+		newToDoId = atd.createFreeForm(request.pathParams.assetId, request.pathParams.shortDescription, request.pathParams.scan, '900');
+	}
 	if(newToDoId){
 		response.setStatus(200);
 		response.setBody({newTodo: newToDoId});
@@ -37,7 +49,7 @@
         <sys_created_on>2018-04-25 16:57:26</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e2c6f633dbed5340262950a45e961939</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>10</sys_mod_count>
         <sys_name>createFreeForm</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -45,7 +57,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_e2c6f633dbed5340262950a45e961939</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-11 16:37:10</sys_updated_on>
+        <sys_updated_on>2018-09-19 15:06:38</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
