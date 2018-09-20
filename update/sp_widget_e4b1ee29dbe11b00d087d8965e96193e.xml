@@ -67,13 +67,6 @@
 		if (target) {
 			getTodoList(c.asset.sysId);
 		} 
-		/*else if (target.id != "freeformTextarea" &&
-							 target.id != "freeformButton" &&
-							 target.id != "freeformCheckbox" &&
-							 target.id != "freeformLabel") {
-			//getTodoList(c.asset.sysId);
-		}*/
-	}
 	
 	//Show/hide details for the asset when you click the arrow in the top right corner
 	c.toggleDetails = function(){
@@ -84,11 +77,6 @@
 	c.toggleFreeformSlider = function(){
 		c.showTaskButtons = !c.showTaskButtons;
 	};
-	
-	// Client side access to camera scan
-	/*c.binScanPage = function(){
-			window.location.href = 'asset_scan?id=bin_scan&sys_id=' + c.sysId;
-	};*/
   
 	//Get the data about the entered asset - getByIdentifier API.  This call handles the check to Atlas on the backend.
   c.getAsset = function(serial){
@@ -142,23 +130,6 @@
 			})
 		}
 	};
-	
-	//Click the start button to begin reassign
-	/*c.startReassign = function(serial, todo){
-		spModal.open({
-			size: 'lg',
-			widget: 'c8591459dbe82b80d087d8965e961992',
-			buttons: [{label: 'Close', primary: true}],
-			input: false,
-			widgetInput: {serial: serial,
-									 reassigned: false,
-									 todo: todo}
-		}).then(function(){
-			c.error = false;
-			console.log('hello');
-			getTodoList(c.asset.sysId);
-		});
-	}*/
 	
 	//Open Reassign modal
 	c.startReassign = function(serialNo, todo){
@@ -1041,7 +1012,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1917</sys_mod_count>
+        <sys_mod_count>1922</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1049,7 +1020,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-19 19:18:00</sys_updated_on>
+        <sys_updated_on>2018-09-20 18:30:36</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1185,22 +1156,23 @@ textarea {
               </div>
               <div class="col-xs-2 todo-list-icon-container to-do-items">
                 <button class="btn btn-primary" ng-click="c.scanTodo(todo)" 
-                        ng-if="todo.type != 'Freeform' && todo.type != 'Assign'">
+                        ng-if="todo.typeValue != '100' && todo.typeValue != '900'">
                   SCAN
                 </button>
                 <!-- Modal includes Reassign Form widget -->
                 <button class="btn btn-primary"
-                        ng-if="todo.type == 'Assign'"
+                        ng-if="todo.typeValue == '900'"
                         ng-click="c.startReassign(c.serial_no, todo.sysId)">
                   START 
                 </button>
                 <button class="btn btn-primary" ng-click="c.completeTodo(todo.sysId)" 
-                        ng-if="todo.type == 'Freeform'">
+                        ng-if="todo.typeValue == '100'">
                   DONE
                 </button>
               </div>
               <div class="col-xs-1 todo-list-icon-container to-do-items">
-                <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)" ng-if="todo.type != 'Receiving'">
+                <button class="btn btn-default" ng-click="c.markSkipped(todo.sysId)" 
+                        ng-if="todo.typeValue != '500'">
                   SKIP
                 </button>
               </div>
