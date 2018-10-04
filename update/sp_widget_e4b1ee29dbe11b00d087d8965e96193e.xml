@@ -15,6 +15,8 @@
 	c.inStock = false;
 	c.sso = '';
 	c.comments = '';
+	c.showAtlasError = false;
+	c.showAtlasErrorModal = false;
 	
 	// These functions are used to open the servicenow
 	// forms for the current asset, item or incident.
@@ -67,12 +69,6 @@
 		if (target) {
 			getTodoList(c.asset.sysId);
 		} 
-		/*else if (target.id != "freeformTextarea" &&
-							 target.id != "freeformButton" &&
-							 target.id != "freeformCheckbox" &&
-							 target.id != "freeformLabel") {
-			//getTodoList(c.asset.sysId);
-		}*/
 	}
 	
 	//Show/hide details for the asset when you click the arrow in the top right corner
@@ -101,6 +97,13 @@
 					c.inStock = true;
 				} else {
 					c.inStock = false;
+				}
+				//If there is an issue with Atlas, show the legal hold error
+				if (c.asset.legalHoldError === 'Atlas error' || c.asset.legalHoldError === 'Asset not reserved or assigned'){
+					c.showAtlasError = true;
+					c.showAtlasErrorModal = true;
+				} else {
+					c.showAtlasError = false;
 				}
 				getTodoList(c.asset.sysId);
 				c.error = false;
@@ -167,8 +170,6 @@
 				c.error = false;
 				c.reassignError = false;
 				c.submitSuccess = true;
-				//c.sso = '';
-				//c.comments = '';
 				c.getAsset(c.serial_no);
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
@@ -182,6 +183,7 @@
 	
 	c.closeReassign = function(){
 		var target = event.target || event.srcElement;
+		//Close reassign modal
 		if(target.id !== 'reassignModal' && target.tagName !== 'BUTTON' || 
 			 target.classList.contains('reassign-close-x')){
 			c.reassignStarted = false;
@@ -193,8 +195,15 @@
 				target.classList.contains('reassign-submit')) {
 			c.reassignStarted = true;
 		}
+		//Close Atlas error modal
+		if ((target.id !== 'atlasErrorModal' || target.classList.contains('reassign-close-x')) && !target.classList.contains('atlas-error')){
+			c.showAtlasErrorModal = false;
+		}
 	}
 
+	c.openAtlasError = function(){
+		c.showAtlasErrorModal = true;
+	}
 	
 	// This function is called to invoke
 	// all the actions to skip a todo item 
@@ -461,7 +470,7 @@
   function getParameterByName(param) {
 	   return $location.search()[param];
   } 
-	
+
   c.serial_no = getParameterByName('serial_no');
   c.getAsset(c.serial_no);
 }]]></client_script>
@@ -645,6 +654,32 @@ hr {
   flex: 1 1 50%; 
 }
 
+//Atlas Error Modal
+#atlasErrorModal {
+  position: absolute;
+  z-index: 999;
+  top: 25%;
+  right: 12.5%;
+  width: 75%;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.atlas-error {
+  margin: 5px 10px;
+  text-align: center;
+  border: 1px solid #d9534f;
+  padding: 5px;
+  background-color: #fdf7f7;
+  border-radius: 5px;
+}
+
+.atlas-modal-text {
+  margin: 20px;
+}
+
 .-align--center {
   align-self: center; 
 }
@@ -823,7 +858,7 @@ textarea {
   border-radius: 5px;
 }
 
-.reassign-modal-header {
+.reassign-modal-header, .atlas-modal-header {
   text-align: right;
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
@@ -1022,7 +1057,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>1928</sys_mod_count>
+        <sys_mod_count>2016</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1030,7 +1065,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-21 12:49:02</sys_updated_on>
+        <sys_updated_on>2018-10-01 18:43:57</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1063,15 +1098,25 @@ textarea {
           VIEW ASSET RECORD
         </button>
       </div>
+      
+      <!-- Asset details list -->
       <div id="asset-details">
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>Legal Hold</b></div> 
           <div class="attr pull-right">
-            <div ng-class="{'important-asset-detail': c.asset.legalHold == 'True'}">
-              {{c.asset.legalHold}}
+            <div ng-class="{'important-asset-detail': c.asset.legalHold == 'True' || c.asset.legalHold == 'true'}">
+              <div class="capitalize">
+                {{c.asset.legalHold}}
+              </div>
             </div>
           </div>
         </div>
+        <div ng-show="c.showAtlasError" 
+                   class="atlas-error" 
+                   ng-class="{'important-asset-detail': c.asset.legalHoldError == 'Atlas error' || c.asset.legalHoldError == 'Asset not reserved or assigned'}" 
+                   ng-click="c.openAtlasError()">
+                {{c.asset.legalHoldError}}. Legal hold check from the asset in ServiceNow.
+         </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 
           <div class="attr pull-right">{{c.asset.state}}</div>
@@ -1118,8 +1163,22 @@ textarea {
       </div>
     </div>
   </div>
-  <!-- The row with all the lists of stuffs -->
-  <div class="asset-lists" ng-class="{'asset-lists-collapse': !c.showDetails}">
+
+  <!-- Atlas Error Modal -->
+  <div id="atlasErrorModal" ng-show="c.showAtlasErrorModal">
+    <div class="atlas-modal-header">
+      <h4>Atlas Check Error</h4>
+      <i class="fa fa-times reassign-close-x" aria-hidden="true"></i>
+    </div>
+    <div class="important-asset-detail atlas-modal-text atlas-error">
+      <span ng-if="c.asset.legalHoldError === 'Atlas error'">There was a problem getting legal hold from Atlas. The Legal Hold check will show as the default legal hold check from the asset in ServiceNow. Please verify manually in Atlas.</span>
+       <span ng-if="c.asset.legalHoldError === 'Asset not reserved or assigned'">There is no user assigned to or reserved for on the asset.  Unable to check Atlas.</span>
+    </div>
+  </div>
+
+  
+  <!-- Tabbed list of To Do Items, To Do History and Open Records  -->
+  <div class="asset-lists" ng-class="{'asset-lists-collapse': !c.showDetails}" ng-show="c.asset">
     <ul class="nav nav-tabs todo-nav">
       <li class="active col-xs-4 todo-tab">
         <a data-toggle="tab" href="#todo">To Do Items</a>
@@ -1284,7 +1343,7 @@ textarea {
 
       <!-- Open request tab content -->
       <div id="openRequest" class="col-xs-12 tab-pane fade">
-        <div class="spinner" ng-hide="c.loadedRecords" ng-hide="c.noIncidents && c.noRequestedItems">
+        <div class="spinner" ng-hide="c.loadedRecords" ng-hide="c.noIncidents || c.noRequestedItems">
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
         </div>
         <div class="col-xs-12" ng-show="c.noIncidents && c.noRequestedItems">

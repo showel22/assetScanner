@@ -17,8 +17,8 @@
 		//set a MID server name if one wants to run the message on MID
 		//r.setMIDServer(gs.getProperty('ge.mid.server.geit'));
 		var instance = gs.getProperty('instance_name');
-		var midserver = gs.getProperty('ge.mid.server.' + instance);
-		r.setMIDServer(midserver);
+		//var midserver = gs.getProperty('ge.mid.server.' + instance);
+		//r.setMIDServer(midserver);
 
 		//if the message is configured to communicate through ECC queue, either
 		//by setting a MID server or calling executeAsync, one needs to set skip_sensor
@@ -26,12 +26,18 @@
 		//r.setEccParameter('skip_sensor', true);
 
 		var result = r.execute();
-		var httpStatus = result.getStatusCode();
+		//Timeout after 30 seconds of waiting on Atlas
+		result.waitForResponse(10);
 		response = result.getBody();
+		var  httpStatus = result.getStatusCode();
 		return response;
 	}
 	catch(ex) {
 		var message = ex.getMessage();
+		gs.info('hello');
+		//If no response from Atlas in under 30 seconds
+		response.setBody({error: 'Atlas error'});
+		return response;
 	}
 
 })(request, response);]]></operation_script>
@@ -48,7 +54,7 @@
         <sys_created_on>2018-07-13 15:31:38</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>a7189159db9b1704262950a45e961935</sys_id>
-        <sys_mod_count>23</sys_mod_count>
+        <sys_mod_count>63</sys_mod_count>
         <sys_name>checkLegalHoldFromAtlas</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -56,7 +62,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_a7189159db9b1704262950a45e961935</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-07-27 13:54:58</sys_updated_on>
+        <sys_updated_on>2018-09-28 13:10:40</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

@@ -8,6 +8,9 @@
 	//Message variables
 	c.error = false;
 	c.errorMessage = '';
+	c.validationError = false;
+	c.validationErrorPcModel = false;
+	c.validationErrorAsset = false;
 	
 	//Data variables
 	c.computerModels = '';
@@ -324,25 +327,27 @@
 	}
 	
 	//Scan asset and add it to the list of assets for adding
-	c.scanAsset = function(pcModel, stockroom, modelCategory){
-		if(!c.pcModelSysId){
-			c.validationError = true;
-			return;
-		}
+	c.scanAsset = function(stockroom, modelCategory){
+		//if(!c.pcModelSysId){
+			//c.validationError = true;
+			//return;
+		//}
 		cabrillo.camera.getBarcode().then(function(barcode){
 			if(barcode){
 				c.assetNumber = barcode;
 				c.error = false;
-				c.listAddedSuccess = false;
-				c.validationError = false;
-				c.pcModelSubmitted = false;
-				c.pcModelSelected = false;
-				c.assetAdded = true;
-				c.emptySearch = true;				
-				c.addAssetToList();
+				
+				//c.listAddedSuccess = false;
+				//c.validationError = false;
+				//c.pcModelSubmitted = false;
+				//c.pcModelSelected = false;
+				//c.assetAdded = true;
+				//c.emptySearch = true;				
+				//c.addAssetToList();
+				
 				//Clear out inputs
-				c.assetNumber = '';
-				c.pcModelName = '';
+				//c.assetNumber = '';
+				//c.pcModelName = '';
 			} else {
 				c.error = true;
 				c.errorMessage = 'Cannot add asset';
@@ -357,25 +362,45 @@
 	
 	c.manuallyEnterAsset = function(){
 		c.validationError = false;
-		if(!c.pcModelSysId){
+		c.validationErrorPcModel = false;
+		c.validationErrorAsset = false;
+		if(!c.pcModelName|| !c.assetNumber){
+			if (!c.pcModelName && c.assetNumber){
 			c.validationError = true;
+			c.validationErrorPcModel = true;
+			c.validationErrorAsset = false;
 			return;
+		} else if (c.pcModelName && !c.assetNumber) {
+			c.validationError = true;
+			c.validationErrorPcModel = false;
+			c.validationErrorAsset = true;
+			return;
+		} else {
+			c.validationError = true;
+			c.validationErrorPcModel = true;
+			c.validationErrorAsset = true;
 		}
-		if (c.assetNumber && c.assetNumber.length >= 1) {
+	}
+		if (c.assetNumber && c.assetNumber.length >= 1 && c.pcModelName) {
+			c.validationError = false;
+			c.validationErrorPcModel = false;
+			c.validationErrorAsset = false;
 			c.assetNumber = c.assetNumber.toUpperCase();
 			c.error = false;
 			c.listAddedSuccess = false;
 			c.pcModelSubmitted = false;
 			c.pcModelSelected = false;
-			c.assetAdded = true;
+			c.assetAdded = false;
 			c.emptySearch = true;				
 			c.addAssetToList();
 			//Clear out inputs
 			c.assetNumber = '';
 			c.pcModelName = '';
 		} else {
-			c.error = true;
-			c.errorMessage = 'Please enter a serial number to add the asset.'
+			//c.error = true;
+			c.validationError = true;
+			c.validationErrorPcModel = true;
+			c.validationErrorAsset = true;
 		}
 	}
 	
@@ -414,7 +439,6 @@
 			},
 			data: {'assetArray': c.enteredAssets}
 		}).then(function(response){
-			console.log(response);
 			if (response.statusText === 'OK'){
 				c.listAddedSuccess = true;
 				c.validationError = false;
@@ -556,7 +580,9 @@
   position: absolute;
   z-index: 1000;
   left: 9.6%;
-  top: 193px;
+  //top: 193px;
+  //top: 435px;
+  top: 477px;
 }
 
 .search-item {
@@ -707,15 +733,15 @@ a .white-button{
         <sys_created_on>2018-07-23 13:25:19</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae4c1420dbab9340d087d8965e9619fa</sys_id>
-        <sys_mod_count>607</sys_mod_count>
+        <sys_mod_count>639</sys_mod_count>
         <sys_name>Add New Asset</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_ae4c1420dbab9340d087d8965e9619fa</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-08-14 17:19:38</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-10-04 19:44:54</sys_updated_on>
         <template><![CDATA[<div>
   <div class="container-fluid">
     <div class="row">
@@ -842,17 +868,33 @@ a .white-button{
           </form>
         </div>
 
-        <!-- Select PC Model -->
-        <div class="row button-row manual-button-row" ng-show="c.showPcModelButton">
-          <div class="row">
-            <div class="alert alert-danger col-xs-10 col-xs-offset-1" ng-show="c.validationError">You must fill out the below fields outlined in red.</div>
+				<!-- Enter Asset Buttons-->
+        <div ng-show="c.showPcModelButton">
+          <h4 class="col-xs-10 col-xs-offset-1 section-title">Scan or type in the asset serial number. Do not scan or enter a T tag here.</h4>
+          <!-- Scan Asset Button -->
+          <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-click="c.scanAsset(c.stockroomSysId, c.pcModelCategory)">
+            <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Asset
+          </button>
+          <div class="col-xs-10 col-xs-offset-1 search-container">
+            <input class="col-xs-12 small-search" type="text" 
+                   ng-class="{'red-border': c.validationErrorAsset}"
+                   placeholder="Can't scan asset? Type in serial number."
+                   ng-model="c.assetNumber"/>
           </div>
+        </div>
+        
+          <!-- Select PC Model -->
+        <div class="row button-row manual-button-row" ng-show="c.showPcModelButton">
           
           <!-- PC Model Select -->
+           <h4 class="col-xs-10 col-xs-offset-1 section-title">Select PC model</h4>
           <div class="col-xs-10 col-xs-offset-1 search-container" ng-show="c.showForm" ng-hide="c.pcModelSubmitted">
-            <input class="col-xs-12 small-search" type="text" list="pcModels" ng-class="{'red-border': c.validationError}"
+            <input class="col-xs-10 small-search" type="text" list="pcModels" ng-class="{'red-border': c.validationErrorPcModel}"
                    placeholder="Type PC model name here" ng-change="c.searchPcModels(c.pcModelName)" 
                    ng-model="c.pcModelName" />
+            <div id="binSubmitContainer" class="col-xs-2 model-green-arrow-small" ng-click="c.manuallyEnterAsset()">
+              <i class="glyphicon glyphicon-plus"></i>
+            </div>
           </div>
 
           <!-- List of available PC models -->
@@ -861,31 +903,19 @@ a .white-button{
                 ng-hide="c.emptySearch" ng-click="c.selectPcModel(model)">{{model.name}}</li>
           </div>
         </div>
-
-				<!-- Enter Asset Buttons-->
-        <div ng-show="c.showPcModelButton">
-          <h4 class="col-xs-10 col-xs-offset-1 section-title">Scan or type in the asset serial number. Do not scan or enter a T tag here.</h4>
-          <!-- Scan Asset Button -->
-          <button class="btn col-xs-10 col-xs-offset-1 start-scanning-button white-button" ng-click="c.scanAsset(c.pcModelSysId, c.stockroomSysId, c.pcModelCategory)">
-            <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Asset
-          </button>
-          <div class="col-xs-10 col-xs-offset-1 search-container">
-            <input class="col-xs-10 small-search" type="text" 
-                   placeholder="Can't scan asset? Type in serial number."
-                   ng-model="c.assetNumber"/>
-            <div id="binSubmitContainer" class="col-xs-2 model-green-arrow-small" ng-click="c.manuallyEnterAsset()">
-              <i class="glyphicon glyphicon-plus"></i>
-            </div>
+        
+        <div class="row">
+            <div class="alert alert-danger col-xs-10 col-xs-offset-1" ng-show="c.validationError">You must fill out the fields outlined in red.</div>
           </div>
-          <h4 class="col-xs-10 col-xs-offset-1">Entered Asset List:</h4>
-          <div class="col-xs-10 col-xs-offset-1" ng-hide="c.assetAdded">No entered assets. Fill out the fields above and hit the green button to add an asset to the list.</div>
-        </div>
              
            <!-- Asset List -->
         <div ng-show="c.showPcModelButton">
           <div class="alert alert-success col-xs-10 col-xs-offset-1" ng-show="c.listAddedSuccess">
             {{c.successMessage}}
           </div>
+          
+          <h4 class="col-xs-10 col-xs-offset-1">Entered Asset List:</h4>
+          <div class="col-xs-10 col-xs-offset-1" ng-hide="c.assetAdded">No entered assets. Fill out the fields above and hit the green button to add an asset to the list.</div>
 
           <div class="row asset-list-container">
             <div class="col-xs-12" ng-repeat="asset in c.enteredAssets">
