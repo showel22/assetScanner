@@ -1091,7 +1091,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>2085</sys_mod_count>
+        <sys_mod_count>2086</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1099,7 +1099,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-10 14:29:52</sys_updated_on>
+        <sys_updated_on>2018-10-10 17:33:46</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1483,7 +1483,7 @@ textarea {
           </h3>
         </div>
 
-        <div class="row text-center">
+        <div class="row text-center"  ng-show="c.loadedLegalHoldHistory">
           <div class="col-xs-12 legal-hold-key">
             <div class="col-xs-4 request-title">
               Created:

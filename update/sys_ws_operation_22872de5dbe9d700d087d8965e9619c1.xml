@@ -45,6 +45,8 @@
 			atlasStatus = legalHoldUtils.checkLegalHold(assetGR.assigned_to.user_name, assetGR.sys_id, 'Assigned to');
 		}else if (assetGR.reserved_for.user_name){
 			atlasStatus = legalHoldUtils.checkLegalHold(assetGR.reserved_for.user_name, assetGR.sys_id, 'Reserved for');
+		} else if(assetGR.ci.u_previous_assigned_to.user_name){
+			atlasStatus = legalHoldUtils.checkLegalHold(assetGR.ci.u_previous_assigned_to.user_name, assetGR.sys_id, 'CI Previous Assigned to');
 		}else{
 			atlasStatus = 'No user';
 		}
@@ -88,7 +90,7 @@
         <sys_created_on>2018-04-18 11:52:04</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>22872de5dbe9d700d087d8965e9619c1</sys_id>
-        <sys_mod_count>94</sys_mod_count>
+        <sys_mod_count>95</sys_mod_count>
         <sys_name>getByIdentifier</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -96,7 +98,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_22872de5dbe9d700d087d8965e9619c1</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-09 18:56:44</sys_updated_on>
+        <sys_updated_on>2018-10-10 17:44:39</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
