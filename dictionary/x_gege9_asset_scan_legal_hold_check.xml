@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Legal Hold Check" max_length="40" name="x_gege9_asset_scan_legal_hold_check" type="collection">
+        <element label="Asset" max_length="32" name="asset" reference="alm_asset" type="reference"/>
+        <element label="Error Message" max_length="120" name="error_message" type="string"/>
+        <element label="Legal Hold Designee" max_length="32" name="legal_hold_designee" reference="sys_user" type="reference"/>
+        <element choice="1" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element label="Error" value="0"/>
+                <element label="No" value="200"/>
+                <element label="Yes" value="100"/>
+            </choice>
+        </element>
+        <element label="User Source" max_length="80" name="user_source" type="string"/>
+        <index name="index">
+            <element name="legal_hold_designee"/>
+        </index>
+        <index name="index2">
+            <element name="asset"/>
+        </index>
+    </element>
+</database>

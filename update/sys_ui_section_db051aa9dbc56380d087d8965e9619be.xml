@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_section caption="" section_id="db051aa9dbc56380d087d8965e9619be" sys_domain="global" table="x_gege9_asset_scan_legal_hold_check" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>df051aa9dbc56380d087d8965e9619c6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>legal_hold_designee</element>
+            <position>1</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>57051aa9dbc56380d087d8965e9619c7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>status</element>
+            <position>2</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>d7051aa9dbc56380d087d8965e9619c7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>3</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>5b051aa9dbc56380d087d8965e9619c7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>asset</element>
+            <position>4</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>db051aa9dbc56380d087d8965e9619c7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>5</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_id>5f051aa9dbc56380d087d8965e9619c7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>user_source</element>
+            <position>6</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 18:25:52</sys_created_on>
+            <sys_id>ad1d8f69db8d6380d087d8965e96199b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 18:25:52</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>error_message</element>
+            <position>7</position>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 18:27:08</sys_created_on>
+            <sys_id>406d07a9db8d6380d087d8965e9619f8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_gege9_asset_scan_legal_hold_check" sys_domain="global" view="Default view">db051aa9dbc56380d087d8965e9619be</sys_ui_section>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 18:27:08</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_gege9_asset_scan_legal_hold_check</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>212606938</sys_created_by>
+            <sys_created_on>2018-10-09 14:21:02</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>db051aa9dbc56380d087d8965e9619be</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_gege9_asset_scan_legal_hold_check</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+            <sys_update_name>sys_ui_section_db051aa9dbc56380d087d8965e9619be</sys_update_name>
+            <sys_updated_by>212606938</sys_updated_by>
+            <sys_updated_on>2018-10-09 14:21:02</sys_updated_on>
+            <sys_user/>
+            <title>true</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

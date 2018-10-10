@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="legal_hold_designee" label="Legal Hold Designee" language="en" table="x_gege9_asset_scan_legal_hold_check">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>legal_hold_designee</element>
+            <help/>
+            <hint/>
+            <label>Legal Hold Designee</label>
+            <language>en</language>
+            <name>x_gege9_asset_scan_legal_hold_check</name>
+            <plural>Legal Hold Designees</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>212607632</sys_created_by>
+            <sys_created_on>2018-10-08 13:14:15</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>d72cf819db85a300262950a45e961970</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Legal Hold Designee</sys_name>
+            <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+            <sys_update_name>sys_documentation_x_gege9_asset_scan_legal_hold_check_legal_hold_designee_en</sys_update_name>
+            <sys_updated_by>212607632</sys_updated_by>
+            <sys_updated_on>2018-10-08 13:14:15</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

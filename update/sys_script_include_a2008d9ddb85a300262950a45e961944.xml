@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_gege9_asset_scan.GELegalHoldUtils</api_name>
+        <client_callable>false</client_callable>
+        <description>Server side logic for legal hold check and logging.</description>
+        <name>GELegalHoldUtils</name>
+        <script><![CDATA[var GELegalHoldUtils = Class.create();
+GELegalHoldUtils.prototype = {
+    initialize: function() {
+    },
+	
+	checkLegalHold: function(userSSO, asset, userSource) {
+		try { 
+			//get the SSO associated with the asset
+			//Get response from Atlas
+			var r = new sn_ws.RESTMessageV2('x_gege9_asset_scan.Atlas Onhold Check', 'Default GET');
+			r.setStringParameterNoEscape('SSO', userSSO);
+			var instance = gs.getProperty('instance_name');
+			var midserver = gs.getProperty('ge.mid.server.' + instance);
+			r.setMIDServer(midserver);
+			var result = r.execute();
+			//Only wait 45 seconds for a response
+			result.waitForResponse(45);
+			var httpStatus = result.getStatusCode();
+			var atlasResponse = JSON.parse(result.getBody());
+			var atlasFormatter;
+			if (atlasResponse.hold === 'no'){
+				atlasFormatter = 'False';
+				//Log not on legal hold
+				this.logLegalHoldCheck(asset, 200, userSSO, userSource, '');
+				gs.info('leslie ' + userSource);
+			} else if (atlasResponse.hold === 'yes'){
+				atlasFormatter = 'True';
+				this.logLegalHoldCheck(asset, 100, userSSO, userSource, '');
+			} 
+
+			return atlasFormatter;
+		}
+		catch(ex) {
+			var message = ex.getMessage();
+			this.logLegalHoldCheck(asset, 0, userSSO, userSource, 'Unable to communicate with Atlas.');
+			return 'Atlas error';
+		}
+	},
+	
+	updateAssetLegalHoldStatus: function(asset, status) {
+		if(status === "True"){
+			status = true;
+		}else if (status === 'False'){
+			status = false;
+		} else if (legalHold === 'Atlas error'){
+			status = 'Legal Hold Error';
+		}
+		var error;
+		var assetGR = new GlideRecord('alm_hardware');
+		assetGR.addQuery('sys_id', asset);
+		assetGR.query();
+		if(assetGR.hasNext()){
+			assetGR.next();
+			if (assetGR.u_legal_hold !== status) {
+				assetGR.u_legal_hold = status;
+				assetGR.update();
+			}
+		} else {
+			return 'Legal Hold Update Error';
+		}
+	},
+	// Status should be 0 for error, 100 for Yes or 200 for No
+	logLegalHoldCheck: function(asset, status, user, userSource, errorMessage) {
+		var userSysId;
+		if (!!user){
+			var userGR = new GlideRecord('sys_user');
+			userGR.addQuery('user_name', user);
+			userGR.query();
+			userGR.next();
+			userSysId = userGR.sys_id;
+		}
+		
+		var legalHoldGR = new GlideRecord('x_gege9_asset_scan_legal_hold_check');
+		legalHoldGR.initialize();
+		if(!!user){
+			
+			legalHoldGR.legal_hold_designee = userSysId;
+		}
+		if(!!userSource){
+			legalHoldGR.user_source = userSource;
+		}
+		if(!!errorMessage){
+			legalHoldGR.error_message = errorMessage;
+		}
+		legalHoldGR.status = status.toString();
+		legalHoldGR.asset = asset;
+		legalHoldGR.insert();
+		
+		
+	},
+	// Used to get back a list of legal hold logs for an asset.
+	getAllLegalHoldLogs: function(asset){
+		
+		var log = [];
+		
+		var legalHoldLog = new GlideRecord('x_gege9_asset_scan_legal_hold_check');
+		legalHoldLog.addQuery('asset', asset);
+		legalHoldLog.orderBy('sys_created_on');
+		legalHoldLog.query();
+		while(legalHoldLog.next()){
+			log.push({
+				'user': legalHoldLog.legal_hold_designee.user_name.getDisplayValue(),
+				'datetime': legalHoldLog.sys_created_on.toString(),
+				'status': legalHoldLog.status.getDisplayValue(),
+				'userSource': legalHoldLog.user_source.toString(),
+				'errorMessage': legalHoldLog.error_message.toString()
+			});
+		}
+		
+		return log;
+		
+	},
+
+    type: 'GELegalHoldUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-10-08 13:31:53</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>a2008d9ddb85a300262950a45e961944</sys_id>
+        <sys_mod_count>28</sys_mod_count>
+        <sys_name>GELegalHoldUtils</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_script_include_a2008d9ddb85a300262950a45e961944</sys_update_name>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-10-09 19:25:51</sys_updated_on>
+    </sys_script_include>
+</record_update>

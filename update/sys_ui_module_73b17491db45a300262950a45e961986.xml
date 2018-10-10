@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_ui_module">
+    <sys_ui_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Legal Hold Check">3fb17491db45a300262950a45e961983</application>
+        <filter/>
+        <name>Legal Hold Checks</name>
+        <order/>
+        <path/>
+        <path_relative_to_root>false</path_relative_to_root>
+        <roles>x_gege9_asset_scan.legal_hold_check_user</roles>
+        <sys_class_name>sys_ui_module</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2018-10-08 12:28:41</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>73b17491db45a300262950a45e961986</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Legal Hold Checks</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ui_module_73b17491db45a300262950a45e961986</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2018-10-08 12:28:41</sys_updated_on>
+        <table>x_gege9_asset_scan_legal_hold_check</table>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+    </sys_ui_module>
+</record_update>

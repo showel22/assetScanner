@@ -99,10 +99,12 @@
 					c.inStock = false;
 				}
 				//If there is an issue with Atlas, show the legal hold error
-				if (c.asset.legalHoldError === 'Atlas error' || c.asset.legalHoldError === 'Asset not reserved or assigned'){
+				if (c.asset.legalHoldError === 'Atlas error'){
 					c.showAtlasError = true;
 					c.showAtlasErrorModal = true;
-				} else {
+				} else if (c.asset.legalHoldError === 'Asset not reserved or assigned'){
+					c.showAtlasError = true;
+				}else {
 					c.showAtlasError = false;
 				}
 				getTodoList(c.asset.sysId);
@@ -279,6 +281,27 @@
 		},
 		function(data){
 			c.noIncidents = true;
+		})
+	}
+	
+	// Get the legal hold history on tab click.
+	c.getLegalHoldHistory = function(){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getLegalHoldHistory/' + c.asset.sysId,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if (response.statusText === 'OK'){
+				c.legalHoldHistories = response.data.result;
+				c.loadedLegalHoldHistory = true;
+			} else {
+				c.noLegalHoldHistory = true;
+			}
+		},
+			function(data){
+				c.noLegalHoldHistory = true;
 		})
 	}
 	
@@ -622,8 +645,7 @@ hr {
 
 .important-asset-detail {
     font-weight: bold;
-    color: red;
-    
+    color: red;  
 }
 
 .asset-lists {
@@ -943,6 +965,18 @@ textarea {
   align-items: center;
 }
 
+//Legal Hold Tab
+.legal-hold-key {
+	padding: 10px;
+  background-color: #eeeeee;
+}
+
+.legal-hold-box {
+  padding-top: 10px;
+  border-top: 2px dotted #D3D3D3;
+  margin-top: 10px;
+}
+
 
 .checkbox {
 	font-size: 16px;
@@ -1057,7 +1091,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>2016</sys_mod_count>
+        <sys_mod_count>2085</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1065,7 +1099,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-01 18:43:57</sys_updated_on>
+        <sys_updated_on>2018-10-10 14:29:52</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1115,7 +1149,7 @@ textarea {
                    class="atlas-error" 
                    ng-class="{'important-asset-detail': c.asset.legalHoldError == 'Atlas error' || c.asset.legalHoldError == 'Asset not reserved or assigned'}" 
                    ng-click="c.openAtlasError()">
-                {{c.asset.legalHoldError}}. Legal hold check from the asset in ServiceNow.
+                {{c.asset.legalHoldError}}. Legal hold information defaulting from the asset in ServiceNow. Please verify in Atlas.
          </div>
         <div class="asset-attr"> 
           <div class="attr pull-left"><b>State</b></div> 
@@ -1180,14 +1214,17 @@ textarea {
   <!-- Tabbed list of To Do Items, To Do History and Open Records  -->
   <div class="asset-lists" ng-class="{'asset-lists-collapse': !c.showDetails}" ng-show="c.asset">
     <ul class="nav nav-tabs todo-nav">
-      <li class="active col-xs-4 todo-tab">
+      <li class="active col-xs-3 todo-tab">
         <a data-toggle="tab" href="#todo">To Do Items</a>
       </li>
-      <li class="col-xs-4 todo-tab">
+      <li class="col-xs-3 todo-tab">
         <a data-toggle="tab" href="#completedTodo">To Do History</a>
       </li>
-      <li class="col-xs-4 todo-tab">
+      <li class="col-xs-3 todo-tab">
         <a data-toggle="tab" href="#openRequest" ng-click="c.getRequestedItems(); c.getRecentIncidents();">Open Records</a>
+      </li>
+      <li class="col-xs-3 todo-tab">
+        <a data-toggle="tab" href="#legalHoldHistory" ng-click="c.getLegalHoldHistory();">Legal Hold History</a>
       </li>
     </ul>
     <div class="tab-content">
@@ -1343,11 +1380,16 @@ textarea {
 
       <!-- Open request tab content -->
       <div id="openRequest" class="col-xs-12 tab-pane fade">
-        <div class="spinner" ng-hide="c.loadedRecords" ng-hide="c.noIncidents || c.noRequestedItems">
+        <div class="spinner" ng-hide="c.loadedRecords" ng-hide="c.noIncidents && c.noRequestedItems">
+          <h3>
+            Getting Requests and Incidents from ServiceNow...
+          </h3>
           <i class="fa fa-spinner fa-4x fa-pulse"></i>
         </div>
         <div class="col-xs-12" ng-show="c.noIncidents && c.noRequestedItems">
-          No open records.
+          <h3 class="text-center">
+            No open records.
+          </h3>
         </div>
         <div class="request-block col-xs-12" ng-repeat="request in c.requests">
           <div class="row">
@@ -1426,8 +1468,66 @@ textarea {
           </div>
         </div>
       </div>
+      
+      <!-- Legal Hold History Container -->
+      <div id="legalHoldHistory" class="tab-pane fade">
+        <div class="spinner" ng-hide="c.loadedLegalHoldHistory">
+          <h3>
+            Getting Legal Hold History from ServiceNow...
+          </h3>
+          <i class="fa fa-spinner fa-4x fa-pulse"></i>
+        </div>
+        <div class="col-xs-12" ng-show="c.noLegalHoldHistory">
+          <h3 class="text-center">
+            No legal hold history.
+          </h3>
+        </div>
+
+        <div class="row text-center">
+          <div class="col-xs-12 legal-hold-key">
+            <div class="col-xs-4 request-title">
+              Created:
+            </div>
+            <div class="col-xs-4 request-title">
+              User:
+            </div>
+            <div class="col-xs-4 request-title">
+              User Source:
+            </div>
+          </div>
+        </div>
+
+        <div class="request-block col-xs-12 list-group-item" ng-repeat="legalHold in c.legalHoldHistories | orderBy: '-datetime'">
+          <div class="row requests-details text-center">
+            <div class="col-xs-12">
+              <div class="col-xs-4">
+                {{legalHold.datetime}}
+              </div>
+              <div class="col-xs-4">
+                {{legalHold.user}}
+              </div>
+              <div class="col-xs-4">
+                {{legalHold.userSource}}
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-10 col-xs-offset-1 text-center legal-hold-box">
+            <span class="request-title">
+              Legal Hold:
+            </span>
+            <span ng-class="{'important-asset-detail': legalHold.status == 'Yes'}">
+            	{{legalHold.status}}
+            </span>
+            <span ng-show="legalHold.status === 'Error'">
+              - {{legalHold.errorMessage}}
+            </span>
+          </div>
+        </div>
+      
     </div>
   </div>
+  
+  
   
   <!-- New Task Section -->
   <div class="add-tasks-row" ng-class="{slider: c.showTaskButtons, 'slider-closed': !c.showTaskButtons}">
