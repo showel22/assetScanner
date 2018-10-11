@@ -13,7 +13,7 @@
                 <element label="Investigate" value="800"/>
                 <element label="Legal Hold" value="300"/>
                 <element label="Receiving" value="500"/>
-                <element label="Reclamation_testsnc1" value="200"/>
+                <element label="Reclamation_testsnc1_1" value="200"/>
             </choice>
         </element>
         <index name="index">
