@@ -25,7 +25,7 @@
             <element>type</element>
             <hint/>
             <inactive>false</inactive>
-            <label>Reclamatio</label>
+            <label>Reclamation_testsnc</label>
             <language>en</language>
             <name>x_gege9_asset_scan_todo</name>
             <sequence/>
@@ -34,9 +34,9 @@
             <sys_domain>global</sys_domain>
             <sys_domain_path>/</sys_domain_path>
             <sys_id>02fdd9c9db8e1bc42aead54b5e96193d</sys_id>
-            <sys_mod_count>7</sys_mod_count>
-            <sys_updated_by>212606938</sys_updated_by>
-            <sys_updated_on>2018-10-11 16:16:43</sys_updated_on>
+            <sys_mod_count>9</sys_mod_count>
+            <sys_updated_by>mahima.jayaprakash@snc</sys_updated_by>
+            <sys_updated_on>2018-10-11 17:36:58</sys_updated_on>
             <value>200</value>
         </sys_choice>
         <sys_choice action="INSERT_OR_UPDATE">
