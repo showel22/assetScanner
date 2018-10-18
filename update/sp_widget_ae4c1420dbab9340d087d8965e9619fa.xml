@@ -25,6 +25,8 @@
 	c.showPcModelButton = false;
 	c.showAddAllAssets = false;
 	c.assetAdded = false;
+	c.submittingAllAssets = false;
+	c.listAddingError = false;
 	
 	
 	//Show the Manual Bin Input and button form when click on "Manually Enter Bin" button
@@ -102,6 +104,11 @@
 				c.error = false;
 				c.submittedBinName = response.data.result.name;
 				c.stockroomSysId = response.data.result.sysId;
+				c.binSubmitted = true;
+				getKeyboardLayouts();
+				getAcquisitionMethods();
+				getAcquisitionCountries();
+				c.showAddlQuestions = true;
 			} else {
 				c.error = true;
 				if(!!response.errorMessage){
@@ -120,11 +127,6 @@
 			if (barcode){
 				//If a barcode is found, call the API to get the stockroom data
 				getStockroomById(barcode);
-				c.binSubmitted = true;
-				getKeyboardLayouts();
-				getAcquisitionMethods();
-				getAcquisitionCountries();
-				c.showAddlQuestions = true;
 			}else{
 				c.error = true;
 				c.errorMessage = "Try Again";
@@ -139,7 +141,7 @@
 	function getAllStockrooms(stockroomName) {
 		$http({
 			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName,
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName + '/all',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -361,6 +363,8 @@
 	//Manually enter asset and add it to the list of assets for adding
 	
 	c.manuallyEnterAsset = function(){
+		c.listAddedSuccess = false;
+		c.listAddingError = false;
 		c.validationError = false;
 		c.validationErrorPcModel = false;
 		c.validationErrorAsset = false;
@@ -390,7 +394,7 @@
 			c.listAddedSuccess = false;
 			c.pcModelSubmitted = false;
 			c.pcModelSelected = false;
-			c.assetAdded = false;
+			c.assetAdded = true;
 			c.emptySearch = true;				
 			c.addAssetToList();
 			//Clear out inputs
@@ -431,6 +435,7 @@
 	
 	//Add all entered assets into the alm_hardware table
 	c.addAllAssets = function(){
+		c.submittingAllAssets = true;
 		$http({
 			method: 'post',
 			url: '/api/x_gege9_asset_scan/asset_scanner/addNewAssets',
@@ -445,8 +450,13 @@
 				c.successMessage = 'Assets successfully added.'
 				c.enteredAssets = [];
 				c.showAddAllAssets = false;
+				c.submittingAllAssets = false;
 			} else {
 				c.error = true;
+				c.submittingAllAssets = false;
+				c.listAddingError = true;
+				c.listAddedSuccess = false;
+				c.listAddingErrorMessage = 'Please add an asset to the list to continue';
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
@@ -454,6 +464,10 @@
 		}, function(response){
 				c.error = true;
 				c.errorMessage = 'Unable to add assets.';
+			c.submittingAllAssets = false;
+			c.listAddingError = true;
+			c.listAddedSuccess = false;
+			c.listAddingErrorMessage = 'Please add an asset to the list to continue';
 		})
 	}
 	
@@ -668,6 +682,7 @@ a .white-button{
 .blue-button {
   background-color: #00B2EE;
   height: 90px;
+  margin-bottom: 60px;
 }
 
 .small-green-button {
@@ -676,6 +691,13 @@ a .white-button{
   background-color: #1ed760;
 }
 
+//Spinner
+
+.spinner {
+  text-align: center;
+  padding: 24px;
+  margin-bottom: 60px;
+}
 
 //Home Nav
 .navbar {
@@ -688,7 +710,7 @@ a .white-button{
 }
 
 .navbar-fixed-bottom {
-  height: 45px;
+  height: 40px;
 }
 
 .bottom-nav ul {
@@ -733,7 +755,7 @@ a .white-button{
         <sys_created_on>2018-07-23 13:25:19</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae4c1420dbab9340d087d8965e9619fa</sys_id>
-        <sys_mod_count>639</sys_mod_count>
+        <sys_mod_count>661</sys_mod_count>
         <sys_name>Add New Asset</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -741,7 +763,7 @@ a .white-button{
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_ae4c1420dbab9340d087d8965e9619fa</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-04 19:44:54</sys_updated_on>
+        <sys_updated_on>2018-10-18 20:28:44</sys_updated_on>
         <template><![CDATA[<div>
   <div class="container-fluid">
     <div class="row">
@@ -913,6 +935,9 @@ a .white-button{
           <div class="alert alert-success col-xs-10 col-xs-offset-1" ng-show="c.listAddedSuccess">
             {{c.successMessage}}
           </div>
+          <div class="alert alert-danger col-xs-10 col-xs-offset-1" ng-show="c.listAddingError">
+            {{c.listAddingErrorMessage}}
+          </div>
           
           <h4 class="col-xs-10 col-xs-offset-1">Entered Asset List:</h4>
           <div class="col-xs-10 col-xs-offset-1" ng-hide="c.assetAdded">No entered assets. Fill out the fields above and hit the green button to add an asset to the list.</div>
@@ -935,9 +960,13 @@ a .white-button{
           </div>
           
           <!-- Add All Assets Button -->
-          <button class="btn col-xs-10 col-xs-offset-1 blue-button" ng-show="c.enteredAssets.length" ng-click="c.addAllAssets()">
+          <button class="btn col-xs-10 col-xs-offset-1 blue-button" ng-show="c.enteredAssets.length" ng-hide="c.submittingAllAssets" ng-click="c.addAllAssets()">
             Add List to ServiceNow
           </button>
+
+          <div class="spinner" ng-show="c.submittingAllAssets">
+            <i class="fa fa-spinner fa-4x fa-pulse"></i>
+          </div>
         </div>
 
       </div>

@@ -30,6 +30,7 @@
 					item: ritmGR.cat_item.getDisplayValue(),
 					stage: ritmGR.stage.getDisplayValue(),
 					dataReclamation: ritmGR.variables.v_data_reclamation ? ritmGR.variables.v_data_reclamation : 'Not specified',
+					shortDescription: ritmGR.short_description.toString(),
 					url: "/sc_req_item.do?sys_id=" + ritmGR.sys_id,
 					sysId: ritmGR.sys_id
 				});
@@ -63,15 +64,15 @@
         <sys_created_on>2018-04-30 16:22:56</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>fb3f5425dbbd5300d087d8965e9619c0</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>getAssetRequestedItems</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_fb3f5425dbbd5300d087d8965e9619c0</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-07-06 11:23:28</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-10-12 14:36:21</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

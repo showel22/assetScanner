@@ -11,10 +11,11 @@
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 	var assetGR;
 	var assetArray = request.body.data.assetArray;
-	for (var i = 0; i < assetArray.length; i++){
-		assetGR = new GlideRecord('alm_hardware');
-		assetGR.next();
-		assetGR.initialize();
+	if (assetArray.length > 0) {
+		for (var i = 0; i < assetArray.length; i++){
+			assetGR = new GlideRecord('alm_hardware');
+			assetGR.next();
+			assetGR.initialize();
 			if (!checkSerialNumber(assetArray[i].barcode)) {
 				assetGR.model_category = assetArray[i].category;
 				assetGR.model = assetArray[i].pcModelSysId;
@@ -32,20 +33,27 @@
 				assetGR.insert();
 			}
 		}
-	
-	//Loop through again to make sure the CI status is also updated
-	for (var j=0; j<assetArray.length; j++){
-		var assetToCiGR = new GlideRecord('alm_hardware');
-		assetToCiGR.addQuery('serial_number', assetArray[j].barcode);
-		assetToCiGR.query();
-		assetToCiGR.next();
-		//6 - In Stock
-		assetToCiGR.ci.install_status = 6;
-		//1 - Operational
-		assetToCiGR.ci.operational_status = 1;
-		assetToCiGR.update();
+
+		//Loop through again to make sure the CI status is also updated
+		for (var j=0; j<assetArray.length; j++){
+			var assetToCiGR = new GlideRecord('alm_hardware');
+			assetToCiGR.addQuery('serial_number', assetArray[j].barcode);
+			assetToCiGR.query();
+			assetToCiGR.next();
+			//6 - In Stock
+			assetToCiGR.ci.install_status = 6;
+			//1 - Operational
+			assetToCiGR.ci.operational_status = 1;
+			assetToCiGR.update();
+		}
+
+
+		response.setBody({response: 'success'});
+		return response;
+	} else {
+		return error;
 	}
-	
+
 	function checkSerialNumber(serialNumber){
 		var assetGR = new GlideRecord('alm_hardware');
 		assetGR.addQuery('serial_number', serialNumber);
@@ -53,8 +61,6 @@
 		return assetGR.hasNext();
 	}
 
-	response.setBody({response: 'success'});
-	return response;
 
 })(request, response);]]></operation_script>
         <operation_uri>/api/x_gege9_asset_scan/asset_scanner/addNewAssets</operation_uri>
@@ -70,7 +76,7 @@
         <sys_created_on>2018-07-25 15:23:35</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>57d98fcddbe39b40262950a45e961921</sys_id>
-        <sys_mod_count>37</sys_mod_count>
+        <sys_mod_count>40</sys_mod_count>
         <sys_name>addNewAssets</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -78,7 +84,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_57d98fcddbe39b40262950a45e961921</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-04 18:30:17</sys_updated_on>
+        <sys_updated_on>2018-10-17 14:11:54</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

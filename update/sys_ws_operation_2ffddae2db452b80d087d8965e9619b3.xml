@@ -7,58 +7,59 @@
         <default_operation_uri/>
         <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
         <http_method>GET</http_method>
-        <name>getStockroomById</name>
+        <name>getWarehouseRequestedItems</name>
         <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
 
-    var stockroomGR, responseObj,
-		Identifier = request.pathParams.Identifier;
-	
-	
-	stockroomGR = new GlideRecord('alm_stockroom');
-	stockroomGR.addEncodedQuery('sys_id=' + Identifier + "^ORname=" + Identifier);
-	stockroomGR.query();
-	if(stockroomGR.hasNext()){
-		stockroomGR.next();
-		responseObj = {
-			sysId: stockroomGR.sys_id,
-			name: stockroomGR.name.getDisplayValue(),
-			type: stockroomGR.type.getDisplayValue(),
-			assignmentGroup: stockroomGR.assignment_group.getDisplayValue()
-		};
-		response.setBody(responseObj);
+
+	var scTaskGR = new GlideRecord('sc_task');
+	var group = request.pathParams.stockroomAssignmentGroup;
+	//Get PC Deployment requests in the fulfillment stage with the assignment group from the Central Warehouse the user is checking
+	scTaskGR.addEncodedQuery('request_item.cat_item.nameSTARTSWITHpc deployment^short_descriptionLIKEDeliver PC^stateIN1,2^assignment_group.name=' + group);
+	scTaskGR.query();
+	if(scTaskGR.hasNext()){
+		var scTaskArray = [];
+		while (scTaskGR.next()){
+			scTaskArray.push({
+				number: scTaskGR.number.toString(),
+				created: scTaskGR.sys_created_on.toString(),
+				onBehalfOf: scTaskGR.request_item.u_on_behalf_of.getDisplayValue(),
+				assignedTo: scTaskGR.assigned_to.getDisplayValue()
+			});
+		}
+		response.setBody(scTaskArray);
 		response.setStatus(200);
 		return response;
 	}else{
-		var error = new sn_ws_err.ServiceError();
+		error = new sn_ws_err.ServiceError();
 		error.setStatus(404);
-		error.setMessage('No asset for this Serial Number.');
+		error.setMessage('No items for this asset');
 		return error;
 	}
-	
+
 
 })(request, response);]]></operation_script>
-        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getStockroomInfo/{Identifier}</operation_uri>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/getWarehouseRequestedItems/{stockroomAssignmentGroup}</operation_uri>
         <produces>application/json,application/xml,text/xml</produces>
         <produces_customized>false</produces_customized>
-        <relative_path>/getStockroomInfo/{Identifier}</relative_path>
+        <relative_path>/getWarehouseRequestedItems/{stockroomAssignmentGroup}</relative_path>
         <request_example/>
         <requires_acl_authorization>true</requires_acl_authorization>
         <requires_authentication>true</requires_authentication>
         <short_description/>
         <sys_class_name>sys_ws_operation</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
-        <sys_created_on>2018-05-08 18:05:58</sys_created_on>
+        <sys_created_on>2018-10-12 17:34:40</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>7fa206c0db0a1340d087d8965e9619cf</sys_id>
-        <sys_mod_count>5</sys_mod_count>
-        <sys_name>getStockroomById</sys_name>
+        <sys_id>2ffddae2db452b80d087d8965e9619b3</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>getWarehouseRequestedItems</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_ws_operation_7fa206c0db0a1340d087d8965e9619cf</sys_update_name>
+        <sys_update_name>sys_ws_operation_2ffddae2db452b80d087d8965e9619b3</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-12 17:50:42</sys_updated_on>
+        <sys_updated_on>2018-10-15 20:03:33</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

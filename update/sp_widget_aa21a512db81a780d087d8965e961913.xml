@@ -24,13 +24,9 @@
 	c.emptySearch = false;
 	//Stockroom chosed from manual list
 	c.stockroomSelected = false;
-	//Show/hide the options for Inventory once stockroom is scanned or entered
-	c.showInventoryOptions = false;
-	//Setting up variable for check to find the last non-closed Inventory scan
-	c.lastInventoryCheck = '';
-	//Hide main inventory buttons when Reverse Inventory Check Button clicked and 
-	c.reverseInventoryClicked = false;
-	c.noAssetsInStockroom = false;
+	//Show Requests list
+	c.showRequests = false;
+	c.warehouseTasksLoaded = false;
 	
 	//Click the Scan Bin button and bring up the camera to scan the stockroom
 	c.scanBin = function(todo){
@@ -74,18 +70,23 @@
 	
 	//Submit manually selected bin through the input field
 	c.submitBin = function(){
-		c.showHomeButtons = false;
-		c.showInventoryOptions = true;
-		//Check to see if there are past inventory checks done on the stockroom
-		c.checkPreviousInventoryChecks(c.stockroomSysId);
-		c.getStockroomAssets(c.stockroomSysId);
-		var binSubmittedHash = $location.hash("bin-scanned");
+		//Check to see if the assignment group is empty
+		if (!c.stockroomAssignmentGroup){
+			c.error = true;
+			c.errorMessage = 'There is no assignment group assigned to your warehouse. Unable to look up PC Deployment requests.';
+		} else {
+			c.showHomeButtons = false;
+			c.showRequests = true;
+			getWarehouseTasks(c.stockroomAssignmentGroup);
+			var binSubmittedHash = $location.hash("bin-scanned");
+		}
 	};
 	
 	//Once the user clicks on/selects a specific stockroom, save that stockroom's name and sysId and close the dropdown
 	c.selectStockroom = function(stockroom){
 		c.stockroomName = stockroom.name;
 		c.stockroomSysId = stockroom.sysId;
+		c.stockroomAssignmentGroup = stockroom.assignmentGroup;
 		c.stockroomSelected = true;
 	}
 	
@@ -95,126 +96,36 @@
 
 	}
 	
-	
-	
-	//When the user clicks the Start Inventory Check button, take them to the Inventory Check widget for the selected stockroom
-	c.startInventoryCheck = function(stockroomSysId, stockroomName, inventoryCheck){
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/createInventory/' + c.stockroomSysId,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.loaded = false;
-				//Open Manual Inventory Form
-				c.manualEntryClicked = true;
-				c.hideManualInput = false;
-				c.inventoryCheck = response.data.result.sys_id;
-				addAllAssetsToInventory(c.inventoryCheck, c.assetSysIdObject, c.stockroomSysId, c.stockroomName);
-			} else{
-				c.error = true;
-				c.errorMessage = "Try Again";
-			} }, function(error) {
-			c.error = true;
-			c.errorMessage = "Unable to scan.";
-		});
-	}
-
-	c.getStockroomAssets = function(stockroomSysId){
-		c.loaded = false;
+	//Get additional details on the clicked request
+	c.viewRequestedItemDetails = function(task){
 		$http({
 			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/getStockroomAssets/' + stockroomSysId,
+			url: '/api/x_gege9_asset_scan/asset_scanner/getRequestTaskDetails/' + task,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		}).then(function(response){
 			if(response.statusText === 'OK'){
-				c.stockroomAssets = response.data.result;
-				 c.assetSysIdObject = [];
-				for (var i=0; i<c.stockroomAssets.length; i++){
-					
-					c.assetSysIdObject[i] = {
-						sysId: c.stockroomAssets[i].sysId
-					};
-				}
-				c.error = false;
-				c.loaded = true;
-				c.noOfPages = Math.floor(c.stockroomAssets.length/c.pageSize);
-			}else{
-				c.error = true;
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-				c.loaded = true;
-			}
-		}, function(response){
-			c.errorMessage = "There are no assets assigned to this stockroom. Unable to do an inventory check.";
-			c.lastInventoryCheck = false;
-			c.hideStartInventory = true;
-			c.error = true;
-			c.loaded = true;
-		});
-	};
-	
-	//Add all the assets currently in the stockroom to the inventory scan
-	function addAllAssetsToInventory(inventoryCheck, assets, stockroomSysId, stockroomName){
-		$http({
-			method: 'post',
-			url: '/api/x_gege9_asset_scan/asset_scanner/allInventoryAssets/' + inventoryCheck,
-			headers: {
-						'Content-Type': 'application/json'
-					}, 
-			data: {"assetArray": c.stockroomAssets}
-		}).then(function(response){
-			if (response.statusText === 'OK'){
-				window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.inventoryCheck;
-
+				c.request = response.data.result;
+				console.log(c.request);
 			} else {
 				c.error = true;
+				
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
-				c.loaded = true;
 			}
-		}, function(response) {
-				c.error = true;
-				c.errorMessage = 'Unable to add assets to inventory check';
-				c.loaded = true;
+		}, function(response){
+			c.error = true;
+			c.errorMessage = "Unable to find that request.";
 		});
-	}
-	
-	//When the user clicks the Continue Previous Inventory button, take them to the Inventory Check widget for the last inventory check
-	c.continueInventoryCheck = function(stockroomSysId, stockroomName){
-		window.location.href = '/asset_scan?id=inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.lastInventoryCheck.sysId;
-	}
-	
-	//When the user clicks the Continue Previous Inventory button, take them to the Reverse Inventory Check widget for the last inventory check
-	c.continueInventoryCheck = function(stockroomSysId, stockroomName){
-		window.location.href = '/asset_scan?id=reverse_inventory_check&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName + '&inventoryCheck=' + c.lastInventoryCheck.sysId;
-	}
-	
-	//When the user clicks the View Past Inventory Checks button, take them to the Past Inventory Checks widget for the selected stockroom
-	c.viewPastInventoryChecks = function(stockroomSysId, stockroomName){
-		window.location.href = '/asset_scan?id=past_inventory_checks&stockroom=' + stockroomSysId + '&stockroomName=' + stockroomName;
-	}
-	
-	//Go back to the Choose Bin form
-	c.chooseAnotherBin = function(){
-		c.showInventoryOptions = false;
-		c.stockroomSelected = false;
-		c.stockroomName = '';
-		c.stockrooms = [];
-		c.showHomeButtons = true;
 	}
 	
 	//Get all the stockrooms. Uses the getAllStockrooms scripted REST API.
 	function getStockrooms(stockroomName) {
 		$http({
 			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName + '/all',
+			url: '/api/x_gege9_asset_scan/asset_scanner/' + stockroomName + '/central',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -222,6 +133,7 @@
 			if(response.statusText === 'OK'){
 				c.error = false;
 				c.stockrooms = response.data.result;
+				c.stockroomAssignmentGroup = response.data.result.assignmentGroup;
 			}else{
 				c.error = true;
 				
@@ -232,40 +144,6 @@
 		}, function(response){
 			c.error = true;
 			c.errorMessage = "Unable to find that stockroom.";
-		});
-	}
-	
-	//Get the past inventory checks on this stockroom.  Find the last still open (not closed) inventory check. 
-	//If it has an open check, display the Continue Previous Inventory button.
-	//Calls the getInventoryChecksByStockroom scripted REST API.
-	//Called in getStockroomById function below 
-	c.checkPreviousInventoryChecks = function(stockroomSysId) {
-		$http({
-			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/getInventoryChecks/' + stockroomSysId,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				c.stockroomInfo = response.data.result;
-				c.lastInventoryCheck = c.stockroomInfo.find(function(check){
-					return check.closed == '';
-				});
-			}else{
-				c.error = true;
-				c.lastInventoryCheck = false;
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			//Added below to stop error bins from moving forward
-			c.showBinResults = false;
-			c.showBinButtons = true;
-			c.showHomeButtons = true;
-			c.showInventoryOptions = false;
 		});
 	}
 	
@@ -282,17 +160,18 @@
 			if(response.statusText === 'OK'){
 				c.error = false;
 				c.stockroomInfo = response.data.result;
-				c.stockroomName = response.data.result.name;
-				c.stockroomSysId = response.data.result.sysId;
-				c.checkPreviousInventoryChecks(c.stockroomSysId);
-				c.showBinResults = true;
-				c.showBinButtons = false;
-				c.showHomeButtons = false;
-				c.showInventoryOptions = true;
-				c.getStockroomAssets(c.stockroomSysId);
+				if (c.stockroomInfo.type !== 'Central Warehouse'){
+					c.error = true;
+					c.errorMessage = 'You must scan a Central Warehouse to get PC Deployment tasks.';
+				} else {
+					c.stockroomName = response.data.result.name;
+					c.stockroomSysId = response.data.result.sysId;
+					c.stockroomAssignmentGroup = response.data.result.assignmentGroup;
+					c.showHomeButtons = false;
+					c.showRequests = true;
+				}
 			}else{
 				c.error = true;
-				c.lastInventoryCheck = false;
 				if(!!response.errorMessage){
 					c.errorMessage = response.errorMessage;
 				}
@@ -300,15 +179,47 @@
 		}, function(response){
 			c.error = true;
 			c.errorMessage = "Unable to find that stockroom.";
-			//Added below to stop error bins from moving forward
-			c.showBinResults = false;
-			c.showBinButtons = true;
 			c.showHomeButtons = true;
-			c.showInventoryOptions = false;
-			c.lastInventoryCheck = false;
-			c.hideStartInventory = true;
 		});
 	}
+	
+	/*c.currentPage = 0;
+		c.pageSize = 20;
+		var pagesArray = [];
+	
+	function noOfPages(records){
+		var pages = Math.ceil(records.length/20);
+		console.log(pages);
+	}*/
+
+	//Get all the open or WIP sc_task records for the warehouse's assignment group starting with PC Delivery and has PC Deployment RITM
+	function getWarehouseTasks(assignmentGroup){
+		$http({
+			method: 'get',
+			url: '/api/x_gege9_asset_scan/asset_scanner/getWarehouseRequestedItems/' + assignmentGroup,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response){
+			if (response.statusText === 'OK'){
+				c.warehouseTasks = response.data.result;
+					//noOfPages(c.warehouseTasks);
+				c.warehouseTasksLoaded = true;
+			} else {
+				c.error = true;
+				if(!!response.errorMessage){
+					c.errorMessage = response.errorMessage;
+				}
+			}
+		}, function(response){
+				c.error = true;
+				c.errorMessage = "Unable to find that stockroom.";
+				c.showHomeButtons = true;
+				c.showRequests = false;
+			});
+	}
+	
+	
 	
 }
 ]]></client_script>
@@ -338,19 +249,19 @@ button {
 }
 
 //Title
-.inventory-home {
+.pc-deployment-home {
   background: linear-gradient(#A9A9A9 150px, 150px, #FFFFFF);
   height: 150vh;
   width: 100%;
 }
 
-.inventory-title {
+.pc-deployment-title {
 	padding: 20px; 
   text-align: center;
   color: #ffffff;
 }
 
-.inventory-screen-row {
+.pc-deployment-screen-row {
   margin: 0 auto;
   padding: 10px;
 }
@@ -412,7 +323,7 @@ button {
   border-radius: 5px;
 }
 
-//Inventory Search
+//Warehouse Search
 .stockroom-search {
   height: 90px;
   border-radius: 5px 0 0 5px;
@@ -443,24 +354,31 @@ button {
   color: #ffffff;
 }
 
-//Inventory Options
 
-.inventory-option-buttons-row {
-	margin: 0 auto;
-	padding: 10px;
+//Spinner
+.spinner {
+  text-align: center;
+  padding: 24px;
 }
 
-.intentory-options-button {
-  height: 150px;
-  margin: 0 4%;
-  white-space: normal;
-  color: #fff;
-  background-color: #00B2EE;
-  border: none !important;
+//Requests Tab
+.request-block {
+	padding: 15px 20px;
 }
 
-.inventory-start-title {
-  padding: 20px 0;
+.request-number {
+	padding: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.request-title {
+	font-weight: bold;
+}
+
+.requests-details {
+  display: flex;
+  align-items: center;
 }
 
 //Home Nav
@@ -475,7 +393,7 @@ button {
 }
 
 .navbar-fixed-bottom {
-	bottom: 30px; 
+	height: 40px;
 }
 
 .bottom-nav ul {
@@ -508,10 +426,10 @@ button {
         <docs/>
         <field_list/>
         <has_preview>false</has_preview>
-        <id>inventory</id>
+        <id>pc_deployment</id>
         <internal>false</internal>
         <link/>
-        <name>Inventory</name>
+        <name>PC Deployment</name>
         <option_schema/>
         <public>false</public>
         <roles/>
@@ -519,19 +437,19 @@ button {
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
-        <sys_created_on>2018-05-02 19:33:06</sys_created_on>
+        <sys_created_on>2018-10-11 18:29:48</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
-        <sys_mod_count>375</sys_mod_count>
-        <sys_name>Inventory</sys_name>
+        <sys_id>aa21a512db81a780d087d8965e961913</sys_id>
+        <sys_mod_count>68</sys_mod_count>
+        <sys_name>PC Deployment</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
+        <sys_update_name>sp_widget_aa21a512db81a780d087d8965e961913</sys_update_name>
         <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-12 16:39:44</sys_updated_on>
-        <template><![CDATA[<!-- Inventory Homepage -->
+        <sys_updated_on>2018-10-15 20:05:43</sys_updated_on>
+        <template><![CDATA[<!-- PC Deployment Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
     <div class="row">
@@ -541,23 +459,23 @@ button {
         {{c.errorMessage}}
       </div>
       
-      <!-- Inventory Homepage Title and Buttons -->
-      <div ng-show="c.showHomeButtons" class="inventory-home">
-        <div class="inventory-title">
-          <h3>Inventory</h3>
-          <h4>Scan or type your bin to continue.</h4>
+      <!-- PC Deployment Homepage Title and Buttons -->
+      <div ng-show="c.showHomeButtons" class="pc-deployment-home">
+        <div class="pc-deployment-title">
+          <h3>PC Deployment</h3>
+          <h4>Scan or type the Central Warehouse at your location to continue.</h4>
         </div>
         <div>
-          <div class="row inventory-screen-row" id="scan-button-row">
+          <div class="row pc-deployment-screen-row" id="scan-button-row">
             <button class="btn col-xs-8 col-xs-offset-2 start-scanning-button" ng-click="c.scanBin()">
-              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Bin
+              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan Depot
             </button>
           </div>
-          <div class="row inventory-screen-row manual-button-row">
+          <div class="row pc-deployment-screen-row manual-button-row">
             <div class="col-xs-8 col-xs-offset-2 choose-bin" ng-click="c.showBinInput()" ng-hide="c.showForm">
               <button class="btn btn-default col-xs-12 bin-freeform-btn">
                 <div id="binAdd" class="col-xs-10 bin-freeform-btn-text">
-                  Manually Enter Bin
+                  Manually Enter Depot
                 </div>
                 <div class="col-xs-2 bin-green-arrow">
                   <i class="glyphicon glyphicon-chevron-right"></i>
@@ -581,49 +499,45 @@ button {
         </div>
       </div>
       
-      <!-- Inventory Option Buttons (once stockroom is selected/scanned) -->
-      <div ng-show="c.showInventoryOptions">
-        <div class="col-xs-10 col-xs-offset-1 inventory-start-title">
-            <h4>
-              {{c.stockroomName}} Inventory
-            </h4>
+      <!-- Requests -->
+      <div class="col-xs-12  text-center">
+        <h3>
+          {{c.stockroomName}} PC Deployment Tasks
+        </h3>
+      </div>
+      
+      <div class="spinner" ng-hide="c.warehouseTasksLoaded">
+        <h3>
+          Getting Tasks from ServiceNow...
+        </h3>
+        <i class="fa fa-spinner fa-4x fa-pulse"></i>
+      </div>
+      
+      <div class="request-block col-xs-12" ng-show="c.showRequests" ng-repeat="task in c.warehouseTasks | orderBy: 'created'">
+        <div class="col-xs-12 request-number">
+           {{task.number}}
+        </div>
+        <div class="col-xs-12 request-details">
+          <div class="col-xs-8">
+            <span class="col-xs-6 request-title">Created:</span>
+            <span class="col-xs-6">{{task.created}}</span>
           </div>
-        <div class="inventory-option-buttons-row">
-         
-          
-          <!-- OLD INVENTORY CHECK BUTTONS
-          <div class="row inventory-option-buttons-row" ng-hide="c.lastInventoryCheck || c.reverseInventoryClicked" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
-            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
-              Start New Inventory Check
-            </button>
+          <div class="col-xs-8">
+            <span class="col-xs-6 request-title">On Behalf of:</span>
+            <span class="col-xs-6">{{task.onBehalfOf}}</span>
           </div>
-          <div class="row inventory-option-buttons-row" ng-show="c.lastInventoryCheck" ng-hide="c.reverseInventoryClicked" ng-click="c.continueInventoryCheck(c.stockroomSysId, c.stockroomName, c.lastInventoryCheck)">
-            <button class="btn col-xs-10 col-xs-offset-1 intentory-options-button white-button">
-              Continue Previous Inventory 
-            </button>
-          </div> -->
-          <!-- Reverse Inventory Buttons current showing-->
-          <div class="row inventory-option-buttons-row">
-            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-hide="c.lastInventoryCheck || c.hideStartInventory" ng-click="c.startInventoryCheck(c.stockroomSysId, c.stockroomName)">
-              Start New Inventory Check
-            </button>
-            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-show="c.lastInventoryCheck" ng-click="c.continueInventoryCheck(c.stockroomSysId, c.stockroomName, c.lastInventoryCheck)">
-              Continue Previous Inventory 
-            </button>
-            <button class="btn col-xs-5 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked || c.hideStartInventory" ng-click="c.viewBinItems(c.stockroomSysId, c.stockroomName)">
-              View Bin Items
-            </button>
+          <div class="col-xs-8">
+            <span class="col-xs-6 request-title">Assigned to:</span>
+            <span class="col-xs-6">{{task.assignedTo}}</span>
           </div>
-           <div class="row inventory-option-buttons-row">
-            <button class="btn col-xs-5 col-xs-offset-1 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked" ng-click="c.viewPastInventoryChecks(c.stockroomSysId, c.stockroomName)">
-              View Past Inventory Checks
-            </button>
-             <button class="btn col-xs-5 intentory-options-button white-button" ng-hide="c.reverseInventoryClicked" ng-click="c.chooseAnotherBin()">
-              Select a Different Bin
-            </button>
+          <div class="col-xs-4">
+						<a ng-click="c.viewRequestedItemDetails(task.number)" class="btn btn-default center-block"> ASSIGN PC </a>
           </div>
         </div>
       </div>
+      
+      
+
     </div>
   </div>
 </div>
