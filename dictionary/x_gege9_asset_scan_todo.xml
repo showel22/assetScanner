@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
-    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="63917" type="collection">
+    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="98750" type="collection">
         <element label="Asset" mandatory="true" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Stockroom" max_length="32" name="stockroom" reference="alm_stockroom" type="reference"/>
         <element choice="1" label="Type" mandatory="true" max_length="40" name="type" type="choice">
@@ -13,7 +13,7 @@
                 <element label="Investigate" value="800"/>
                 <element label="Legal Hold" value="300"/>
                 <element label="Receiving" value="500"/>
-                <element label="Reclamation_testsnc1_1" value="200"/>
+                <element label="Reclamation" value="200"/>
             </choice>
         </element>
         <index name="index">

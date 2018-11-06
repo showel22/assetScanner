@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
-    <element label="Legal Hold Check" max_length="40" name="x_gege9_asset_scan_legal_hold_check" type="collection">
+    <element label="Legal Hold Check" max_length="40" name="x_gege9_asset_scan_legal_hold_check" sizeclass="5781" type="collection">
         <element label="Asset" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Error Message" max_length="120" name="error_message" type="string"/>
         <element label="Legal Hold Designee" max_length="32" name="legal_hold_designee" reference="sys_user" type="reference"/>
