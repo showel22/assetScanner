@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="m2m_sp_widget_dependency">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_widget_dependency">
     <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
         <sp_dependency display_value="pdfKit">415c5e26db46d300262950a45e96195b</sp_dependency>
         <sp_widget display_value="Scanned Information">e4b1ee29dbe11b00d087d8965e96193e</sp_widget>

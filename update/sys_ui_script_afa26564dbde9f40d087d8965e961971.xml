@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ui_script">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
     <sys_ui_script action="INSERT_OR_UPDATE">
         <active>true</active>
         <description/>
@@ -22,6 +21,7 @@
         <sys_update_name>sys_ui_script_afa26564dbde9f40d087d8965e961971</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
         <sys_updated_on>2018-05-22 15:14:50</sys_updated_on>
+        <ui_type>0</ui_type>
         <use_scoped_format>false</use_scoped_format>
     </sys_ui_script>
 </record_update>

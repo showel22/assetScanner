@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sp_rel_widget_clone">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_rel_widget_clone">
     <sp_rel_widget_clone action="INSERT_OR_UPDATE">
         <child display_value="Bin Scan">8581dc13dbe15340d087d8965e9619bf</child>
         <cloned>2018-04-23 15:35:57</cloned>

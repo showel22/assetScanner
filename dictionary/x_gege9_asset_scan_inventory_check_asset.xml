@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Inventory Check Asset" max_length="40" name="x_gege9_asset_scan_inventory_check_asset" sizeclass="5020" type="collection">
         <element label="Asset" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Inventory Check" max_length="32" name="inventory_check" reference="x_gege9_asset_scan_inventory_check" type="reference"/>

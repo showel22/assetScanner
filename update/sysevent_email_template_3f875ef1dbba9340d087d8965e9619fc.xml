@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sysevent_email_template">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysevent_email_template">
     <sysevent_email_template action="INSERT_OR_UPDATE">
         <collection>x_gege9_asset_scan_inventory_check</collection>
         <email_layout display_value="GE Email Layout ">db8ea191db424700d087d8965e96191b</email_layout>

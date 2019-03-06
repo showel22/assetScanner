@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="m2m_sp_theme_css_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_theme_css_include">
     <m2m_sp_theme_css_include action="INSERT_OR_UPDATE">
         <order>100</order>
         <sp_css_include display_value="Asset Scanner Page Fix">06f573b9dbe5d700262950a45e9619fb</sp_css_include>

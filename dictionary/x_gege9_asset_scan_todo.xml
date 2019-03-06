@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
-    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="98772" type="collection">
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="207970" type="collection">
         <element label="Asset" mandatory="true" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Stockroom" max_length="32" name="stockroom" reference="alm_stockroom" type="reference"/>
         <element choice="1" label="Type" mandatory="true" max_length="40" name="type" type="choice">
             <choice>
-                <element label="Assign" value="900"/>
-                <element label="Check Legal Hold" value="700"/>
-                <element label="Data Wipe" value="400"/>
-                <element label="Freeform" value="100"/>
-                <element label="Freeform Scan" value="600"/>
-                <element label="Investigate" value="800"/>
-                <element label="Legal Hold" value="300"/>
-                <element label="Receiving" value="500"/>
-                <element label="Reclamation" value="200"/>
+                <element inactive_on_update="false" label="Assign" value="900"/>
+                <element inactive_on_update="false" label="Check Legal Hold" value="700"/>
+                <element inactive_on_update="false" label="Data Wipe" value="400"/>
+                <element inactive_on_update="false" label="Freeform" value="100"/>
+                <element inactive_on_update="false" label="Freeform Scan" value="600"/>
+                <element inactive_on_update="false" label="Investigate" value="800"/>
+                <element inactive_on_update="false" label="Legal Hold" value="300"/>
+                <element inactive_on_update="false" label="Receiving" value="500"/>
+                <element inactive_on_update="false" label="Reclamation" value="200"/>
             </choice>
         </element>
         <index name="index">

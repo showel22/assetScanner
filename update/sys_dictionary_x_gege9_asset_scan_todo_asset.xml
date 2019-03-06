@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update>
+<?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_dictionary action="INSERT_OR_UPDATE" element="asset" table="x_gege9_asset_scan_todo">
         <active>true</active>
         <array>false</array>
@@ -64,7 +63,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_dictionary_x_gege9_asset_scan_todo_asset</sys_update_name>
         <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2018-10-19 18:46:50</sys_updated_on>
+        <sys_updated_on>2018-11-08 21:27:32</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

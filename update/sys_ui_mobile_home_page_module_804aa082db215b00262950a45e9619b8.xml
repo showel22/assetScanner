@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_ui_mobile_home_page_module">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_mobile_home_page_module">
     <sys_ui_mobile_home_page_module action="INSERT_OR_UPDATE">
         <active>true</active>
         <background_color>#00B5E2</background_color>

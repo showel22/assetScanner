@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_push_notif_app_install">
     <sys_push_notif_app_install action="INSERT_OR_UPDATE">
-        <active>false</active>
-        <last_registered_on>2018-05-16 10:22:23</last_registered_on>
+        <active>true</active>
+        <last_registered_on>2019-02-28 18:54:50</last_registered_on>
         <sys_class_name>sys_push_notif_app_install</sys_class_name>
-        <sys_created_by>212607632</sys_created_by>
-        <sys_created_on>2018-05-16 08:38:36</sys_created_on>
+        <sys_created_by>212680595</sys_created_by>
+        <sys_created_on>2019-02-28 18:31:15</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>6f8e8d26db0a9300262950a45e961946</sys_id>
+        <sys_id>74102e9bdbbfa3004a29df6b5e9619a7</sys_id>
         <sys_mod_count>2</sys_mod_count>
-        <sys_name>a8bad372774fbbd2e959d050d54538c4055a2b3f50e5568a7248232e9a2f1531</sys_name>
+        <sys_name>1983625d60152fdaa1fdf4cad28c72bf269ad675b66e8c3fbfce9d74439dce81</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_push_application_id display_value="ServiceNow Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
         <sys_push_platform_id display_value="Apple">20e71f30ff0002009738ffffffffff6b</sys_push_platform_id>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_push_notif_app_install_6f8e8d26db0a9300262950a45e961946</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2018-05-16 10:22:23</sys_updated_on>
-        <sys_user_id display_value="Howell, Steven (212607632) ">2545e806db4fb2005e305f2e5e9619de</sys_user_id>
-        <token>a8bad372774fbbd2e959d050d54538c4055a2b3f50e5568a7248232e9a2f1531</token>
+        <sys_update_name>sys_push_notif_app_install_74102e9bdbbfa3004a29df6b5e9619a7</sys_update_name>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2019-02-28 18:54:50</sys_updated_on>
+        <sys_user_id display_value="Fosco, Patrick (212680595) ">bbbfe826db6d0780a791d6a75e961918</sys_user_id>
+        <token>1983625d60152fdaa1fdf4cad28c72bf269ad675b66e8c3fbfce9d74439dce81</token>
     </sys_push_notif_app_install>
 </record_update>
