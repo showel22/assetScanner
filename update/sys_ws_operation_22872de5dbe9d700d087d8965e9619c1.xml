@@ -24,7 +24,7 @@
 		responseObj = {
 			sysId: assetGR.sys_id,
 			serialNumber: assetGR.serial_number.toString(),
-			state: assetGR.install_status.getDisplayValue(),
+			state: {display: assetGR.install_status.getDisplayValue(), value: assetGR.install_status.toString()},
 			substate: assetGR.substatus.getDisplayValue(),
 			stockroom: assetGR.stockroom.getDisplayValue(),
 			modelImage: assetGR.model.picture.getDisplayValue(),
@@ -91,15 +91,15 @@
         <sys_created_on>2018-04-18 11:52:04</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>22872de5dbe9d700d087d8965e9619c1</sys_id>
-        <sys_mod_count>96</sys_mod_count>
+        <sys_mod_count>97</sys_mod_count>
         <sys_name>getByIdentifier</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_22872de5dbe9d700d087d8965e9619c1</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-11-08 13:30:15</sys_updated_on>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2019-04-01 17:37:57</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
