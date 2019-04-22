@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_push_notif_app_install">
     <sys_push_notif_app_install action="INSERT_OR_UPDATE">
         <active>true</active>
-        <last_registered_on>2019-04-22 17:05:51</last_registered_on>
+        <last_registered_on>2019-04-22 16:56:24</last_registered_on>
         <sys_class_name>sys_push_notif_app_install</sys_class_name>
-        <sys_created_by>212680595</sys_created_by>
-        <sys_created_on>2019-03-26 19:54:25</sys_created_on>
+        <sys_created_by>212613457</sys_created_by>
+        <sys_created_on>2019-04-22 16:55:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>fc7ce8ffdb583384d087d8965e961947</sys_id>
-        <sys_mod_count>16</sys_mod_count>
-        <sys_name>1983625d60152fdaa1fdf4cad28c72bf269ad675b66e8c3fbfce9d74439dce81</sys_name>
+        <sys_id>09868718dbc1fb44d087d8965e961967</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>ef35d7a36f638e681966eb222bde68ca2724bc4994ae26c06efe1065e2602c32</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_push_application_id display_value="ServiceNow Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
         <sys_push_platform_id display_value="Apple">20e71f30ff0002009738ffffffffff6b</sys_push_platform_id>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
-        <sys_update_name>sys_push_notif_app_install_fc7ce8ffdb583384d087d8965e961947</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-04-22 17:05:51</sys_updated_on>
-        <sys_user_id display_value="Fosco, Patrick (212680595) ">bbbfe826db6d0780a791d6a75e961918</sys_user_id>
-        <token>1983625d60152fdaa1fdf4cad28c72bf269ad675b66e8c3fbfce9d74439dce81</token>
+        <sys_update_name>sys_push_notif_app_install_09868718dbc1fb44d087d8965e961967</sys_update_name>
+        <sys_updated_by>212613457</sys_updated_by>
+        <sys_updated_on>2019-04-22 16:56:24</sys_updated_on>
+        <sys_user_id display_value="Meica, Valentin (212613457) ">2b892802db03f2005e305f2e5e9619c9</sys_user_id>
+        <token>ef35d7a36f638e681966eb222bde68ca2724bc4994ae26c06efe1065e2602c32</token>
     </sys_push_notif_app_install>
 </record_update>

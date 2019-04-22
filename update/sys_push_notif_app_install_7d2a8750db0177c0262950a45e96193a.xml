@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_push_notif_app_install">
+    <sys_push_notif_app_install action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <last_registered_on>2019-04-22 17:11:47</last_registered_on>
+        <sys_class_name>sys_push_notif_app_install</sys_class_name>
+        <sys_created_by>212613457</sys_created_by>
+        <sys_created_on>2019-04-22 17:11:47</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>7d2a8750db0177c0262950a45e96193a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ft4ZzQcLrwU:APA91bEVSGC1ZB44bZujecEQyd-_-y8_O6SPj3NbhecU0pfkv45FslHVwDWSl0xHQNdoQhdYC2sG9k26GgRB8_RHB7eREEQ0tWO1qQp2Ex9MIC4WfA7QZmGBH38UxY_nfgspWpcOIdr8</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_push_application_id display_value="ServiceNow Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
+        <sys_push_platform_id display_value="Google">53e75f30ff0002009738ffffffffff12</sys_push_platform_id>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_push_notif_app_install_7d2a8750db0177c0262950a45e96193a</sys_update_name>
+        <sys_updated_by>212613457</sys_updated_by>
+        <sys_updated_on>2019-04-22 17:11:47</sys_updated_on>
+        <sys_user_id display_value="Meica, Valentin (212613457) ">2b892802db03f2005e305f2e5e9619c9</sys_user_id>
+        <token>ft4ZzQcLrwU:APA91bEVSGC1ZB44bZujecEQyd-_-y8_O6SPj3NbhecU0pfkv45FslHVwDWSl0xHQNdoQhdYC2sG9k26GgRB8_RHB7eREEQ0tWO1qQp2Ex9MIC4WfA7QZmGBH38UxY_nfgspWpcOIdr8</token>
+    </sys_push_notif_app_install>
+</record_update>
