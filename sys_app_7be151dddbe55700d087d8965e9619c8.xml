@@ -24,13 +24,13 @@
         <sys_created_on>2018-04-19 20:58:05</sys_created_on>
         <sys_id>7be151dddbe55700d087d8965e9619c8</sys_id>
         <sys_mod_count>101</sys_mod_count>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-05-23 21:32:34</sys_updated_on>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-05-29 13:07:23</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <user_role/>
         <vendor/>
         <vendor_prefix/>
-        <version>1.0.52</version>
+        <version>1.0.53</version>
     </sys_app>
 </record_update>

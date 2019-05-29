@@ -230,7 +230,7 @@
 			}
 		}, function(response){
 			c.error = true;
-			c.errorMessage = "Unable to find that stockroom or you do not have access to that stockroom.";
+			c.errorMessage = "Unable to find that stockroom.";
 		});
 	}
 	
@@ -298,7 +298,7 @@
 			}
 		}, function(response){
 			c.error = true;
-			c.errorMessage = "Unable to find that stockroom or you do not have access to that stockroom.";
+			c.errorMessage = "Unable to find that stockroom.";
 			//Added below to stop error bins from moving forward
 			c.showBinResults = false;
 			c.showBinButtons = true;
@@ -506,7 +506,7 @@ button {
         <description/>
         <docs/>
         <field_list/>
-        <has_preview>true</has_preview>
+        <has_preview>false</has_preview>
         <id>inventory</id>
         <internal>false</internal>
         <link/>
@@ -521,15 +521,15 @@ button {
         <sys_created_on>2018-05-02 19:33:06</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>961e1b0adb31d700d087d8965e9619dc</sys_id>
-        <sys_mod_count>377</sys_mod_count>
+        <sys_mod_count>375</sys_mod_count>
         <sys_name>Inventory</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_961e1b0adb31d700d087d8965e9619dc</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-05-23 21:25:41</sys_updated_on>
+        <sys_updated_by>212606938</sys_updated_by>
+        <sys_updated_on>2018-10-12 16:39:44</sys_updated_on>
         <template><![CDATA[<!-- Inventory Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
