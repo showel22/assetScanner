@@ -223,7 +223,7 @@ a.button-link:hover {
         <description/>
         <docs/>
         <field_list/>
-        <has_preview>false</has_preview>
+        <has_preview>true</has_preview>
         <id>asset-scanner</id>
         <internal>false</internal>
         <link/>
@@ -238,15 +238,15 @@ a.button-link:hover {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>282</sys_mod_count>
+        <sys_mod_count>293</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-10-17 13:15:59</sys_updated_on>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2019-05-21 16:50:51</sys_updated_on>
         <template><![CDATA[<!-- Main Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
