@@ -88,7 +88,7 @@
 			c.showAddlQuestions = false;
 		}
 	}
-
+	
 	//Get the stockroom by the stockroom sysId. Called above in the c.scanBin function.
 	//Calls getStockroomById scripted REST API.
 	function getStockroomById(stockroomSysId){
@@ -116,7 +116,7 @@
 			}
 		},function(response){
 			c.error = true;
-			c.errorMessage = "Unable to find that stockroom or you cannot make updates to that stockroom.";
+			c.errorMessage = "Unable to find that stockroom.";
 		});
 	}
 	
@@ -157,40 +157,13 @@
 			}
 		}, function(response){
 			c.error = true;
-			c.errorMessage = "Unable to find that stockroom or you cannot make updates to that stockroom.";
-		});
-	}
-
-	/*	function getAllStockrooms(stockroomName,usersysid) {
-		$http({
-			method: 'get',
-			url: '/api/x_gege9_asset_scan/asset_scanner/stockrooms/' + stockroomName + '/'+ usersysid,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response){
-			if(response.statusText === 'OK'){
-				c.error = false;
-				c.stockrooms = response.data.result;
-			}else{
-				c.error = true;
-				
-				if(!!response.errorMessage){
-					c.errorMessage = response.errorMessage;
-				}
-			}
-		}, function(response){
-			c.error = true;
 			c.errorMessage = "Unable to find that stockroom.";
 		});
-	} */
-
+	}
+	
 	//Search the stockrooms by the entry in the input field for the Manual Bin Search.
 	//This is called in an ng-change, so once the user types in a character, it searches through the stockrooms for a match on the Stockroom/Bin name
 	c.searchStockrooms = function(stockroomName){
-		//Clear the results and error message so the don't continually show.
-		c.stockrooms= [];
-		c.error = false;
 		//Check to see if user has typed into the input
 		if (stockroomName.length === 0){
 			c.emptySearch = true;
@@ -201,6 +174,7 @@
 			getAllStockrooms(stockroomName);
 		} 
 	}
+
 	//Once the user clicks on/selects a specific stockroom, save that stockroom's name and sysId and close the dropdown
 	c.selectStockroom = function(stockroom){
 		c.stockroomName = stockroom.name;
@@ -785,15 +759,15 @@ a .white-button{
         <sys_created_on>2018-07-23 13:25:19</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ae4c1420dbab9340d087d8965e9619fa</sys_id>
-        <sys_mod_count>689</sys_mod_count>
+        <sys_mod_count>674</sys_mod_count>
         <sys_name>Add New Asset</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_ae4c1420dbab9340d087d8965e9619fa</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-05-23 16:46:27</sys_updated_on>
+        <sys_updated_by>212613457</sys_updated_by>
+        <sys_updated_on>2019-04-22 18:53:40</sys_updated_on>
         <template><![CDATA[<div>
   <div class="container-fluid">
     <div class="row">
