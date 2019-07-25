@@ -78,6 +78,10 @@ button {
   border: none;
 }
 
+.nopadding {
+  padding: 0!important;
+}
+
 .button-icon {
   display: block;
   margin: 0 auto;
@@ -238,7 +242,7 @@ a.button-link:hover {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>293</sys_mod_count>
+        <sys_mod_count>314</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -246,7 +250,7 @@ a.button-link:hover {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
         <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-05-21 16:50:51</sys_updated_on>
+        <sys_updated_on>2019-07-17 19:30:00</sys_updated_on>
         <template><![CDATA[<!-- Main Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
@@ -304,16 +308,23 @@ a.button-link:hover {
               </button>
             </a>
           </div>
-
-          <div class="row home-screen-row">
-            <a href="/asset_scan?id=add_new_asset" class="button-link">
-              <button class="btn col-xs-8 col-xs-offset-2 small-button white-button">
+       <div class="row home-screen-row">
+         <div class ="col-xs-8 col-xs-offset-2 row nopadding">   
+         <a href="/asset_scan?id=add_new_asset" class="button-link">
+              <button class="btn col-xs-5 small-button white-button">
                 <img class="button-icon small-icon" src="plus.svg"/>
                 <span class="small-button-text">Add New Assets</span>
               </button>
             </a>
+            <a href="/asset_scan?id=bulk_move_assets" class="button-link">
+              <button class="btn col-xs-5 col-xs-offset-2 small-button white-button">
+                <img class="button-icon small-icon" src="list.svg"/>
+                <span class="small-button-text">Bulk Move Assets</span>
+              </button>
+            </a>
           </div>
-          
+          </div>
+     
           <!-- PC DEPLOYMENT - UNCOMMENT TO PUT BACK IN
           <div class="row home-screen-row">
             <a href="/asset_scan?id=pc_deployment" class="button-link">
