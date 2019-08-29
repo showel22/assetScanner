@@ -33,7 +33,9 @@
 			acquisitionCountry: assetGR.u_acquisition_country.getDisplayValue(),
 			retirementDate: assetGR.retirement_date.getDisplayValue(),
 			assetType: assetGR.acquisition_method.toString(),
+			keyboardType: assetGR.u_keyboard_layout.getDisplayValue(),
 			assignedTo: assetGR.assigned_to.user_name.toString(),
+			assignedUser: assetGR.assigned_to.name.toString(),
 			reservedFor: assetGR.reserved_for.toString(),
 			assignedToIsVIP: assetGR.assigned_to.vip.toString(),
 			url: "/" + assetGR.getTableName() + ".do?sys_id=" + assetGR.sys_id.toString()
@@ -91,7 +93,7 @@
         <sys_created_on>2018-04-18 11:52:04</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>22872de5dbe9d700d087d8965e9619c1</sys_id>
-        <sys_mod_count>97</sys_mod_count>
+        <sys_mod_count>100</sys_mod_count>
         <sys_name>getByIdentifier</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -99,7 +101,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_22872de5dbe9d700d087d8965e9619c1</sys_update_name>
         <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-04-01 17:37:57</sys_updated_on>
+        <sys_updated_on>2019-08-21 16:32:17</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

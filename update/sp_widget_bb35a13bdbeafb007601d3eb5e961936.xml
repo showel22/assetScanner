@@ -61,7 +61,7 @@ function($http, cabrillo, $scope) {
       }
     },function(response){
       c.error = true;
-      c.errorMessage = "Unable to find that stockroom.";
+      c.errorMessage = "Unable to find or you do not have permission to edit that stockroom.";
     });
   }
   
@@ -102,7 +102,7 @@ function($http, cabrillo, $scope) {
       }
     }, function(response){
       c.error = true;
-      c.errorMessage = "Unable to find or you do not have permission to edit that stockrom.";
+      c.errorMessage = "Unable to find or you do not have permission to edit that stockroom.";
     });
   }
   
@@ -185,7 +185,7 @@ function($http, cabrillo, $scope) {
     //}
     cabrillo.camera.getBarcode().then(function(barcode){
       if(barcode){
-        c.assetNumber = barcode;
+        c.assetNumber = barcode.trim();
         c.error = false;
         
         //c.listAddedSuccess = false;
@@ -610,7 +610,7 @@ a .white-button{
         <sys_created_on>2019-07-16 20:23:51</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>bb35a13bdbeafb007601d3eb5e961936</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>9</sys_mod_count>
         <sys_name>Bulk Move Assets</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -618,7 +618,7 @@ a .white-button{
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_bb35a13bdbeafb007601d3eb5e961936</sys_update_name>
         <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-07-17 19:44:22</sys_updated_on>
+        <sys_updated_on>2019-08-28 16:52:22</sys_updated_on>
         <template><![CDATA[<div>
   <div class="container-fluid">
     <div class="row">

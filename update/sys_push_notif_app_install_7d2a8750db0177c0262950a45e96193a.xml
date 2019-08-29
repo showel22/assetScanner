@@ -11,7 +11,7 @@
         <sys_name>ft4ZzQcLrwU:APA91bEVSGC1ZB44bZujecEQyd-_-y8_O6SPj3NbhecU0pfkv45FslHVwDWSl0xHQNdoQhdYC2sG9k26GgRB8_RHB7eREEQ0tWO1qQp2Ex9MIC4WfA7QZmGBH38UxY_nfgspWpcOIdr8</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
-        <sys_push_application_id display_value="ServiceNow Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
+        <sys_push_application_id display_value="ServiceNow Classic Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
         <sys_push_platform_id display_value="Google">53e75f30ff0002009738ffffffffff12</sys_push_platform_id>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>

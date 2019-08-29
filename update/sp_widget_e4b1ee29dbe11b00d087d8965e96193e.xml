@@ -1059,7 +1059,7 @@ textarea {
         <description/>
         <docs/>
         <field_list/>
-        <has_preview>false</has_preview>
+        <has_preview>true</has_preview>
         <id>scanned-information</id>
         <internal>false</internal>
         <link/>
@@ -1090,7 +1090,7 @@ textarea {
         <sys_created_on>2018-04-18 15:36:31</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>e4b1ee29dbe11b00d087d8965e96193e</sys_id>
-        <sys_mod_count>2103</sys_mod_count>
+        <sys_mod_count>2108</sys_mod_count>
         <sys_name>Scanned Information</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -1098,7 +1098,7 @@ textarea {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_e4b1ee29dbe11b00d087d8965e96193e</sys_update_name>
         <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-05-23 20:24:00</sys_updated_on>
+        <sys_updated_on>2019-08-29 14:31:05</sys_updated_on>
         <template><![CDATA[<div id="content container-fluid" ng-click="c.closeReassign($event)">
   <!-- The row with barcode and toggle -->
   <div class="barcode-row center-text center-block" ng-click="c.toggleDetails()">
@@ -1150,26 +1150,30 @@ textarea {
                    ng-click="c.openAtlasError()">
                 {{c.asset.legalHoldError}}. Legal hold information defaulting from the asset in ServiceNow. Please verify in Atlas.
          </div>
-        <div class="asset-attr"> 
-          <div class="attr pull-left"><b>State</b></div> 
-          <div class="attr pull-right">{{c.asset.state.display}}</div>
-        </div>
-        <div class="asset-attr"> 
-          <div class="attr pull-left"><b>Sub State</b></div> 
-          <div class="attr pull-right" ng-class="{'important-asset-detail': c.asset.substate == 'Pending repair'}">{{c.asset.substate}}</div>
-        </div>
-        <div class="asset-attr">    
-          <div class="attr pull-left"><b>Bin</b></div> 
-          <div class="attr pull-right" ng-hide="c.asset.stockroom == ''">{{c.asset.stockroom}}</div>
-          <div class="attr pull-right" ng-show="c.asset.stockroom == ''">This asset is not assigned to a bin.</div>
+          <div class="asset-attr">    
+          <div class="attr pull-left"><b>Model</b></div> 
+          <div class="attr pull-right">{{c.asset.model}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Model Category</b></div> 
           <div class="attr pull-right">{{c.asset.modelCategory}}</div>
         </div>
         <div class="asset-attr">    
-          <div class="attr pull-left"><b>Model</b></div> 
-          <div class="attr pull-right">{{c.asset.model}}</div>
+          <div class="attr pull-left"><b>Assigned to</b></div> 
+          <div class="attr pull-right" ng-hide="c.asset.assignedTo == ''">{{c.asset.assignedUser}}</div>
+          <div class="attr pull-right" ng-show="c.asset.assignedTo == ''">This asset is not assigned.</div>
+        </div>
+        <div class="asset-attr">
+          <div class="attr pull-left"><b>State</b></div> 
+          <div class="attr pull-right">{{c.asset.state.display}}</div>
+        </div>
+      <div class="asset-attr">    
+          <div class="attr pull-left"><b>Retirement Date</b></div> 
+          <div class="attr pull-right">{{c.asset.retirementDate}}</div>
+        </div>
+      <div class="asset-attr">    
+          <div class="attr pull-left"><b>Asset Type</b></div> 
+          <div class="attr pull-right capitalize">{{c.asset.assetType}}</div>
         </div>
         <div class="asset-attr">    
           <div class="attr pull-left"><b>Acquisition Country</b></div> 
@@ -1177,21 +1181,13 @@ textarea {
           <div class="attr pull-right" ng-show="c.asset.acquisitionCountry == ''">This asset is not assigned to a country.</div>
         </div>
         <div class="asset-attr">    
-          <div class="attr pull-left"><b>Asset Type</b></div> 
-          <div class="attr pull-right capitalize">{{c.asset.assetType}}</div>
+          <div class="attr pull-left"><b>Keyboard Layout</b></div> 
+          <div class="attr pull-right capitalize">{{c.asset.keyboardType}}</div>
         </div>
         <div class="asset-attr">    
-          <div class="attr pull-left"><b>Retirement Date</b></div> 
-          <div class="attr pull-right">{{c.asset.retirementDate}}</div>
-        </div>
-        <div class="asset-attr">    
-          <div class="attr pull-left"><b>Assigned to</b></div> 
-          <div class="attr pull-right" ng-hide="c.asset.assignedTo == ''">{{c.asset.assignedTo}}</div>
-          <div class="attr pull-right" ng-show="c.asset.assignedTo == ''">This asset is not assigned.</div>
-        </div>
-        <div class="asset-attr">    
-          <div class="attr pull-left"><b>Assigned to VIP</b></div> 
-          <div class="attr pull-right capitalize">{{c.asset.assignedToIsVIP}}</div>
+          <div class="attr pull-left"><b>Bin</b></div> 
+          <div class="attr pull-right" ng-hide="c.asset.stockroom == ''">{{c.asset.stockroom}}</div>
+          <div class="attr pull-right" ng-show="c.asset.stockroom == ''">This asset is not assigned to a bin.</div>
         </div>
       </div>
     </div>

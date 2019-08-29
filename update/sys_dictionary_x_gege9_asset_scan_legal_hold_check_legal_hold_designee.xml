@@ -54,7 +54,7 @@
         <sys_created_by>212607632</sys_created_by>
         <sys_created_on>2018-10-08 13:14:15</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>fbb9c93fdbe6fb007601d3eb5e9619e2</sys_id>
+        <sys_id>5407698ddb9b7b00aba8d54b5e9619c8</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>Legal Hold Designee</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
@@ -63,7 +63,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_dictionary_x_gege9_asset_scan_legal_hold_check_legal_hold_designee</sys_update_name>
         <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2019-07-16 18:23:47</sys_updated_on>
+        <sys_updated_on>2019-08-14 14:15:25</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>
