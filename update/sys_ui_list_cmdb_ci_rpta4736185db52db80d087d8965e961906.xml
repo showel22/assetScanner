@@ -3,7 +3,7 @@
         <sys_ui_list_element action="INSERT_OR_UPDATE">
             <average_value>false</average_value>
             <element>u_config_item_id</element>
-            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="a70721cddb9b7b00aba8d54b5e9619b5">7c73a585db52db80d087d8965e96196f</list_id>
+            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="6073a585db52db80d087d8965e961955">7c73a585db52db80d087d8965e96196f</list_id>
             <max_value>false</max_value>
             <min_value>false</min_value>
             <position>0</position>
@@ -18,7 +18,7 @@
         <sys_ui_list_element action="INSERT_OR_UPDATE">
             <average_value>false</average_value>
             <element>name</element>
-            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="a70721cddb9b7b00aba8d54b5e9619b5">7c73a585db52db80d087d8965e96196f</list_id>
+            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="6073a585db52db80d087d8965e961955">7c73a585db52db80d087d8965e96196f</list_id>
             <max_value>false</max_value>
             <min_value>false</min_value>
             <position>1</position>
@@ -33,7 +33,7 @@
         <sys_ui_list_element action="INSERT_OR_UPDATE">
             <average_value>false</average_value>
             <element>owned_by</element>
-            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="a70721cddb9b7b00aba8d54b5e9619b5">7c73a585db52db80d087d8965e96196f</list_id>
+            <list_id display_value="cmdb_ci" element="NULL" name="cmdb_ci" parent="NULL" relationship="NULL" sys_domain="global" view="6073a585db52db80d087d8965e961955">7c73a585db52db80d087d8965e96196f</list_id>
             <max_value>false</max_value>
             <min_value>false</min_value>
             <position>2</position>
@@ -72,7 +72,7 @@
             <sys_updated_by>212612803</sys_updated_by>
             <sys_updated_on>2018-05-24 04:34:42</sys_updated_on>
             <sys_user/>
-            <view display_value="Rpta4736185db52db80d087d8965e961906" name="RPTa4736185db52db80d087d8965e961906">a70721cddb9b7b00aba8d54b5e9619b5</view>
+            <view display_value="Rpta4736185db52db80d087d8965e961906" name="RPTa4736185db52db80d087d8965e961906">6073a585db52db80d087d8965e961955</view>
             <view_name/>
         </sys_ui_list>
     </sys_ui_list>
