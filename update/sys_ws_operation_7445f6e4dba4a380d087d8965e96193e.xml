@@ -38,10 +38,7 @@
 					ciGR.next();
 					ciGR.install_status = 1;
 					ciGR.operational_status = 1;
-					var verstate = parseInt(ciGR.u_verification_status);
-					if(verstate > 299){
-						ciGR.u_verification_status = 301; // trusted
-					}
+					ciGR.u_verification_status = 301; // trusted
 					ciGR.update();
 				}
 				//close the todo task
@@ -102,7 +99,7 @@
         <sys_created_on>2018-09-11 17:37:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>7445f6e4dba4a380d087d8965e96193e</sys_id>
-        <sys_mod_count>79</sys_mod_count>
+        <sys_mod_count>80</sys_mod_count>
         <sys_name>updateAsset</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -110,7 +107,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_7445f6e4dba4a380d087d8965e96193e</sys_update_name>
         <sys_updated_by>212607258</sys_updated_by>
-        <sys_updated_on>2019-03-04 16:28:25</sys_updated_on>
+        <sys_updated_on>2019-09-25 17:06:35</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

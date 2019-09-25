@@ -35,10 +35,7 @@
 						ciGR.next();
 						ciGR.install_status = 6; //in stock
 						ciGR.operational_status = 1; //operational
-						var verstate = parseInt(ciGR.u_verification_status);
-						if(verstate > 299){
-							ciGR.u_verification_status = 301; // trusted
-						}
+						ciGR.u_verification_status = 301; // trusted
 						ciGR.update();
 					}
 					
@@ -77,15 +74,15 @@
         <sys_created_on>2019-07-16 20:45:47</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>0cd969ffdb2efb007601d3eb5e9619cf</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_name>bulkMoveAssets</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_0cd969ffdb2efb007601d3eb5e9619cf</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-07-16 20:57:33</sys_updated_on>
+        <sys_updated_by>212607258</sys_updated_by>
+        <sys_updated_on>2019-09-25 17:08:18</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
