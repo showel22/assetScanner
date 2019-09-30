@@ -17,21 +17,21 @@
         <scoped_administration>false</scoped_administration>
         <short_description/>
         <source>x_gege9_asset_scan</source>
-        <store_correlation_id>REPOAPP0000148583</store_correlation_id>
+        <store_correlation_id/>
         <store_url/>
         <sys_class_name>sys_app</sys_class_name>
         <sys_code/>
         <sys_created_by>212594278</sys_created_by>
         <sys_created_on>2018-04-19 20:58:05</sys_created_on>
         <sys_id>7be151dddbe55700d087d8965e9619c8</sys_id>
-        <sys_mod_count>115</sys_mod_count>
-        <sys_updated_by>212607258</sys_updated_by>
-        <sys_updated_on>2019-09-25 17:09:59</sys_updated_on>
+        <sys_mod_count>120</sys_mod_count>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-09-30 17:23:48</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <user_role/>
         <vendor/>
         <vendor_prefix/>
-        <version>1.0.61</version>
+        <version>1.0.62</version>
     </sys_app>
 </record_update>

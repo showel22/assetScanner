@@ -18,27 +18,27 @@ GEStockroomUtils.prototype = {
 		stockroomGR.query();
 		if(stockroomGR.hasNext()){
 			while(stockroomGR.next()){
-			//	if(gs.getUser().isMemberOf(stockroomGR.assignment_group.toString()) || stockroomGR.manager.sys_id.toString() === gs.getUserID() || stockroomGR.assignment_group ==''){
-				responseArr.push({
-					name: stockroomGR.name.toString(),
-					sysId: stockroomGR.sys_id.toString()
-				});
-			}
+				if(gs.getUser().isMemberOf(stockroomGR.assignment_group.toString()) || stockroomGR.manager.sys_id.toString() === gs.getUserID() || stockroomGR.assignment_group ==''){
+					responseArr.push({
+						name: stockroomGR.name.toString(),
+						sysId: stockroomGR.sys_id.toString()
+					});
+				}
 			}
 			if(responseArr.length > 0){
 				return responseArr;
 			}else{
 				error = new sn_ws_err.ServiceError();
+				error.setStatus(404);
+				error.setMessage('I got nothin...');
+				return error;
+			}
+		}else{
+			error = new sn_ws_err.ServiceError();
 			error.setStatus(404);
 			error.setMessage('I got nothin...');
 			return error;
-			}
- 		//}else{
-		//    error = new sn_ws_err.ServiceError();
- 		//	error.setStatus(404);
- 		//	error.setMessage('I got nothin...');
- 		//	return error;
- 		//}
+		}
 	},
 	
 	getStockroomsforPcDeployment: function(depotName){
@@ -64,15 +64,15 @@ GEStockroomUtils.prototype = {
 		}
 	},
 	
-	/*getAllStockroomsForUser: function(stockroomName,userSysId){
+	getAllStockroomsForUser: function(stockroomName,userSysId){
 		var responseArr = [];
-		//var eQuery = 'manager='+userSysId;
+		var eQuery = 'manager='+userSysId;
 		var stockroomGR = new GlideRecord('alm_stockroom');
-		// 		var uTemp = gs.getUser();
-		// 		var currentUser = uTemp.getUserByID(userSysId);   // this set the user to the passed in user
+		var uTemp = gs.getUser();
+		var currentUser = uTemp.getUserByID(userSysId);   // this set the user to the passed in user
 		stockroomGR.addQuery('name', 'STARTSWITH', stockroomName);
 		stockroomGR.addEncodedQuery(this._getGroupQueryString());
-		//stockroomGR.addEncodedQuery(eQuery);
+		stockroomGR.addEncodedQuery(eQuery);
 		stockroomGR.query();
 		if(stockroomGR.hasNext()){
 			while(stockroomGR.next()){
@@ -80,35 +80,35 @@ GEStockroomUtils.prototype = {
 					name: stockroomGR.name.toString(),
 					sysId: stockroomGR.sys_id.toString()
 				});
-				//				if (stockroomGR.manager == userSysId)
-				//				{
-				//					responseArr.push({
-				//					name: stockroomGR.name.toString(),
-				//						sysId: stockroomGR.sys_id.toString()
-				//						});
-				//				}
-				// 				else	if (currentUser.isMemberOf(stockroonGR.assignment_group.DisplayValue.toString()))
-				// 					{
-				// 					responseArr.push({
-				// 						name: stockroomGR.name.toString(),
-				// 						sysId: stockroomGR.sys_id.toString()
-				// 						});
-				// 				}
-				//				else
-				//				{
-				//					var grMemberOf = new GlideRecord('sys_user_grmember');
-				//					grMemberOf.addQuery('group',stockroomGR.assignment_group.getDisplayValue());
-				//					grMemberOf.addQuery('user.sys_id',userSysId);
-				//					grMemberOf.query();
-				//					if(grMemberOf.next()){
-				//						responseArr.push({
-				//						name: stockroomGR.name.toString(),
-				//						sysId: stockroomGR.sys_id.toString()
-				//						});
-				//			}
-				//				}
-											
-											
+				if (stockroomGR.manager == userSysId)
+					{
+					responseArr.push({
+						name: stockroomGR.name.toString(),
+						sysId: stockroomGR.sys_id.toString()
+					});
+				}
+				else	if (currentUser.isMemberOf(stockroonGR.assignment_group.DisplayValue.toString()))
+					{
+					responseArr.push({
+						name: stockroomGR.name.toString(),
+						sysId: stockroomGR.sys_id.toString()
+					});
+				}
+				else
+					{
+					var grMemberOf = new GlideRecord('sys_user_grmember');
+					grMemberOf.addQuery('group',stockroomGR.assignment_group.getDisplayValue());
+					grMemberOf.addQuery('user.sys_id',userSysId);
+					grMemberOf.query();
+					if(grMemberOf.next()){
+						responseArr.push({
+							name: stockroomGR.name.toString(),
+							sysId: stockroomGR.sys_id.toString()
+						});
+					}
+				}
+				
+				
 			}
 			return responseArr;
 		}else{
@@ -117,9 +117,9 @@ GEStockroomUtils.prototype = {
 			error.setMessage('I got nothin...');
 			return error;
 		}
-	}, */
-
-
+	},
+	
+	
 	type: 'GEStockroomUtils'
 };]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
@@ -127,14 +127,14 @@ GEStockroomUtils.prototype = {
         <sys_created_on>2018-10-11 19:27:55</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>331e6916dbc1a780d087d8965e961928</sys_id>
-        <sys_mod_count>37</sys_mod_count>
+        <sys_mod_count>38</sys_mod_count>
         <sys_name>GEStockroomUtils</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_331e6916dbc1a780d087d8965e961928</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-09-16 12:56:44</sys_updated_on>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-09-30 17:14:06</sys_updated_on>
     </sys_script_include>
 </record_update>
