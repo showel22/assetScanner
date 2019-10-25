@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysauto_script">
+    <sysauto_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition/>
+        <conditional>false</conditional>
+        <name>Close ToDo Records for Closed Requests</name>
+        <run_as display_value="Howell, Steven (212607632) ">2545e806db4fb2005e305f2e5e9619de</run_as>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_period/>
+        <run_start>2019-10-23 13:52:34</run_start>
+        <run_time>1970-01-01 05:00:00</run_time>
+        <run_type>daily</run_type>
+        <script><![CDATA[(function(){
+	
+	main();
+	
+	function main(){
+		var gr = new GlideRecord('x_gege9_asset_scan_todo');	
+		gr.addEncodedQuery('parent.state=3^ORparent.state=4^' +	
+						   'ORparent.state=7^ORparent.state=8^ORparent.state=10^' + 
+						   'ORparent.state=9^ORparent.state=6^type=500');
+		gr.setLimit(2000);
+		gr.query();
+		while(gr.next()){
+			gr.state = 7;
+			gr.update();
+		}
+	}
+	
+})();]]></script>
+        <sys_class_name>sysauto_script</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-23 14:24:48</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>e91102a71324c8d8179976dc5144b04a</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Close ToDo Records for Closed Requests</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sysauto_script_e91102a71324c8d8179976dc5144b04a</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-23 15:23:08</sys_updated_on>
+        <upgrade_safe>false</upgrade_safe>
+    </sysauto_script>
+</record_update>
