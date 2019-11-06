@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category/>
+        <format/>
+        <height/>
+        <image>759e7642dbf48410dd09db595e961961</image>
+        <name>Bulk_Move_Assets.svg</name>
+        <size_bytes>7606</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:45:55</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>2e5e3a02dbf48410dd09db595e9619f3</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Bulk_Move_Assets.svg</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_2e5e3a02dbf48410dd09db595e9619f3</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:46:07</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>7606</size_bytes>
+        <size_compressed>1730</size_compressed>
+        <state/>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:46:07</sys_created_on>
+        <sys_id>759e7642dbf48410dd09db595e961961</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:46:07</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>2e5e3a02dbf48410dd09db595e9619f3</table_sys_id>
+        <u_record>2e5e3a02dbf48410dd09db595e9619f3</u_record>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="759e7642dbf48410dd09db595e961961">759e7642dbf48410dd09db595e961961</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:46:07</sys_created_on>
+        <sys_id>b59e7642dbf48410dd09db595e961961</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>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</data>
+        <length>2296</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="759e7642dbf48410dd09db595e961961">759e7642dbf48410dd09db595e961961</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:46:07</sys_created_on>
+        <sys_id>399e7642dbf48410dd09db595e961961</sys_id>
+    </sys_attachment_doc>
+</record_update>

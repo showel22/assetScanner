@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category/>
+        <format/>
+        <height/>
+        <image>942d19e2db78cc10dd09db595e961962</image>
+        <name>inventory-menu-icon.svg</name>
+        <size_bytes>2726</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-11-01 18:57:05</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>0d0d916adb38cc10dd09db595e9619d8</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>inventory-menu-icon.svg</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_0d0d916adb38cc10dd09db595e9619d8</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-11-01 18:57:15</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>2726</size_bytes>
+        <size_compressed>670</size_compressed>
+        <state/>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-11-01 18:57:15</sys_created_on>
+        <sys_id>942d19e2db78cc10dd09db595e961962</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-11-01 18:57:15</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>0d0d916adb38cc10dd09db595e9619d8</table_sys_id>
+        <u_record>0d0d916adb38cc10dd09db595e9619d8</u_record>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="942d19e2db78cc10dd09db595e961962">942d19e2db78cc10dd09db595e961962</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-11-01 18:57:15</sys_created_on>
+        <sys_id>d42d19e2db78cc10dd09db595e961962</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>zVbbbtswDH3vV3DaSwtMtmX5WtgpsAEt9lbs8gFZrNpGHSmw1Tjd14++Vk2ToUC7rkLAiBRDnXMoOU4udusKtqJuSiVTwiyHgJArlZUyT8nPH5c0IheLk6TZ5tCWmS5S4nmbHYFClHmhU8L9ztuWov2sdilxwAHPA+4TsygjgNvIJiWF1ptz227b1mq5percdh3HsbH8mHK+q0p5eyiRxXFs96tkcQI4kg+UwpWQol5qVZ/D91uhVwV4scXh1GcsCM+AglHolyrEulyO9KyVWtvN8BtKx5K61JVYlHIrJNa8h7YotYDEHuJDTiaa1eJLLZZaZCiKLsadrcTul6asm2bRRfBriORQZim5XuaCoiCNrtWtSIlUUkweHSXG5ZuyqqbFbk7ruwqzBQJTWTYqYJT9eq0yArpeyuZG1euU9NMKMZ5S7llOPz4B5UE8OmdGEaPQzJ323OmRotyfa/LQOVLSKHtVq7sN9Q8kPElyjyT1ibVY6T73G06WMq8EDR7E/HjZj309XTxceDYJ3OMcnUlm7+EcM9S83nXSY9O6Tf6CYaOq+1zJPRjh1LQZhNE3bORvUSsCG1VK3XQwLD4MwO7EvssjBkbQBdcbTAAsGowLLLaCfoSPnblEh36E929E7DR7HRVfAMKN3gGIoMfQbfYfhXDeAYjxSDgvwZDY+ZGF17hszJvvFfPn22ZG8RNMNgTmTBYjbL5le57/7Ev3Ok+M6BAJM8qBO5MNu0fHaPFp4pskTO+NScxoEUUwkzCjXqf7aCPwRuPBhDkI973gjfvArAMUzCjinW3UNyGaWhFZBgnTe2MS+Pd9gIQZxZe4cLIRcDZZjLgmCdN7Hoknd/1RYHb6SdK9Gi7+AEsBrQCmCgAA</data>
+        <length>880</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="942d19e2db78cc10dd09db595e961962">942d19e2db78cc10dd09db595e961962</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-11-01 18:57:15</sys_created_on>
+        <sys_id>582d19e2db78cc10dd09db595e961962</sys_id>
+    </sys_attachment_doc>
+</record_update>

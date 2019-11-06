@@ -54,7 +54,7 @@
         <sys_created_by>212606938</sys_created_by>
         <sys_created_on>2018-10-09 18:27:08</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>9939ec86dbc16bc0c12359d25e9619fd</sys_id>
+        <sys_id>14139455dbfc041078c2d54b5e961969</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>Error Message</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
@@ -63,7 +63,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_dictionary_x_gege9_asset_scan_legal_hold_check_error_message</sys_update_name>
         <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2019-09-27 20:58:58</sys_updated_on>
+        <sys_updated_on>2019-10-28 16:21:20</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

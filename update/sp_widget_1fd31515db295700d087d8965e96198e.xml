@@ -24,6 +24,7 @@
 	// Client side access to camera scan through the Cabrillo library.  Called when user clicks on Scan Button.  
 	//URL goes to Scanned Information widget, and camera appends the asset identifier to the URL
 	c.scan = function(){
+		document.getElementById('mySidenav').style.width = '0';
 		cabrillo.camera.getBarcode().then(function(barcode) {
 			if (barcode){
 				window.location.href = 'asset_scan?id=scanned_information&serial_no=' + barcode;
@@ -39,12 +40,21 @@
 	
 	//Sets up the URL to go to the Scanned Information widget with the identifier from the input field
 	c.manualSubmit = function(serialNumber){
-		window.location.href = '/asset_scan?id=scanned_information&serial_no=' + serialNumber;
+		document.getElementById('mySidenav').style.width = '0';
+		c.error = false;
+		c.errorMessage = '';
+		if(!c.serialNumber.length){
+		   c.error = true;
+		   c.errorMessage = "Please enter an asset serial number."
+	}else{
+			window.location.href = '/asset_scan?id=scanned_information&serial_no=' + serialNumber;
+			 }
 	};
 	
 	//User clicks on the Manual Input button from the home screen.  
 	//This changes the HTML to hide the home screen and show the manual form
 	c.showManualInput = function(){
+		document.getElementById('mySidenav').style.width = '0';
 		//Show the input field and label
 		c.showForm = true;
 		//Hide Get Started Header and the Scanning button 
@@ -71,6 +81,9 @@
   position: absolute;
 }
 
+.red-border{
+  border: 1px solid red !important;
+}
 //General Buttons Styling
 
 button {
@@ -88,7 +101,9 @@ button {
 }
 
 .white-button {
-  background-color: #ffffff;
+  background: linear-gradient(-180deg, #efefef 0%, #fafafa 15%, #fdfdfd 53%, #f7f7f7 76%, #e0e0e0 100%);
+  box-shadow:0 6px 9px 3px rgba(0,0,0,0.21);
+  border-radius:8px;
 }
 
 a .white-button{
@@ -98,7 +113,7 @@ a .white-button{
 //Manual Entry Form
 #serial-number-form {
   font-size: 15px;
-  height: 100vh;
+  height: 105vh;
   background: #ffffff;
 }
 
@@ -125,21 +140,38 @@ a .white-button{
 
 //Main Homepage 
 .home-div {
-  background: linear-gradient(#00B2EE 150px, 150px, #A9A9A9);
-  height: 100vh;
+  position: relative;
+  top: -30px;
+  background: linear-gradient(-180deg, #2362a0 1%, #317fcb 34%, #347ec8 53%, #317fcb 71%, #2362a0 100%);
+  height: 115vh;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-icon {
+	display: inline;
+  float: left;
+  padding-bottom: 20px;
+  padding-left:20px;
+  padding-top: 7px;
+  height: 52px;
+  width: 52px;
 }
 
 .home-title {
-	padding-bottom: 20px; 
+	padding-bottom: 20px;
+}
+
+.horizontal-line {
+	border: 1.5px solid #094e92;
+  width: 95%;
+  height: 0px;
+  margin: 0 auto; 
 }
 
 .home-label {
   color: #ffffff;
-}
-
-.home-screen-row {
-  margin: 0 auto;
-  padding: 7px;
+  font-weight: 390;
 }
 
 //Start Scanning Button
@@ -151,9 +183,16 @@ a .white-button{
   height: 75px;
 }
 
+.home-screen-row {
+  margin: 5%;
+}
+
 //Small button
 .small-button {
-	height: 70px;
+	height: 165px;
+  width: 100%;
+  min-width: 34px;
+  word-wrap: break-word;
 }
 
 .small-icon {
@@ -162,6 +201,25 @@ a .white-button{
 
 .small-button-text {
   font-size: 15px;
+}
+
+.btn-label {
+  position: absolute;
+  top: 15px;
+  left: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  color:#5e5c5c;
+	letter-spacing:0;
+	text-align:left;
+}
+
+.btn-icon {
+	position: absolute;
+  bottom: 7px;
+  right: 25px;
+  max-height: 60%;
+  max-width: 60%;
 }
 
 //Inventory Check Button
@@ -221,6 +279,53 @@ a.button-link:hover {
  line-height: 15px !important; 
  padding: 5px 0 !important;
 }
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background:rgba(0,0,0,0.84);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  font-weight: 500;
+  color: #ffffff;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  cursor: pointer;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.menu-option-icon {
+  width: 50px;
+  height: 50px;
+	margin-right: 20px;
+}
 </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
@@ -242,15 +347,15 @@ a.button-link:hover {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>314</sys_mod_count>
+        <sys_mod_count>509</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-07-17 19:30:00</sys_updated_on>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-11-04 13:06:43</sys_updated_on>
         <template><![CDATA[<!-- Main Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
@@ -266,7 +371,7 @@ a.button-link:hover {
         <div class="col-xs-10 col-xs-offset-1">
         	<h4 class="text-center">Manually Enter Barcode</h4>
           <label class="control-label">Barcode information</label>
-          <input type="text" id="serialInput" placeholder="Enter Serial Number" ng-model="c.serialNumber" class="form-control" autofocus />
+          <input type="text" id="serialInput" placeholder="Enter Serial Number" ng-model="c.serialNumber" class="form-control" ng-class="{'red-border': c.error}" autofocus />
         </div>
         <div>
           <div class="col-xs-4 col-xs-offset-1 manual-submit-cancel-row">
@@ -282,47 +387,99 @@ a.button-link:hover {
         </div>
       </div>
       
+      <!-- Menu -->
+      <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="document.getElementById('mySidenav').style.width = '0';">&times;</a>
+        <a href="/asset_scan" >
+          <img class="menu-option-icon" src="home-menu-icon.svg" />
+          Home
+        </a>
+        <a ng-click="c.scan()">
+          <img class="menu-option-icon" src="scan-menu-icon.svg" />
+          Scan
+        </a>
+        <a ng-click="c.showManualInput()">
+          <img class="menu-option-icon" src="enter-manually-menu-icon.svg" />
+          Enter Manually
+        </a>
+        <a href="/asset_scan?id=inventory">
+          <img class="menu-option-icon" src="inventory-menu-icon.svg" />
+          Inventory
+        </a>
+        <a href="/asset_scan?id=add_new_asset">
+          <img class="menu-option-icon" src="add-new-asset-icon.svg" />
+          Add New Asset
+        </a>
+        <a href="/asset_scan?id=bulk_move_assets">
+          <img class="menu-option-icon" src="bulk-move-assets.svg" />
+          Bulk Move Assets
+        </a>
+      </div>
+      
       <!-- Main Homepage -->
       <div class="home-div" ng-show="c.showHomeButtons">
         <div class="col-xs-12 home-title">
-          <h3 class="text-center home-label" id="get-started-label">Welcome {{c.currentUser}},</h3>
-          <h4 class="text-center home-label" id="get-started-label">How do you want to get started today?</h4>
+          <h1 class="home-label" id="get-started-label">
+            <img class="menu-icon" src="Asset_Scan_Menu_Icon.svg" onclick="document.getElementById('mySidenav').style.width = '75%';"/>
+            &nbsp;&nbsp;Welcome {{c.currentUser}}
+          </h1>
+          <div class="horizontal-line" />
+          <h3 class="text-center home-label">
+            Select one of the following options
+          </h3>
         </div>
         <div class="home-buttons">
-          <div class="row home-screen-row" id="scan-button-row">
-            <button class="btn col-xs-8 col-xs-offset-2 start-scanning-button white-button" ng-click="c.scan()">
-              <img class="button-icon" id="barcode-icon" src="barcode-icon.png" />Scan
+          <div class="row home-screen-row">
+            <div class="col-xs-6">
+              <button class="btn small-button white-button" ng-click="c.scan()">
+              	<div class="btn-label">
+                  Scan Asset
+                </div>
+                <img class="icon btn-icon" src="Scan_Asset.svg" />
             </button>
+            </div>
+            <div class="col-xs-6">
+              <button class="btn small-button white-button" ng-click="c.showManualInput()">
+                <div class="btn-label">
+                  Manual Input
+                </div>
+								<img class="icon btn-icon" src="Enter_Manually.svg" />
+              </button>
+            </div>
           </div>
           <div class="row home-screen-row">
-            <button class="btn col-xs-8 col-xs-offset-2 small-button white-button" ng-click="c.showManualInput()">
-              <img class="button-icon small-icon" src="pencil-icon.png"/>
-              <span class="small-button-text">Manual Input</span>
-            </button>
+            <div class="col-xs-6">
+              <a href="/asset_scan?id=inventory" class="button-link">
+                <button class="btn small-button white-button">
+                 	<div class="btn-label">
+                  Inventory
+                </div>
+								<img class="icon btn-icon" src="asset_Inventory.svg" />
+                </button>
+              </a>
+            </div>
+            <div class ="col-xs-6">   
+              <a href="/asset_scan?id=add_new_asset" class="button-link">
+                <button class="btn small-button white-button">
+                  <div class="btn-label">
+                  Add New Asset
+                </div>
+								<img class="icon btn-icon" src="Add_New_Asset.svg" />
+                </button>
+              </a>
+            </div>
           </div>
           <div class="row home-screen-row">
-            <a href="/asset_scan?id=inventory" class="button-link">
-              <button class="btn col-xs-8 col-xs-offset-2 small-button white-button">
-                <img class="button-icon small-icon" src="inventory.svg"/>
-                <span class="small-button-text">Inventory</span>
-              </button>
-            </a>
-          </div>
-       <div class="row home-screen-row">
-         <div class ="col-xs-8 col-xs-offset-2 row nopadding">   
-         <a href="/asset_scan?id=add_new_asset" class="button-link">
-              <button class="btn col-xs-5 small-button white-button">
-                <img class="button-icon small-icon" src="plus.svg"/>
-                <span class="small-button-text">Add New Assets</span>
-              </button>
-            </a>
-            <a href="/asset_scan?id=bulk_move_assets" class="button-link">
-              <button class="btn col-xs-5 col-xs-offset-2 small-button white-button">
-                <img class="button-icon small-icon" src="list.svg"/>
-                <span class="small-button-text">Bulk Move Assets</span>
-              </button>
-            </a>
-          </div>
+            <div class="col-xs-6">
+              <a href="/asset_scan?id=bulk_move_assets" class="button-link">
+                <button class="btn small-button white-button">
+                 <div class="btn-label">
+                  Bulk Move Assets
+                </div>
+								<img class="icon btn-icon" src="Bulk_Move_Assets.svg" />
+                </button>
+              </a>
+            </div>
           </div>
      
           <!-- PC DEPLOYMENT - UNCOMMENT TO PUT BACK IN

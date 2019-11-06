@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_push_notif_app_install">
+    <sys_push_notif_app_install action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <last_registered_on>2019-10-31 13:53:46</last_registered_on>
+        <sys_class_name>sys_push_notif_app_install</sys_class_name>
+        <sys_created_by>212680595</sys_created_by>
+        <sys_created_on>2019-10-31 13:53:46</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c91e8b02db7c8410dd09db595e961992</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>c-8QvhqnLtw:APA91bH4nA1qiGuaN0AHtiAJFpWP0hbrgNIfFpBGL3Zm12vRMo2K9VnMOaZcluj3Et0pjhzKi-x-vJ12Bx2snSGiewrlRaKqeGyH8lMVkAE7eRKNV_CEpVX6m-ZZyj0BxKVJJ8wK7V72</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_push_application_id display_value="ServiceNow Classic Mobile Application">ab704041ff1102009738ffffffffff33</sys_push_application_id>
+        <sys_push_platform_id display_value="Google">53e75f30ff0002009738ffffffffff12</sys_push_platform_id>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_push_notif_app_install_c91e8b02db7c8410dd09db595e961992</sys_update_name>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2019-10-31 13:53:46</sys_updated_on>
+        <sys_user_id display_value="Fosco, Patrick (212680595) ">bbbfe826db6d0780a791d6a75e961918</sys_user_id>
+        <token>c-8QvhqnLtw:APA91bH4nA1qiGuaN0AHtiAJFpWP0hbrgNIfFpBGL3Zm12vRMo2K9VnMOaZcluj3Et0pjhzKi-x-vJ12Bx2snSGiewrlRaKqeGyH8lMVkAE7eRKNV_CEpVX6m-ZZyj0BxKVJJ8wK7V72</token>
+    </sys_push_notif_app_install>
+</record_update>

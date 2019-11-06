@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category/>
+        <format/>
+        <height/>
+        <image>8e8c3acedb748410dd09db595e96191a</image>
+        <name>Add_New_Asset.svg</name>
+        <size_bytes>2518</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:36:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>4e6cfa46dbb48410dd09db595e961940</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Add_New_Asset.svg</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_4e6cfa46dbb48410dd09db595e961940</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:37:07</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>2518</size_bytes>
+        <size_compressed>929</size_compressed>
+        <state/>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:37:07</sys_created_on>
+        <sys_id>8e8c3acedb748410dd09db595e96191a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:37:07</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>4e6cfa46dbb48410dd09db595e961940</table_sys_id>
+        <u_record>4e6cfa46dbb48410dd09db595e961940</u_record>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="8e8c3acedb748410dd09db595e96191a">8e8c3acedb748410dd09db595e96191a</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:37:07</sys_created_on>
+        <sys_id>ce8c3acedb748410dd09db595e96191a</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>1VZNj9s2EL3nV0yZS4JYFEmJIrWwHWCN7SKAiwZNe+lNkbiysLLkSlrbya/PUB9e2rCRS3uoDyJnNPNm5g091PzjcVvC3jRtUVcLwikjYKq0zooqX5C//vzV0+Tj8s283edwKLJugzah2h0JbEyRbzoUA2HFfWEO9/VxQRgwQBNAPXGBOQEMVbULsum63Z3vHw4Hegho3eS+YIz5GGI0uTuWRfV8zZDHcez3b8nyDeBv/ovnwaOpTJN0dXMHX55Nl24gjGkA7yTnkXoPHjhAX+uN2RbJWCJN663fDj6eN0J2RVeaZZJlUJkDJG1rurk/KAeDzLTpctWYpDMZstJtxrB07vevJqundmk1uAyaHIpsQT4nufGQjbZr6mezIFVdmUnyJo4JPBVlOb20e695KdHa7E1VZ9lYvgP76XOdEeiapGqf6ma7IP22xBzfeWEoKOt/M/AiNgnvHRQHCSv3sHKvr/wGpIt4G9ABfWzql50XXDEYODfHrrf7gNXWVec9Jdui/IZ+D5+qdlc0yRcM7d3XZTaDxwcYlWC1o0dbfEd+lBzFw3g+v6LLxOZb+SBXcnUjiSGRdpdUgOc41gQwPheaLD9g/63+RvK+zf7Gu7Ro0tL0pf2+T8rXtr9lTLP7+LLzEYEUo3OuKFaS2gyQXtw2CyIi3OCRGjBvBNwleB4x2m9qxpmkWkvFQ1hZKaCKx5xpkFRIHQiuNGoFBJRLyZUIeS+u1etyAvgbEFDBmnM5LZGkIe6EcHYIxUNhXWBlZU6DOAxwFnDgglGpVaD5DCcE11SHoRYahbWTAEM/GnIRcd0bMheCufhrdlaglRSNmIw0Dp9XCM7i8wJjrCymcYB8hPKK7BKgbN2Ot4KVw50CNUNRMx1zGaDgZtezdeaKUE7ZCIXjiaoQZ5SVLKMOmBVduBPvDkAPKM85v0Q5i+D4uo10AEZIxYZ2Tuv/o61aOiv2L7RIYyeccrGo/jS7RZ018qzFZy0csNQFY//yP4300+IPk3ZJlZd4V7DL+eVeCHhDfDdNbeeC/evfmgp1+S2vqwtkdQKehtEVYNjVRdXhva00BALwyTnoaHwGMRUxV3HEIbiU0CIMxyd+DdgMhzR+Nrp4TJmKYhEg5zj8YB1pipLV9YqBoXVRGU84E3Vi53yiypMCvxtMmuwWpP3nJWnMzyi7ko0OL7Kxiv86m7mfX9zTruIk9Ju5/Yxa/gBUZOiJ1gkAAA==</data>
+        <length>1228</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="8e8c3acedb748410dd09db595e96191a">8e8c3acedb748410dd09db595e96191a</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:37:07</sys_created_on>
+        <sys_id>428c3acedb748410dd09db595e96191b</sys_id>
+    </sys_attachment_doc>
+</record_update>

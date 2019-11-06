@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category/>
+        <format/>
+        <height/>
+        <image>0acb3ac2dbb48410dd09db595e9619a0</image>
+        <name>asset_Inventory.svg</name>
+        <size_bytes>4078</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:33:40</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>adab3642dbb48410dd09db595e961920</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>asset_Inventory.svg</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>db_image_adab3642dbb48410dd09db595e961920</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:33:50</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes>734003</chunk_size_bytes>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>4078</size_bytes>
+        <size_compressed>794</size_compressed>
+        <state/>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:33:50</sys_created_on>
+        <sys_id>0acb3ac2dbb48410dd09db595e9619a0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2019-10-31 12:33:50</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>adab3642dbb48410dd09db595e961920</table_sys_id>
+        <u_record>adab3642dbb48410dd09db595e961920</u_record>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="0acb3ac2dbb48410dd09db595e9619a0">0acb3ac2dbb48410dd09db595e9619a0</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:33:50</sys_created_on>
+        <sys_id>4acb3ac2dbb48410dd09db595e9619a0</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>xZdrb5swFIa/91d47pdWCmAD5lKFVGq1VZMyqdrlB7DgElSCM6BJul+/Y2NSp2q1aukgH3JeXzh+eH0wyfRytyrRhtdNIaoEU5tgxKuFyIoqT/CP75+sCF/OTqbNJkfbImuXMIcF6x1GS17kyxaaHpHNTcG3V2KXYIIIgikI+rGZmGIES1VNgpdtu75wnO12a289W9S54xJCHFhCT7nYlUV1/9JEGsexo0bx7ATBZ/rBstANr3idtqK+QN/uebtYIj+2PXTGKA3Cc2QhI9FPseSrItW3aC/Eymm6ayxLp2yLtuSzotrwCnI+oqnT9XSjGW8Ws+uapy3PwJJ2qde0p44a6mfdNTPZA6HryVGRJfg2zbkFVjRtLe55gitR8b5l9QZjdFeUZT8otVU/lDCbA5LIMn3vRtrPtyLDqK3TqrkT9SrBSpbAeGZRz7eJ+kyQFRBPN86NLEam/W1br+SjXrhPF5DglWxGxptaPKwt94UJalLNF62a9xVEWuUlt4Inf07ZR3bNrp9bxKBSoNQwekxw5OG+NBl5qksfbKx30k3YB7nIK+uvRfmYi+oZQtjvwSkhEbmKD7YB9uU3rwVGa1FULVS0G9kMxS58KRWFyPOMGIfwRdmBgjGXGFFeLUk1zn+EDfewoYaNPCMqxIAdKBgLiRGHg6Vu3NN2EhBkQRui85QGh1IOu9QUw0EzicukUUr5EEMjMmmpFx8oGPN9I8qrB3KYeD1tJ30pIlMozJgcKBiMmRGHA+7qty9fv6taHajfl+yT8rua1SF+C+YRZxJ7l0PpCABKxiZwmQKQKx1zLqfwaoX1v3jwDE0Cuddz+WgoiRXavKg4vFj+RuXtO+CHA1+k6wQ3vx7SmqtCgGXeRBD6ewIphyWQxa09kE/bCB4ogs4DRTC8B/LsnLjybJ8HsZYjEMhi0ARSDksAtzyhVJ5jcxr1egyEwEAYZx+0DWojRrBBMwQGw+A+UGIYQelITvQUgUkxlBdHvKbCd3lNHf9Tgfzr+lMnf/YXzuzYN5SYyr/Xsz/eCe9m7g8AAA==</data>
+        <length>1048</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="0acb3ac2dbb48410dd09db595e9619a0">0acb3ac2dbb48410dd09db595e9619a0</sys_attachment>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2019-10-31 12:33:50</sys_created_on>
+        <sys_id>cacb3ac2dbb48410dd09db595e9619a0</sys_id>
+    </sys_attachment_doc>
+</record_update>
