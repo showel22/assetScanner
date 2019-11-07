@@ -58,7 +58,7 @@ function runWorkflow_task() {
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>979ef74adb0ad340262950a45e96196e</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>11</sys_mod_count>
         <sys_name>Run Request Item Workflow</sys_name>
         <sys_overrides/>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
@@ -67,9 +67,9 @@ function runWorkflow_task() {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_979ef74adb0ad340262950a45e96196e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2019-11-05 15:53:12</sys_updated_on>
+        <sys_updated_on>2019-11-07 20:33:29</sys_updated_on>
         <template/>
-        <when>after</when>
+        <when>async</when>
     </sys_script>
     <sys_translated_text action="delete_multiple" query="documentkey=979ef74adb0ad340262950a45e96196e"/>
 </record_update>

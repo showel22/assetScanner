@@ -4,7 +4,7 @@
         <condition/>
         <conditional>false</conditional>
         <name>Close ToDo Records for Closed Requests</name>
-        <run_as display_value="Howell, Steven (212607632) ">2545e806db4fb2005e305f2e5e9619de</run_as>
+        <run_as display_value="Howell, Steven (212607632)">2545e806db4fb2005e305f2e5e9619de</run_as>
         <run_as_tz/>
         <run_dayofmonth>1</run_dayofmonth>
         <run_dayofweek>1</run_dayofweek>
