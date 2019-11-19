@@ -11,6 +11,14 @@ AssetToDo.prototype = {
     initialize: function(){
     },
 	
+    /**
+    * @summary create Takes in the asset. The asset passes
+	* in 5 params to create a task on the ToDo table.
+	* @params: asset, type, short description, order and parent 
+    * @param {string} - asset, type, short description, order and parent
+	* @param {int} - state and active
+	* @return new task record on ToDO
+    */
 	create: function(asset, type, shortDescription, order, parent){
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.initialize();
@@ -24,6 +32,14 @@ AssetToDo.prototype = {
 		return toDoGR.insert();
 	},
 	
+	/**
+    * @summary createFreeForm Takes in and asset. The asset passes
+	* in 4 params to create a task on the ToDo table.
+	* @params: asset, short description, scan and type 
+    * @param {string} - asset, type, short description, order and parent
+	* @param {int} - state and active
+	* @return new FreeForm task record on ToDO
+    */
 	createFreeForm: function(asset, shortDescription, scan, type){		
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.addQuery('asset', asset);
@@ -37,28 +53,66 @@ AssetToDo.prototype = {
 		}
 	},
 	
+	/**
+    * @summary createReclamation creates a task to reclaim an asset
+	* @params: asset, order and parent
+	* @param {string} - asset and parent
+	* @param {int} - order
+	* @return new reclamation task record on ToDo
+    */
 	createReclamation: function(asset, order, parent){
 		return this.create(asset, 200, 
 					"The previous owner has requested Data Reclamation." + 
 						   " Tap here to scan the asset into the Data Reclamation bin.", order, parent);
 	},
 	
+	/**
+    * @summary createLegalHold creates a task to add to legal hold
+	* @params: asset, order and parent
+	* @param {string} - asset and parent
+	* @param {int} - order
+	* @return new legal hold task record on ToDo
+    */
 	createLegalHold: function(asset, order, parent){
 		return this.create(asset, 300, 
 					"This device is on Legal Hold. Tap here to scan the asset" +
 						   " into the Legal Hold bin.", order, parent);
 	},
 	
+	/**
+    * @summary createReceived creates a task to scan asset
+	* into the depot
+	* @params: asset, order and parent
+	* @param {string} - asset and parent
+	* @param {int} - order
+	* @return new received task record on ToDo
+    */
 	createReceived: function(asset, order, parent){
 		return this.create(asset, 500, 
 					"Tap here to scan the asset into the depot.", order, parent);
 	},
 	
+	/**
+    * @summary createWipe creates a task to add asset
+	* to the data wipe bin
+	* @params: asset, order and parent
+	* @param {string} - asset and parent
+	* @param {int} - order
+	* @return new Wipe task record on ToDo
+    */
 	createWipe: function(asset, order, parent){
 		return this.create(asset, 400, 
 					"Tap here to scan the asset into the Data Wipe bin.", order, parent);
 	},
 	
+	/**
+    * @summary checkLegalHold creates a task to check 
+	* the legal hold status of an asset
+	* @params: asset, order and parent
+	* @param {string} - asset and parent
+	* @param {int} - order
+	* @return new check legal hold task record on ToDo
+    */
 	createCheckLegalHold: function(asset, order, parent){
 		return this.create(asset, 700,
 						  "This device has no open requests, you have to " +
@@ -66,12 +120,30 @@ AssetToDo.prototype = {
 						  order, parent);
 	},
 	
+	/**
+    * @summary createInvestigate creates a task to check 
+	* the status of an asset
+	* @params: asset and order
+	* @param {string} - asset
+	* @param {int} - order
+	* @return new investigate task record on ToDo
+    */
 	createInvestigate: function(asset, order){
 		return this.create(asset, 800,
 						  "This device has no open requests, you may need " + 
 						   "to find out why this is here from the owner.", order);
 	},
 	
+	
+	/**
+    * @summary createToDoList creates a series of task
+	* records on an asset; Received, Reclamation, 
+	* Legal hold and wipe tasks
+	* the status of an asset
+	* @params {sting} asset, dataReclamation, legal hold and parent
+	* @return new received, reclamation, legal hold
+	* and wipe task records on ToDo
+    */
 	createToDoList: function(asset, dataReclamation, legalHold, parent){
 		var order = 0;
 		this.createReceived(asset, order++, parent);
@@ -86,12 +158,25 @@ AssetToDo.prototype = {
 		}
 	},
 	
+	/**
+    * @summary createToDoListNoRequests checks an asset
+	* @param {string} - asset
+	* @return true that an asset has no known ToDo tasks
+    */
 	createToDoListNoRequests: function(asset){
 		var order = 0;
 		this.createInvestigate(asset, order++);
 		return true;
 	},
 	
+	/**
+    * @summary createToDoList returns all to do items
+	* for an asset 
+	* @params: asset and order
+	* @param {string} - asset
+	* @param {int} - order
+	* @return all items on an asset ToDo list
+    */
 	getToDoList: function(asset){
 		var toDoList = [];
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
@@ -114,6 +199,11 @@ AssetToDo.prototype = {
 		return toDoList;
 	},
 	
+	/**
+    * @summary markComplete returns true or
+	* false if an assets ToDos are complete
+	* @return true if ToDo comlete or flase if not
+    */
 	markComplete: function(todo){
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.addQuery('sys_id', todo);
@@ -127,6 +217,11 @@ AssetToDo.prototype = {
 		}
 	},
 	
+	/**
+    * @summary markSkipped returns true or
+	* false if an assets ToDos are skipped
+	* @return true if ToDo skipped or flase if not
+    */
 	markSkipped: function(todo){
 		var toDoGR = new GlideRecord('x_gege9_asset_scan_todo');
 		toDoGR.addQuery('sys_id', todo);
@@ -147,14 +242,14 @@ AssetToDo.prototype = {
         <sys_created_on>2018-04-24 13:51:39</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>31f241ebdbe99340d087d8965e96198e</sys_id>
-        <sys_mod_count>79</sys_mod_count>
+        <sys_mod_count>91</sys_mod_count>
         <sys_name>AssetToDo</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_31f241ebdbe99340d087d8965e96198e</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-09-20 17:46:45</sys_updated_on>
+        <sys_updated_by>212742586</sys_updated_by>
+        <sys_updated_on>2019-11-18 18:01:39</sys_updated_on>
     </sys_script_include>
 </record_update>

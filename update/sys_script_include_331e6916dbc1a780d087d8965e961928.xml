@@ -11,6 +11,14 @@ GEStockroomUtils.prototype = {
 	initialize: function() {
 	},
 	
+
+	/**
+    * @summary getAllStockrooms returns all 
+	* stockrooms on the alm_stockroom table
+	* Stockrooms are queried and held in an 
+	* array
+	* @return stockrooms or error
+    */
 	getAllStockrooms: function(stockroomName){
 		var responseArr = [];
 		var stockroomGR = new GlideRecord('alm_stockroom');
@@ -127,14 +135,14 @@ GEStockroomUtils.prototype = {
         <sys_created_on>2018-10-11 19:27:55</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>331e6916dbc1a780d087d8965e961928</sys_id>
-        <sys_mod_count>39</sys_mod_count>
+        <sys_mod_count>40</sys_mod_count>
         <sys_name>GEStockroomUtils</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_331e6916dbc1a780d087d8965e961928</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2019-11-06 17:12:41</sys_updated_on>
+        <sys_updated_by>212742586</sys_updated_by>
+        <sys_updated_on>2019-11-18 20:11:40</sys_updated_on>
     </sys_script_include>
 </record_update>

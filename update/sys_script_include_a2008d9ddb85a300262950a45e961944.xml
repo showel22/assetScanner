@@ -11,6 +11,12 @@ GELegalHoldUtils.prototype = {
     initialize: function() {
     },
 	
+	/**
+    * @summary checkLegalHold Takes in the asset. The asset passes
+	* in SSO associated with an asset and checks
+	* with Atlas to deteremine legal hold status
+	* @return Legal hold status from Atlas
+    */
 	checkLegalHold: function(userSSO, asset, userSource) {
 		try { 
 			//get the SSO associated with the asset
@@ -44,6 +50,14 @@ GELegalHoldUtils.prototype = {
 		}
 	},
 	
+	/**
+    * @summary updateAssetLegalHoldStatus updates
+	* the Legal Hold status of an asset
+	* @param {stirng} - asset
+	* @param {int} - status
+	* @returns True or False to the asset or 
+	* an error with Atlas
+    */
 	updateAssetLegalHoldStatus: function(asset, status) {
 		if(status === "True"){
 			status = true;
@@ -66,6 +80,15 @@ GELegalHoldUtils.prototype = {
 			return 'Legal Hold Update Error';
 		}
 	},
+	
+	/**
+    * @summary logLegalHoldCheck checks an
+	* assets legal hold status
+	* @param {stirng} - asset, user, userSource, errorMessage
+	* @param {int} - status
+	* @returns legal hold status
+    */
+	
 	// Status should be 0 for error, 100 for Yes or 200 for No
 	logLegalHoldCheck: function(asset, status, user, userSource, errorMessage) {
 		var userSysId;
@@ -95,6 +118,15 @@ GELegalHoldUtils.prototype = {
 		
 		
 	},
+	
+	/**
+    * @summary getAllLegalHoldLogs checks an
+	* assets legal hold status
+	* @param {stirng} - asset
+	* @param {int} - status
+	* @returns log history of legal status
+    */
+	
 	// Used to get back a list of legal hold logs for an asset.
 	getAllLegalHoldLogs: function(asset){
 		
@@ -125,14 +157,14 @@ GELegalHoldUtils.prototype = {
         <sys_created_on>2018-10-08 13:31:53</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>a2008d9ddb85a300262950a45e961944</sys_id>
-        <sys_mod_count>32</sys_mod_count>
+        <sys_mod_count>36</sys_mod_count>
         <sys_name>GELegalHoldUtils</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_a2008d9ddb85a300262950a45e961944</sys_update_name>
-        <sys_updated_by>212606938</sys_updated_by>
-        <sys_updated_on>2018-11-07 14:14:59</sys_updated_on>
+        <sys_updated_by>212742586</sys_updated_by>
+        <sys_updated_on>2019-11-18 18:43:31</sys_updated_on>
     </sys_script_include>
 </record_update>
