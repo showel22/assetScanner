@@ -29,7 +29,12 @@
         <rest_service_text/>
         <rest_variables/>
         <role_conditions/>
-        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+        <script><![CDATA[/**
+ * @summary query of an asset and stockroom 
+ * @param inventory check
+ * @update checks for inventory of assets at a stockroom
+ */
+(function executeRule(current, previous /*null when async*/) {
 	var gr = new GlideRecord('x_gege9_asset_scan_inventory_check_asset');
 	gr.addQuery('inventory_check', current.sys_id);
 	gr.query();
@@ -52,7 +57,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>c4b68886db3ad340262950a45e96198e</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>Inventory Scan IC Stockroom Change</sys_name>
         <sys_overrides/>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
@@ -60,8 +65,8 @@
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_c4b68886db3ad340262950a45e96198e</sys_update_name>
-        <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2019-10-23 14:32:47</sys_updated_on>
+        <sys_updated_by>212742586</sys_updated_by>
+        <sys_updated_on>2019-12-09 15:14:26</sys_updated_on>
         <template/>
         <when>after</when>
     </sys_script>

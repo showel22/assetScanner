@@ -49,6 +49,13 @@ GEStockroomUtils.prototype = {
 //		}
 	},
 	
+	/**
+    * @summary getStockroomsforPcDeployment returns all 
+	* stockrooms on the alm_stockroom table
+	* Stockrooms are queried and held in an 
+	* array
+	* @return stockrooms available to deploy or error
+    */
 	getStockroomsforPcDeployment: function(depotName){
 		var responseArr = [];
 		var centralDepotGR = new GlideRecord('alm_stockroom');
@@ -72,6 +79,13 @@ GEStockroomUtils.prototype = {
 		}
 	},
 	
+	/**
+    * @summary getStockroomsForUser returns all 
+	* stockrooms on the alm_stockroom table
+	* Stockrooms are queried and held in an 
+	* array
+	* @return stockrooms available to deploy for specific user or error
+    */
 	getAllStockroomsForUser: function(stockroomName,userSysId){
 		var responseArr = [];
 		var eQuery = 'manager='+userSysId;
@@ -135,7 +149,7 @@ GEStockroomUtils.prototype = {
         <sys_created_on>2018-10-11 19:27:55</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>331e6916dbc1a780d087d8965e961928</sys_id>
-        <sys_mod_count>40</sys_mod_count>
+        <sys_mod_count>41</sys_mod_count>
         <sys_name>GEStockroomUtils</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy>read</sys_policy>
@@ -143,6 +157,6 @@ GEStockroomUtils.prototype = {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_script_include_331e6916dbc1a780d087d8965e961928</sys_update_name>
         <sys_updated_by>212742586</sys_updated_by>
-        <sys_updated_on>2019-11-18 20:11:40</sys_updated_on>
+        <sys_updated_on>2019-12-03 18:26:23</sys_updated_on>
     </sys_script_include>
 </record_update>
