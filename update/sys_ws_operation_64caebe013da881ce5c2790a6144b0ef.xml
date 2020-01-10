@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>GET</http_method>
+        <name>searchByIdentifier</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var assetGR, assets = [],
+	identifier = request.pathParams.Identifier;
+	
+	assetGR = new GlideRecord('alm_hardware');
+	assetGR.setLimit(25);
+	assetGR.orderByDesc('sys_updated_on');
+	assetGR.addEncodedQuery('serial_numberSTARTSWITH'+ identifier +'^ORasset_tagSTARTSWITH' + identifier);
+	assetGR.query();
+	// Check to see if any asset exists
+	if(assetGR.hasNext()){
+		while(assetGR.next()){
+			if(assetGR.asset_tag.getDisplayValue().startsWith(identifier)){
+				assets.push({identifier: assetGR.asset_tag.getDisplayValue(), model: assetGR.model.getDisplayValue()});
+			}
+			
+			if(assetGR.serial_number.getDisplayValue().startsWith(identifier)){
+				assets.push({
+					identifier:assetGR.serial_number.getDisplayValue(),
+					model: assetGR.model.getDisplayValue()
+				});
+			}
+		}
+		// Asset was not found send error
+	}else{
+		var error = new sn_ws_err.ServiceError();
+		error.setStatus(404);
+		error.setMessage('No asset for this Serial Number.');
+		return error;
+	}
+	
+	response.setBody(assets);
+	return response;
+		
+		
+	})(request, response);]]></operation_script>
+        <operation_uri>/api/x_gege9_asset_scan/asset_scanner/searchByIdentifier/{Identifier}</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/searchByIdentifier/{Identifier}</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>212607632</sys_created_by>
+        <sys_created_on>2020-01-09 13:43:26</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>64caebe013da881ce5c2790a6144b0ef</sys_id>
+        <sys_mod_count>16</sys_mod_count>
+        <sys_name>searchByIdentifier</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_ws_operation_64caebe013da881ce5c2790a6144b0ef</sys_update_name>
+        <sys_updated_by>212607632</sys_updated_by>
+        <sys_updated_on>2020-01-09 19:39:54</sys_updated_on>
+        <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>
