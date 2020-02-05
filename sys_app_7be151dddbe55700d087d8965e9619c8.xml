@@ -24,14 +24,14 @@
         <sys_created_by>212594278</sys_created_by>
         <sys_created_on>2018-04-19 20:58:05</sys_created_on>
         <sys_id>7be151dddbe55700d087d8965e9619c8</sys_id>
-        <sys_mod_count>139</sys_mod_count>
-        <sys_updated_by>guest</sys_updated_by>
-        <sys_updated_on>2019-12-15 16:08:55</sys_updated_on>
+        <sys_mod_count>140</sys_mod_count>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2020-02-05 13:05:39</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <user_role/>
         <vendor/>
         <vendor_prefix/>
-        <version>1.0.69</version>
+        <version>1.0.70</version>
     </sys_app>
 </record_update>

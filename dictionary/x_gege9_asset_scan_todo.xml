@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
-    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="557192" type="collection">
+    <element extends="task" label="ToDo" max_length="40" name="x_gege9_asset_scan_todo" sizeclass="597556" type="collection">
         <element label="Asset" mandatory="true" max_length="32" name="asset" reference="alm_asset" type="reference"/>
         <element label="Stockroom" max_length="32" name="stockroom" reference="alm_stockroom" type="reference"/>
         <element choice="1" label="Type" mandatory="true" max_length="40" name="type" type="choice">

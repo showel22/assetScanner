@@ -20,8 +20,6 @@
 	c.error = false;
 	//Holds the error message if there is an error
 	c.errorMessage = "";
-	//Holds the barcodes for search and validation
-	c.barcodes = [];
 	
 	// Client side access to camera scan through the Cabrillo library.  Called when user clicks on Scan Button.  
 	//URL goes to Scanned Information widget, and camera appends the asset identifier to the URL
@@ -40,40 +38,17 @@
 		});
 	};
 	
-	c.searchBarcodes = function(){
-		if(!!c.serialNumber){
-			c.error = false;
-			$http({
-				method: 'get',
-				url: '/api/x_gege9_asset_scan/asset_scanner/searchByIdentifier/' + c.serialNumber
-			}).success(function(response){
-				if (response.result.length > 0){
-					c.barcodes = response.result.slice(0,3);
-				}else{
-					c.barcodes = [];
-				}
-			}).error(function(){
-				c.barcodes = [];
-			});
-		}else{
-			c.barcodes = [];
-		}
-	}
-	
 	//Sets up the URL to go to the Scanned Information widget with the identifier from the input field
 	c.manualSubmit = function(serialNumber){
 		document.getElementById('mySidenav').style.width = '0';
 		c.error = false;
 		c.errorMessage = '';
-		if(serialNumber.length === 0){
-			c.error = true;
-			c.errorMessage = "Please enter an asset serial number."
-		}else if(c.barcodes.length === 0){
-			c.errorMessage = "That Barcode Number does not match any assets in ServiceNow.";
-			c.error = true;
-		}else{
+		if(!c.serialNumber.length){
+		   c.error = true;
+		   c.errorMessage = "Please enter an asset serial number."
+	}else{
 			window.location.href = '/asset_scan?id=scanned_information&serial_no=' + serialNumber;
-		}
+			 }
 	};
 	
 	//User clicks on the Manual Input button from the home screen.  
@@ -137,89 +112,37 @@ a .white-button{
 
 //Manual Entry Form
 #serial-number-form {
-  position: relative;
-  top: -5px;
-  background: linear-gradient(-180deg, #2362a0 1%, #317fcb 34%, #347ec8 53%, #317fcb 71%, #2362a0 100%);
-  height: 115vh;
-  padding: 0;
-  margin: 0;
+  font-size: 15px;
+  height: 105vh;
+  background: #ffffff;
 }
 
 //Manual Entry
 .manual-submit-cancel-row {
 	padding: 0;
-  margin-top: 5%;
+  margin-top: 15%;
 }
 .manual-submit-cancel {
-	color: #fff;
-  font-size: 18px;
-  text-decoration: none;
-  font-weight: 200;
-  border-bottom: 1px solid white;
-  line-height: 2.7;
-}
-.manual-submit-cancel{
-	cursor: pointer;
-}
-.manual-form {
-	margin: 0 10px;
-}
-.manual-form label{
-	font-size: 20px;
-  margin-left: 10px;
-  margin-bottom: 10px;
-}
-.manual-form input{
-  color: #0080b9;
-	height: 50px;
-  font-size: 20px;
-  box-shadow:0 1px 3px 1px rgba(0,0,0,0.21);
-}
-.barcode-option-container{
 	width: 100%;
-  margin-top: -3px;
-  box-shadow:0 1px 3px 1px rgba(0,0,0,0.21);
-  position: relative;
-  z-index: 1;
+  height: 70px;
 }
-.barcode-option:last-child{
-	border-radius: 0 0 4px 4px;
-}
-.barcode-option{
-	width: 100%;
-  height: 50px;
-  font-size: 20px;
-  margin: 0 auto;
-  background-color: #fff;
-  color:#0080b9;
-  border-top: 2px solid #256AAE;
-  line-height: 1.75;
-  padding: 6px 12px;
-}
-.manual-form input::placeholder{
-	color: #0080b9;
-  opacity:0.24;
-  font-weight: 575;
-}
+
 .cancel-button {
    background-color: #ffffff;
    color: #007bff;
    border: 1px solid #eeeeee 
 }
+
 .submit-button {
-   background: linear-gradient(-180deg, #00DE76 0%, #089D3E 100%); 
+   background-color: #005EB8;
    color: #ffffff;
-   width: 90%;
-   height:50px;
-   box-shadow:0 1px 3px 1px rgba(0,0,0,0.21);
-   font-weight: 520;
 }
 
 //Main Homepage 
 .home-div {
   position: relative;
   top: -30px;
-  background: linear-gradient(-180deg, #2362a0 1%, #317fcb 34%, #347ec8 53%, #2362a0 100%);
+  background: linear-gradient(-180deg, #2362a0 1%, #317fcb 34%, #347ec8 53%, #317fcb 71%, #2362a0 100%);
   height: 115vh;
   padding: 0;
   margin: 0;
@@ -236,7 +159,7 @@ a .white-button{
 }
 
 .home-title {
-	padding-bottom: 15px;
+	padding-bottom: 20px;
 }
 
 .horizontal-line {
@@ -424,7 +347,7 @@ a.button-link:hover {
         <sys_created_on>2018-04-17 15:17:59</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>1fd31515db295700d087d8965e96198e</sys_id>
-        <sys_mod_count>652</sys_mod_count>
+        <sys_mod_count>509</sys_mod_count>
         <sys_name>Asset Scanner</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -432,7 +355,7 @@ a.button-link:hover {
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sp_widget_1fd31515db295700d087d8965e96198e</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
-        <sys_updated_on>2020-01-09 20:16:08</sys_updated_on>
+        <sys_updated_on>2019-11-04 13:06:43</sys_updated_on>
         <template><![CDATA[<!-- Main Homepage -->
 <div id="home-screen">
   <div class="container-fluid">
@@ -445,36 +368,25 @@ a.button-link:hover {
       
       <!-- Manual Entry Form -->
       <div class="form-group" id="serial-number-form" ng-show="c.showForm">
-        <div class="col-xs-12 home-title">
-          <h1 class="home-label" id="get-started-label">
-            <img class="menu-icon" src="Asset_Scan_Menu_Icon.svg" onclick="document.getElementById('mySidenav').style.width = '75%';"/>
-            &nbsp;&nbsp;Enter Manually
-          </h1>
-          <div class="horizontal-line" />
+        <div class="col-xs-10 col-xs-offset-1">
+        	<h4 class="text-center">Manually Enter Barcode</h4>
+          <label class="control-label">Barcode information</label>
+          <input type="text" id="serialInput" placeholder="Enter Serial Number" ng-model="c.serialNumber" class="form-control" ng-class="{'red-border': c.error}" autofocus />
         </div>
-        <div class="col-xs-12 home-title">
-          <div class="manual-form">
-            <label class="control-label home-label">Barcode Number</label>
-            <input type="text" id="serialInput" placeholder="Enter Barcode Number" ng-model="c.serialNumber" class="form-control" ng-class="{'red-border': c.error}" autofocus ng-change="c.searchBarcodes()"/>
-            <div class="barcode-option-container">
-              <div class="barcode-option" ng-repeat="barcode in c.barcodes track by $index" ng-click="c.manualSubmit(barcode.identifier)">{{barcode.identifier}} ({{barcode.model}})</div>
-            </div>
+        <div>
+          <div class="col-xs-4 col-xs-offset-1 manual-submit-cancel-row">
+            <button class="btn manual-submit-cancel cancel-button" ng-click="c.goHome()">
+              CANCEL
+            </button>
           </div>
-          <div>
-            <div class="col-xs-offset-5 col-xs-3 manual-submit-cancel-row">
-              <a class="manual-submit-cancel" ng-click="c.goHome()">
-                Cancel
-              </a>
-            </div>
-            <div class="col-xs-4 manual-submit-cancel-row">
-              <button class="btn submit-button" ng-click="c.manualSubmit(c.serialNumber)">
-                Submit
-              </button>
-            </div>
+          <div class="col-xs-4 col-xs-offset-2 manual-submit-cancel-row">
+            <button class="btn manual-submit-cancel submit-button" ng-click="c.manualSubmit(c.serialNumber)">
+              SUBMIT
+            </button>
           </div>
         </div>
       </div>
-
+      
       <!-- Menu -->
       <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="document.getElementById('mySidenav').style.width = '0';">&times;</a>
@@ -585,6 +497,22 @@ a.button-link:hover {
       
     </div>
   </div>
+</div>
+
+<!-- Home Nav -->
+<div class="navbar navbar-fixed-bottom bottom-nav" ng-show="c.showForm">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav col-xs-12">
+      <li class="text-center center-block col-xs-12">
+        <a href="/asset_scan"><i class="glyphicon glyphicon-home"></i>
+          <p>
+            Home
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!--<button ng-show="c.loaded" class="col-xs-12 btn btn-primary" ng-click="c.navigate('asset_scan')">Back to Scan</button>-->
 </div>
 
 <!-- Show if not in native mobile app -->
