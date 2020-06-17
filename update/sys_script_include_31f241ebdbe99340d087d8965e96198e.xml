@@ -3,6 +3,7 @@
         <access>public</access>
         <active>true</active>
         <api_name>x_gege9_asset_scan.AssetToDo</api_name>
+        <caller_access/>
         <client_callable>false</client_callable>
         <description>This should be used to create todo items for assets that will show up in the mobile app.</description>
         <name>AssetToDo</name>

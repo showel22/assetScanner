@@ -3,6 +3,7 @@
         <access>public</access>
         <active>true</active>
         <api_name>x_gege9_asset_scan.GEStockroomUtils</api_name>
+        <caller_access/>
         <client_callable>false</client_callable>
         <description>This script include is for getting lists of stockrooms in various parts of the Asset Scan app.</description>
         <name>GEStockroomUtils</name>

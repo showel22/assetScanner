@@ -15,7 +15,7 @@
         <condition/>
         <description>When an asset state moves to In Stock, this BR will check for the existence of an open ToDo receiving task. If a task exists, it will close the task. This triggers the Run Request Item Workflow BR which nudges all PC return workflows.  When the workflow items update, the CloseToDo Items BR is fired and the remaining ToDo items are closed. </description>
         <execute_function>false</execute_function>
-        <filter_condition table="alm_asset">install_statusCHANGESTO6^EQ<item endquery="false" field="install_status" goto="false" newquery="false" operator="CHANGESTO" or="false" value="6"/>
+        <filter_condition table="alm_asset">install_statusCHANGESTO6^EQ<item display_value="In stock" endquery="false" field="install_status" goto="false" newquery="false" operator="CHANGESTO" or="false" value="6"/>
             <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
         </filter_condition>
         <is_rest>false</is_rest>

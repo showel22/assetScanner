@@ -3,6 +3,7 @@
         <access>package_private</access>
         <active>true</active>
         <api_name>x_gege9_asset_scan.GELegalHoldUtils</api_name>
+        <caller_access/>
         <client_callable>false</client_callable>
         <description>Server side logic for legal hold check and logging.</description>
         <name>GELegalHoldUtils</name>

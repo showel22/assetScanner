@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="DELETE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>false</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>sys_audit_delete</collection>
+        <condition>current.tablename == 'cmn_schedule_maintenance' || (new PerspectiumUtil().isChildTable(current.tablename, 'cmn_schedule_maintenance'))</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Perspectium DL - cmn_schedule_maintenanc</name>
+        <order>50</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[var psp = new Perspectium();var pspR = new PerspectiumReplicator();var egr = psp.deserialize(current.tablename, current.payload.toString());pspR.shareRecord(egr, 'cmn_schedule_maintenance', 'delete', '00b39c69db6f4b80a239df6b5e961915');]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>system</sys_created_by>
+        <sys_created_on>2018-05-23 11:05:13</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>e3337538dbd2d780d087d8965e96191d</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Perspectium DL - cmn_schedule_maintenanc</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_update_name>sys_script_e3337538dbd2d780d087d8965e96191d</sys_update_name>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2018-05-25 18:10:37</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="DELETE" query="documentkey=e3337538dbd2d780d087d8965e96191d"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</application>
+        <file_path/>
+        <instance_id>7f7002be6fba5600869e7b2f5d3ee47a</instance_id>
+        <instance_name>geit</instance_name>
+        <name>sys_script_e3337538dbd2d780d087d8965e96191d</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="sys_script"&gt;&lt;sys_script action="INSERT_OR_UPDATE"&gt;&lt;abort_action&gt;false&lt;/abort_action&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;action_delete&gt;false&lt;/action_delete&gt;&lt;action_insert&gt;true&lt;/action_insert&gt;&lt;action_query&gt;false&lt;/action_query&gt;&lt;action_update&gt;false&lt;/action_update&gt;&lt;active&gt;false&lt;/active&gt;&lt;add_message&gt;false&lt;/add_message&gt;&lt;advanced&gt;true&lt;/advanced&gt;&lt;change_fields&gt;false&lt;/change_fields&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;collection&gt;sys_audit_delete&lt;/collection&gt;&lt;condition&gt;current.tablename == 'cmn_schedule_maintenance' || (new PerspectiumUtil().isChildTable(current.tablename, 'cmn_schedule_maintenance'))&lt;/condition&gt;&lt;description/&gt;&lt;execute_function&gt;false&lt;/execute_function&gt;&lt;filter_condition/&gt;&lt;is_rest&gt;false&lt;/is_rest&gt;&lt;message/&gt;&lt;name&gt;Perspectium DL - cmn_schedule_maintenanc&lt;/name&gt;&lt;order&gt;50&lt;/order&gt;&lt;priority&gt;100&lt;/priority&gt;&lt;rest_method/&gt;&lt;rest_method_text/&gt;&lt;rest_service/&gt;&lt;rest_service_text/&gt;&lt;rest_variables/&gt;&lt;role_conditions/&gt;&lt;script&gt;&lt;![CDATA[var psp = new Perspectium();var pspR = new PerspectiumReplicator();var egr = psp.deserialize(current.tablename, current.payload.toString());pspR.shareRecord(egr, 'cmn_schedule_maintenance', 'delete', '00b39c69db6f4b80a239df6b5e961915');]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script&lt;/sys_class_name&gt;&lt;sys_created_by&gt;system&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2018-05-23 11:05:13&lt;/sys_created_on&gt;&lt;sys_customer_update&gt;false&lt;/sys_customer_update&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;e3337538dbd2d780d087d8965e96191d&lt;/sys_id&gt;&lt;sys_mod_count&gt;1&lt;/sys_mod_count&gt;&lt;sys_name&gt;Perspectium DL - cmn_schedule_maintenanc&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Asset Scanning" source="x_gege9_asset_scan"&gt;7be151dddbe55700d087d8965e9619c8&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_replace_on_upgrade&gt;false&lt;/sys_replace_on_upgrade&gt;&lt;sys_scope display_value="Asset Scanning"&gt;7be151dddbe55700d087d8965e9619c8&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_e3337538dbd2d780d087d8965e96191d&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;212680595&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2018-05-25 18:10:37&lt;/sys_updated_on&gt;&lt;template/&gt;&lt;when&gt;after&lt;/when&gt;&lt;/sys_script&gt;&lt;sys_translated_text action="delete_multiple" query="documentkey=e3337538dbd2d780d087d8965e96191d"/&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>76169595</payload_hash>
+        <record_name>Perspectium DL - cmn_schedule_maintenanc</record_name>
+        <reverted_from/>
+        <source>a4018c12dbde7200c602d54b5e961981</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>212680595</sys_created_by>
+        <sys_created_on>2018-05-25 18:10:37</sys_created_on>
+        <sys_id>6ec7a169db561300f4e4df6b5e9619ff</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>163987ecf880000001</sys_recorded_at>
+        <sys_updated_by>212680595</sys_updated_by>
+        <sys_updated_on>2018-05-25 18:10:37</sys_updated_on>
+        <type>Business Rule</type>
+        <update_guid>26c7a169b6561300d53c36b63bfebdff</update_guid>
+        <update_guid_history>26c7a169b6561300d53c36b63bfebdff:76169595,2ac7a169f25613002b92e6150b6219fc:1910291370</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>212613406</sys_created_by>
+        <sys_created_on>2018-05-25 22:43:34</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_db_object display_value="" name="sys_script">sys_script</sys_db_object>
+        <sys_id>1f4c51552d24412689b52897c1affc64</sys_id>
+        <sys_metadata>e3337538dbd2d780d087d8965e96191d</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Perspectium DL - cmn_schedule_maintenanc</sys_name>
+        <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
+        <sys_parent display_value="Sys Audit Delete">3540c81edb5ab2009fb4d3eb5e961948</sys_parent>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
+        <sys_scope_delete display_value="">37483c4c594c4f268e106f1b33724219</sys_scope_delete>
+        <sys_update_name>sys_script_e3337538dbd2d780d087d8965e96191d</sys_update_name>
+        <sys_update_version display_value="sys_script_e3337538dbd2d780d087d8965e96191d">6ec7a169db561300f4e4df6b5e9619ff</sys_update_version>
+        <sys_updated_by>212613406</sys_updated_by>
+        <sys_updated_on>2018-05-25 22:43:34</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
