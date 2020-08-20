@@ -18,17 +18,17 @@
         <sys_created_on>2018-06-27 15:11:36</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>4e4b3e8cdbcb5700d087d8965e961925</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>Default GET</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_rest_message_fn_4e4b3e8cdbcb5700d087d8965e961925</sys_update_name>
-        <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2018-09-18 19:50:11</sys_updated_on>
+        <sys_updated_by>212605340</sys_updated_by>
+        <sys_updated_on>2020-06-16 15:44:06</sys_updated_on>
         <use_basic_auth>false</use_basic_auth>
-        <use_mid_server/>
+        <use_mid_server display_value="">3ece812bdb03c0147db2dffa5e9619f6</use_mid_server>
         <use_mutual_auth>false</use_mutual_auth>
     </sys_rest_message_fn>
 </record_update>
