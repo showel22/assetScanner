@@ -8,6 +8,7 @@
         <internal>false</internal>
         <public>false</public>
         <roles/>
+        <seo_script/>
         <short_description/>
         <sys_class_name>sp_page</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
@@ -24,6 +25,7 @@
         <sys_updated_by>212606938</sys_updated_by>
         <sys_updated_on>2018-05-08 14:59:51</sys_updated_on>
         <title>Inventory Information</title>
+        <use_seo_script>false</use_seo_script>
     </sp_page>
     <sys_translated_text action="delete_multiple" query="documentkey=56191d80db061340d087d8965e961967"/>
 </record_update>

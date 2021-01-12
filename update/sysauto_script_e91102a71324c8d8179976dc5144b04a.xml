@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sysauto_script">
     <sysauto_script action="INSERT_OR_UPDATE">
         <active>true</active>
+        <business_calendar/>
         <condition/>
         <conditional>false</conditional>
+        <entered_time/>
         <name>Close ToDo Records for Closed Requests</name>
         <run_as display_value="Howell, Steven (212607632)">2545e806db4fb2005e305f2e5e9619de</run_as>
         <run_as_tz/>
@@ -44,6 +46,7 @@
         <sys_update_name>sysauto_script_e91102a71324c8d8179976dc5144b04a</sys_update_name>
         <sys_updated_by>212607632</sys_updated_by>
         <sys_updated_on>2019-10-23 15:23:08</sys_updated_on>
+        <time_zone/>
         <upgrade_safe>false</upgrade_safe>
     </sysauto_script>
 </record_update>

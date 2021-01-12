@@ -8,6 +8,7 @@
         <internal>false</internal>
         <public>false</public>
         <roles/>
+        <seo_script/>
         <short_description/>
         <sys_class_name>sp_page</sys_class_name>
         <sys_created_by>212606938</sys_created_by>
@@ -24,6 +25,7 @@
         <sys_updated_by>212606938</sys_updated_by>
         <sys_updated_on>2018-06-28 16:44:36</sys_updated_on>
         <title>Reverse Inventory Check</title>
+        <use_seo_script>false</use_seo_script>
     </sp_page>
     <sys_translated_text action="delete_multiple" query="documentkey=b52a1464dbcb5f40262950a45e96191b"/>
 </record_update>

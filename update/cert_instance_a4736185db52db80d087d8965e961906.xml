@@ -6,6 +6,7 @@
         <assign_to_group/>
         <assignment_type>User Field</assignment_type>
         <audit_type>data_cert</audit_type>
+        <business_calendar/>
         <cert_audit_instance/>
         <cert_condition/>
         <cert_schedule display_value="">f672b11edb0e1300d087d8965e96194b</cert_schedule>
@@ -15,6 +16,7 @@
         <conditional>false</conditional>
         <create_tasks>false</create_tasks>
         <display_fields>u_config_item_id,name</display_fields>
+        <entered_time/>
         <fields>owned_by</fields>
         <filter display_value="">264e409cdbd6d340d087d8965e961977</filter>
         <group/>
@@ -60,6 +62,7 @@
         <task_description>Remedy the discrepancies listed in the Audit Results below</task_description>
         <template/>
         <threshold_count>5</threshold_count>
+        <time_zone/>
         <upgrade_safe>false</upgrade_safe>
         <user/>
     </cert_instance>

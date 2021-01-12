@@ -62,8 +62,8 @@
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_dictionary_x_gege9_asset_scan_inventory_check_asset_inventory_check</sys_update_name>
-        <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2020-02-07 19:46:28</sys_updated_on>
+        <sys_updated_by>212742156</sys_updated_by>
+        <sys_updated_on>2020-08-20 19:31:43</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

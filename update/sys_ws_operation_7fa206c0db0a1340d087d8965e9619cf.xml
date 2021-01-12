@@ -18,7 +18,7 @@
 	stockroomGR.query();
 	if(stockroomGR.hasNext()){
 		stockroomGR.next();
-	//	if(gs.getUser().isMemberOf(stockroomGR.assignment_group.toString()) || stockroomGR.manager.sys_id.toString() === gs.getUserID() || stockroomGR.assignment_group ==''){
+		if(gs.getUser().isMemberOf(stockroomGR.assignment_group.toString()) || stockroomGR.manager.sys_id.toString() === gs.getUserID() || stockroomGR.assignment_group ==''){
 			responseObj = {
 				sysId: stockroomGR.sys_id,
 				name: stockroomGR.name.getDisplayValue(),
@@ -33,7 +33,7 @@
 			error.setStatus(404);
 			error.setMessage('No asset for this Serial Number.');
 			return error;
-	//	}
+		}
 	}
 	
 })(request, response);]]></operation_script>
@@ -51,7 +51,7 @@
         <sys_created_on>2018-05-08 18:05:58</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>7fa206c0db0a1340d087d8965e9619cf</sys_id>
-        <sys_mod_count>12</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>getStockroomById</sys_name>
         <sys_package display_value="Asset Scanning" source="x_gege9_asset_scan">7be151dddbe55700d087d8965e9619c8</sys_package>
         <sys_policy/>
@@ -59,7 +59,7 @@
         <sys_scope display_value="Asset Scanning">7be151dddbe55700d087d8965e9619c8</sys_scope>
         <sys_update_name>sys_ws_operation_7fa206c0db0a1340d087d8965e9619cf</sys_update_name>
         <sys_updated_by>212680595</sys_updated_by>
-        <sys_updated_on>2020-02-05 13:04:30</sys_updated_on>
+        <sys_updated_on>2021-01-12 21:00:34</sys_updated_on>
         <web_service_definition display_value="Asset Scanner">16a6a1a5dbe9d700d087d8965e96199e</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>

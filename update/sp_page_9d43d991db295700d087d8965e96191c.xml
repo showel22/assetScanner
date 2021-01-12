@@ -8,6 +8,7 @@
         <internal>false</internal>
         <public>false</public>
         <roles/>
+        <seo_script/>
         <short_description/>
         <sys_class_name>sp_page</sys_class_name>
         <sys_created_by>212607632</sys_created_by>
@@ -24,6 +25,7 @@
         <sys_updated_by>212607632</sys_updated_by>
         <sys_updated_on>2018-04-17 15:15:23</sys_updated_on>
         <title>Asset Scanning</title>
+        <use_seo_script>false</use_seo_script>
     </sp_page>
     <sys_translated_text action="delete_multiple" query="documentkey=9d43d991db295700d087d8965e96191c"/>
 </record_update>
